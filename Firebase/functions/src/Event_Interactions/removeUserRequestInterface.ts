@@ -1,0 +1,3 @@
+interface removeUserFromEvent { 
+    EventID: string;
+}
