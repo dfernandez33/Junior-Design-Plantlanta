@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "243735414460",
+    "firebase_url": "https://junior-design-plantlanta.firebaseio.com",
+    "project_id": "junior-design-plantlanta",
+    "storage_bucket": "junior-design-plantlanta.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:243735414460:android:f46838be401e571b",
+        "android_client_info": {
+          "package_name": "comdfernandez33juniordesignplantlanta.httpsgithub.junior_design_plantlanta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "243735414460-asmauu35g656hde6n8pilc03988ko6k9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKVEZAMXTfJp30UJf1fl5lavkWRW1U4Zo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "243735414460-3ihs925qo0tlrbdjn4occu5dpfeqhshb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
