@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:junior_design_plantlanta/screens/login.dart';
 import 'package:junior_design_plantlanta/screens/main_screen.dart';
 
 void main() => runApp(MyApp());
@@ -22,6 +23,18 @@ class MyApp extends StatelessWidget {
   }
 
   Widget _handleCurrentScreen() {
-    return MainScreen();
+    return new StreamBuilder<FirebaseUser>(
+        stream: FirebaseAuth.instance.onAuthStateChanged,
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return LoginPage();
+          } else {
+            if (snapshot.hasData) {
+              return MainScreen();
+            }
+            return LoginPage();
+          }
+        }
+    );
   }
 }
