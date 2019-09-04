@@ -1,0 +1,3 @@
+interface signupRequest {
+    EventID: string;
+}
