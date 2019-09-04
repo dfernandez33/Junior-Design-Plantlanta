@@ -71,26 +71,26 @@ class _LoginPageState extends State<LoginPage> {
                     children: <Widget>[
                       Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.only(
-                                right: 0.0, left: 0.0, top: 10.0),
-                            child: FlatButton(
-                              onPressed: signIn,
-                              child: Container(
-                                  alignment: Alignment.center,
-                                  height: 60.0,
-                                  decoration: new BoxDecoration(
-                                    color: Color(0xFF25A325),
-                                    borderRadius: new BorderRadius.circular(10.0),
-                                  ),
-                                  child: Text(
-                                    "Login",
-                                    style: new TextStyle(
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  )),
-                            ),
-                          )),
+                        padding: const EdgeInsets.only(
+                            right: 0.0, left: 0.0, top: 10.0),
+                        child: FlatButton(
+                          onPressed: signIn,
+                          child: Container(
+                              alignment: Alignment.center,
+                              height: 60.0,
+                              decoration: new BoxDecoration(
+                                color: Color(0xFF25A325),
+                                borderRadius: new BorderRadius.circular(10.0),
+                              ),
+                              child: Text(
+                                "Login",
+                                style: new TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              )),
+                        ),
+                      )),
                       Expanded(
                           child: Padding(
                               padding: const EdgeInsets.only(
@@ -139,12 +139,10 @@ class _LoginPageState extends State<LoginPage> {
     if (formState.validate()) {
       formState.save();
       try {
-
-        FirebaseUser user = await FirebaseAuth.instance.
-        signInWithEmailAndPassword(email: _email, password: _password);
+        FirebaseUser user = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: _email, password: _password);
 
         if (user.isEmailVerified) {
-
           //TODO: Add send data to backend
 
         } else {
@@ -183,16 +181,13 @@ class _LoginPageState extends State<LoginPage> {
       } catch (e) {
         print(e.message);
       }
-    }
-    else {
+    } else {
       _showDialog();
     }
   }
 
-
   Future<void> register() async {
     try {
-
       //TODO: add naviation to register screen
 
     } catch (e) {
@@ -245,5 +240,4 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
   }
-
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:junior_design_plantlanta/Classes/StatusResponse.dart';
 //TODO: Refactor UI
 
 class EventCard extends StatefulWidget {
@@ -137,7 +138,7 @@ class _EventCardState extends State<EventCard> {
       finalButtomUI = RaisedButton(
                         shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                        onPressed: () {},
+                        onPressed: _signupUser,
                         color: Theme.of(context).primaryColor,
                         child: const Text('Enabled Button',
                                           style: TextStyle(fontSize: 20,
@@ -145,5 +146,77 @@ class _EventCardState extends State<EventCard> {
 
     }
     return finalButtomUI;
+  }
+
+  void _signupUser() async {
+    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
+      functionName: 'signupForEvent ',
+    );
+    try {
+      final HttpsCallableResult result = await callable.call(
+        <String, dynamic>{
+          'EventID': 'rXeFXbwByGMhC1VX6t4c',
+        },
+      );
+      StatusResponse resp = new StatusResponse.fromJson(result.data);
+      print(resp.message);
+
+    } catch (e) {
+      print(e.message);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: new Text("${e.message}"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Close"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  void _removeUserFromEvent() async {
+    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
+      functionName: 'removeUserFromEvents',
+    );
+    try {
+      final HttpsCallableResult result = await callable.call(
+        <String, dynamic>{
+          'EventID': 'rXeFXbwByGMhC1VX6t4c',
+        },
+      );
+      StatusResponse resp = new StatusResponse.fromJson(result.data);
+      print(resp.message);
+
+    } catch (e) {
+      print(e.message);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: new Text("${e.message}"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Close"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }

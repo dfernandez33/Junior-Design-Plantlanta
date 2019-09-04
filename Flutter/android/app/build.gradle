@@ -39,7 +39,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "comdfernandez33juniordesignplantlanta.httpsgithub.junior_design_plantlanta"
-        minSdkVersion 16
+        minSdkVersion 22
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -60,6 +60,10 @@ flutter {
 }
 
 dependencies {
+    implementation "com.google.firebase:firebase-firestore:21.0.0"
+    implementation "com.google.firebase:firebase-functions:19.0.1"
+    implementation "com.google.firebase:firebase-auth:19.0.0"
+    apply plugin: 'com.google.gms.google-services'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
