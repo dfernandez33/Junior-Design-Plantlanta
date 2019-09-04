@@ -1,36 +1,25 @@
 import 'package:flutter/material.dart';
 
+import 'package:junior_design_plantlanta/widgets/event_card.dart';
+
 class Home extends StatefulWidget {
+  // TODO: Remove param after final implementation.
+  int _number;
+
+  Home(this._number);
+
   @override
-  State<StatefulWidget> createState() {
-    return _HomeState();
-  }
+  _HomeState createState() => _HomeState(this._number);
 }
 
 class _HomeState extends State<Home> {
+  int _number;
+
+  _HomeState(this._number);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Plantlanta'),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0, // this will be set when a new tab is tapped
-        items: [
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.home),
-            title: new Text('Home'),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.mail),
-            title: new Text('Messages'),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              title: Text('Profile')
-          )
-        ],
-      ),
+      body: EventCard(),
     );
   }
 }

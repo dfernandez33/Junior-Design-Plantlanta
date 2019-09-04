@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:junior_design_plantlanta/screens/home.dart';
+import 'package:junior_design_plantlanta/screens/main_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,6 +21,6 @@ class MyApp extends StatelessWidget {
   }
 
   Widget _handleCurrentScreen() {
-    return Home();
+    return MainScreen();
   }
 }
