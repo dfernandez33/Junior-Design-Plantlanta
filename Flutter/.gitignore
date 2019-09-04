@@ -9,3 +9,6 @@
 /build
 /captures
 .externalNativeBuild
+.packages
+.flutter-plugins
+.idea/libraries/Dart_Packages.xml
