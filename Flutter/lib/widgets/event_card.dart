@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+
 import 'package:junior_design_plantlanta/Classes/StatusResponse.dart';
+import 'package:junior_design_plantlanta/widgets/progress_button.dart';
+
 //TODO: Refactor UI
 
 class EventCard extends StatefulWidget {
@@ -8,6 +11,17 @@ class EventCard extends StatefulWidget {
   String _description;
   bool _isRecurrent;
   String _date;
+  String _time;
+  bool _isUserSignUp;
+  String _eventId;
+
+  EventCard(this._name,
+      this._time,
+      this._description,
+      this._date,
+      this._isUserSignUp,
+      this._eventId);
+
   @override
   _EventCardState createState() => _EventCardState();
 }
@@ -123,31 +137,21 @@ class _EventCardState extends State<EventCard> {
             ],
           ),
           Container(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: SignUpButtom(),
+            padding: const EdgeInsets.only(top: 8.0, bottom: 12.0),
+            child: _buildSignUpButtom(),
           )
         ],
       )
     );
   }
 
-  Widget SignUpButtom() {
-    int _state = 0;
-    Widget finalButtomUI;
-    if (_state == 0) {
-      finalButtomUI = RaisedButton(
-                        shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                        onPressed: _signupUser,
-                        color: Theme.of(context).primaryColor,
-                        child: const Text('Enabled Button',
-                                          style: TextStyle(fontSize: 20,
-                                      color: Color(0xFFFAFAFA))));
-
-    }
-    return finalButtomUI;
+  Widget _buildSignUpButtom() {
+    return ProgressButton(() => _signupUser(),
+        Theme.of(context).primaryColor,
+        Colors.grey,
+        "Sign Up",
+        "You are Signed Up!");
   }
-
   void _signupUser() async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
       functionName: 'signupForEvent ',
