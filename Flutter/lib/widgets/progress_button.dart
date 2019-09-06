@@ -6,13 +6,11 @@ class ProgressButton extends StatefulWidget {
   final Color initialColor;
   final Color finalColor;
   final String initialText;
-  final String finalText;
 
   ProgressButton(this.callback,
       this.initialColor,
       this.finalColor,
-      this.initialText,
-      this.finalText);
+      this.initialText);
 
   @override
   State<StatefulWidget> createState() => _ProgressButtonState();
@@ -76,13 +74,13 @@ class _ProgressButtonState extends State<ProgressButton>
       _state = 1;
     });
 
-    Timer(Duration(milliseconds: 3300), () {
+    Timer(Duration(milliseconds: 1000), () {
       setState(() {
         _state = 2;
       });
     });
 
-    Timer(Duration(milliseconds: 3600), () {
+    Timer(Duration(milliseconds: 1000), () {
       _animatingReveal = true;
       widget.callback();
     });
@@ -104,10 +102,7 @@ class _ProgressButtonState extends State<ProgressButton>
         ),
       );
     } else {
-      return Text(
-        widget.finalText,
-        style: TextStyle(color: Colors.white, fontSize: 16.0),
-      );
+      return Icon(Icons.check, color: Colors.white,);
     }
   }
 

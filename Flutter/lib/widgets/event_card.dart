@@ -45,7 +45,6 @@ class _EventCardState extends State<EventCard> {
           onExpansionChanged: (bool expanding) => setState(() => this.isExpanded = expanding),
           backgroundColor: Colors.white,
           title: _buildTitle(),
-          trailing: SizedBox(),
           children: <Widget>[_buildContent(),]
         ),
       ),
@@ -149,19 +148,15 @@ class _EventCardState extends State<EventCard> {
 
   Widget _buildSignUpButtom() {
     if (isSignUp) {
-      Future.delayed(Duration(milliseconds: 3300));
       return ProgressButton(() => _removeUserFromEvent(),
           Colors.redAccent,
           Colors.grey,
-          "Can't make it",
-          ":)");
+          "Can't make it");
     } else {
-      Future.delayed(Duration(milliseconds: 3300));
       return ProgressButton(() => _signupUser(),
           Theme.of(context).primaryColor,
           Colors.grey,
-          "Sign Up",
-          ":(");
+          "Sign Up");
     }
   }
 
