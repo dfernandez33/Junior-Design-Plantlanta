@@ -19,7 +19,12 @@ class MyApp extends StatelessWidget {
             backgroundColor: const Color(0xFFFAFAFA),
             fontFamily: 'Mukta',
         ),
-        home: _handleCurrentScreen()
+        home: _handleCurrentScreen(),
+        routes: <String, WidgetBuilder> {
+          "/login": (context) => LoginPage(),
+          "/main_screen": (context) => MainScreen(),
+          "/verify_email": (context) => VerifyEmail()
+        },
     );
   }
 
