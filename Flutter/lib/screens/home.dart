@@ -27,7 +27,10 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     if (availableEvents.length == 0) {
       return Scaffold(
-        body: Text("1"),
+        body: CircularProgressIndicator(
+          value: null,
+          valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+        ),
       );
     } else {
       return Scaffold(
