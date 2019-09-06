@@ -1,33 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:junior_design_plantlanta/Classes/StatusResponse.dart';
+import 'package:junior_design_plantlanta/serializers/StatusResponse.dart';
+import 'package:junior_design_plantlanta/model/event_model.dart';
 import 'package:junior_design_plantlanta/widgets/progress_button.dart';
 
 //TODO: Refactor UI
 
 class EventCard extends StatefulWidget {
-  String _name;
-  String _description;
-  bool _isRecurrent;
-  String _date;
-  String _time;
-  bool _isUserSignUp;
-  String _eventId;
+  EventModel _model;
+  String userId;
 
-  EventCard(this._name,
-      this._time,
-      this._description,
-      this._date,
-      this._isUserSignUp,
-      this._eventId);
+  EventCard(this._model) {
+    // TODO: Provide a context in global scope
+    FirebaseAuth.instance.currentUser().then((userId) =>
+      this.userId = userId.uid);
 
+  }
+
+  // TODO: Find a controller to update the model in a better way.
   @override
-  _EventCardState createState() => _EventCardState();
+  _EventCardState createState() =>
+      _EventCardState(_model.participants.contains(userId));
 }
 
 class _EventCardState extends State<EventCard> {
   bool isExpanded = false;
+  bool isSignUp;
+
+  _EventCardState(this.isSignUp);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class _EventCardState extends State<EventCard> {
           borderRadius: BorderRadius.all(Radius.circular(15.0))),
       elevation: 2,
       clipBehavior: Clip.antiAlias,
-      margin: EdgeInsets.all(12.0),
+      margin: EdgeInsets.only(left:12.0, right: 12.0, bottom: 12.0),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ExpansionTile(
@@ -58,7 +60,7 @@ class _EventCardState extends State<EventCard> {
             children: <Widget>[
               Container(
                 padding: EdgeInsets.only(bottom: 5.0),
-                child: Text("Plantlanta Summer Fest",
+                child: Text(widget._model.name,
                         textAlign: TextAlign.start,
                         style: TextStyle(
                         color: isExpanded ?
@@ -101,7 +103,7 @@ class _EventCardState extends State<EventCard> {
                               fontSize: 16.0)),
               ),
               Container(
-                child: Text("Piedmont Park",
+                child: Text(widget._model.location,
                     style: TextStyle(
                         color: Colors.black54,
                         fontSize: 16.0)),
@@ -129,7 +131,7 @@ class _EventCardState extends State<EventCard> {
               Expanded(
                 child: Container(
                     padding: const EdgeInsets.only(top: 4.0),
-                    child: Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam risus tellus, euismod a interdum vel, pulvinar vitae leo. Etiam sed luctus ex, ut sodales nunc. Integer at mattis purus. Curabitur vitae nisl ultrices, eleifend metus a, auctor neque. Curabitur enim augue, commodo a turpis in, imperdiet eleifend dui.",
+                    child: Text(widget._model.description,
                                 style: TextStyle(
                                     color: Colors.black54,
                                     fontSize: 14.0)),
@@ -137,7 +139,7 @@ class _EventCardState extends State<EventCard> {
             ],
           ),
           Container(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 12.0),
+            padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
             child: _buildSignUpButtom(),
           )
         ],
@@ -146,12 +148,23 @@ class _EventCardState extends State<EventCard> {
   }
 
   Widget _buildSignUpButtom() {
-    return ProgressButton(() => _signupUser(),
-        Theme.of(context).primaryColor,
-        Colors.grey,
-        "Sign Up",
-        "You are Signed Up!");
+    if (isSignUp) {
+      Future.delayed(Duration(milliseconds: 3300));
+      return ProgressButton(() => _removeUserFromEvent(),
+          Colors.redAccent,
+          Colors.grey,
+          "Can't make it",
+          "Done!");
+    } else {
+      Future.delayed(Duration(milliseconds: 3300));
+      return ProgressButton(() => _signupUser(),
+          Theme.of(context).primaryColor,
+          Colors.grey,
+          "Sign Up",
+          "Done!");
+    }
   }
+
   void _signupUser() async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
       functionName: 'signupForEvent ',
@@ -159,9 +172,12 @@ class _EventCardState extends State<EventCard> {
     try {
       final HttpsCallableResult result = await callable.call(
         <String, dynamic>{
-          'EventID': 'rXeFXbwByGMhC1VX6t4c',
+          'EventID': widget._model.eventId,
         },
       );
+
+      // TODO: Create controller to not hard-core update of UI.
+      isSignUp = true;
       StatusResponse resp = new StatusResponse.fromJson(result.data);
       print(resp.message);
 
@@ -189,15 +205,17 @@ class _EventCardState extends State<EventCard> {
   }
 
   void _removeUserFromEvent() async {
+    // Are we fine by rebuilding the model in the component?
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
       functionName: 'removeUserFromEvents',
     );
     try {
       final HttpsCallableResult result = await callable.call(
         <String, dynamic>{
-          'EventID': 'rXeFXbwByGMhC1VX6t4c',
+          'EventID': widget._model.eventId,
         },
       );
+      isSignUp = false;
       StatusResponse resp = new StatusResponse.fromJson(result.data);
       print(resp.message);
 

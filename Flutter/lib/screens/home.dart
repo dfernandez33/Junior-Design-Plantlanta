@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
-import 'package:junior_design_plantlanta/Classes/StatusResponse.dart';
 import 'package:junior_design_plantlanta/widgets/event_card.dart';
+import 'package:junior_design_plantlanta/model/event_model.dart';
 
 class Home extends StatefulWidget {
   // TODO: Remove param after final implementation.
@@ -16,27 +16,45 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int _number;
+  List<EventCard> availableEvents;
 
+  _HomeState(this._number) {
+    availableEvents = List();
+    _buildEventCards();
+  }
 
-  _HomeState(this._number);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: ListView(
-          children: _buildEventCards()
-        )
-      ),
-    );
+    if (availableEvents.length == 0) {
+      return Scaffold(
+        body: Text("1"),
+      );
+    } else {
+      return Scaffold(
+        body: Container(
+            margin: EdgeInsets.only(top:12.0),
+            child: ListView(
+                children: availableEvents
+            )
+        ),
+      );
+    }
   }
 
-  List<EventCard> _buildEventCards() {
-    getEvents().then((result) => print(result));
-    return [];
+  void _buildEventCards() {
+    List<EventCard> events = List();
+    getEvents().then((response) {
+      if (response != null) {
+        response["events"].forEach((event) =>
+            events.add(EventCard(EventModel.fromJson(event))));
+        setState(() {
+          this.availableEvents = events;
+        });
+      }
+    });
   }
 
 
-  // TODO: Serialize data in PODO
   Future<dynamic> getEvents() async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
       functionName: 'getAllEvents',
