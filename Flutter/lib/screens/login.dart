@@ -139,15 +139,8 @@ class _LoginPageState extends State<LoginPage> {
     if (formState.validate()) {
       formState.save();
       try {
-        FirebaseUser user = await FirebaseAuth.instance
+        await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: _email, password: _password);
-
-        if (user.isEmailVerified) {
-          //TODO: Add send data to backend
-
-        } else {
-          _showVerificationMessage();
-        }
       } catch (e) {
         print(e.message);
         showDialog(
