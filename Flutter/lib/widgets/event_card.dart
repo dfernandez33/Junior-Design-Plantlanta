@@ -7,7 +7,6 @@ import 'package:junior_design_plantlanta/model/event_model.dart';
 import 'package:junior_design_plantlanta/widgets/progress_button.dart';
 
 //TODO: Refactor UI
-
 class EventCard extends StatefulWidget {
   EventModel _model;
   String userId;
