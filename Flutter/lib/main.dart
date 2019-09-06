@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:junior_design_plantlanta/screens/login.dart';
 import 'package:junior_design_plantlanta/screens/main_screen.dart';
+import 'package:junior_design_plantlanta/screens/verify_email.dart';
 
 void main() => runApp(MyApp());
 
