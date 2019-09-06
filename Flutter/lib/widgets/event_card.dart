@@ -154,14 +154,14 @@ class _EventCardState extends State<EventCard> {
           Colors.redAccent,
           Colors.grey,
           "Can't make it",
-          "Done!");
+          ":)");
     } else {
       Future.delayed(Duration(milliseconds: 3300));
       return ProgressButton(() => _signupUser(),
           Theme.of(context).primaryColor,
           Colors.grey,
           "Sign Up",
-          "Done!");
+          ":(");
     }
   }
 
