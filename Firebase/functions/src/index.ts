@@ -7,8 +7,7 @@ const firestore = admin.firestore();
 import removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent");
 import signupForEvent = require("./Event_Interactions/signupForEvent");
 import getAllEvents = require("./Event_Interactions/getAllEvents");
-import sendWelcomeEmail = require("./User_Managment/sendVerificationEmail");
-
+import registerUser = require("./User_Registration/registerUser");
 /*========================================================================
 EVENT INTERACTIONS CLOUD FUNCTIONS
 ==========================================================================*/
@@ -22,4 +21,11 @@ exports.signupForEvent = functions.https.onCall((data, context) => {
 
 exports.getAllEvents = functions.https.onCall((data, context) => {
     return getAllEvents.handler(data, context, firestore);
+})
+
+/*========================================================================
+REGISTER USER
+==========================================================================*/
+exports.registerUser = functions.https.onCall((data, context) => {
+    return registerUser.handler(data, context, firestore);
 })

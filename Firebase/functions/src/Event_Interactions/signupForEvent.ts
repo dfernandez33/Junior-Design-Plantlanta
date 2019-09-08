@@ -3,7 +3,6 @@ import * as admin from "firebase-admin";
 import {ResponseCode} from "../Enums/responseCode";
 
 export const handler = function(data: signupRequest, context: functions.https.CallableContext, firestore: FirebaseFirestore.Firestore) {
-    debugger;
     const eventID = data.EventID;
     let UUID;
     if (context.auth !== undefined) {
