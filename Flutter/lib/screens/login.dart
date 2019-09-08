@@ -30,11 +30,11 @@ class _LoginPageState extends State<LoginPage> {
                   new Padding(
                     padding: const EdgeInsets.only(
                         right: 0.0, left: 0.0, bottom: 10.0),
-                    child: Image.asset(
-                      'logo',
-                      fit: BoxFit.contain,
-                      height: 128,
-                    ),
+//                    child: Image.asset(
+//                      'logo',
+//                      fit: BoxFit.contain,
+//                      height: 128,
+//                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -71,26 +71,26 @@ class _LoginPageState extends State<LoginPage> {
                     children: <Widget>[
                       Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.only(
-                                right: 0.0, left: 0.0, top: 10.0),
-                            child: FlatButton(
-                              onPressed: signIn,
-                              child: Container(
-                                  alignment: Alignment.center,
-                                  height: 60.0,
-                                  decoration: new BoxDecoration(
-                                    color: Color(0xFF25A325),
-                                    borderRadius: new BorderRadius.circular(10.0),
-                                  ),
-                                  child: Text(
-                                    "Login",
-                                    style: new TextStyle(
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  )),
-                            ),
-                          )),
+                        padding: const EdgeInsets.only(
+                            right: 0.0, left: 0.0, top: 10.0),
+                        child: FlatButton(
+                          onPressed: signIn,
+                          child: Container(
+                              alignment: Alignment.center,
+                              height: 60.0,
+                              decoration: new BoxDecoration(
+                                color: Color(0xFF25A325),
+                                borderRadius: new BorderRadius.circular(10.0),
+                              ),
+                              child: Text(
+                                "Login",
+                                style: new TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              )),
+                        ),
+                      )),
                       Expanded(
                           child: Padding(
                               padding: const EdgeInsets.only(
@@ -139,17 +139,8 @@ class _LoginPageState extends State<LoginPage> {
     if (formState.validate()) {
       formState.save();
       try {
-
-        FirebaseUser user = await FirebaseAuth.instance.
-        signInWithEmailAndPassword(email: _email, password: _password);
-
-        if (user.isEmailVerified) {
-
-          //TODO: Add send data to backend
-
-        } else {
-          _showVerificationMessage();
-        }
+        await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: _email, password: _password);
       } catch (e) {
         print(e.message);
         showDialog(
@@ -183,16 +174,13 @@ class _LoginPageState extends State<LoginPage> {
       } catch (e) {
         print(e.message);
       }
-    }
-    else {
+    } else {
       _showDialog();
     }
   }
 
-
   Future<void> register() async {
     try {
-
       //TODO: add naviation to register screen
 
     } catch (e) {
@@ -223,27 +211,4 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
   }
-
-  void _showVerificationMessage() {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text("Please verify email to log in."),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
 }
