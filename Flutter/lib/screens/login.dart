@@ -198,10 +198,18 @@ class _LoginPageState extends State<LoginPage> {
           title: new Text("Missing Email, Oops!"),
           content: new Text("Please type in your email into the email "
               "field so we can send you a password recovery email."),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Close"),
+              child: new Text(
+                "close",
+                style: new TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                    color: Color(0xFF25A325)),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
