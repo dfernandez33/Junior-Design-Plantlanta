@@ -39,7 +39,7 @@ class VerifyEmail extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         ProgressButton(_sendVerificationEmail, Color(0xFF25A325), Colors.grey,
-            "Resend Verification Email")
+            "Send Verification Email")
       ],
     );
   }

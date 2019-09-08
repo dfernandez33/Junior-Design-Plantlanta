@@ -27,19 +27,18 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     if (availableEvents.length == 0) {
       return Scaffold(
-        body: CircularProgressIndicator(
+        body: Center(
+            child: CircularProgressIndicator(
           value: null,
-          valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-        ),
+          valueColor:
+              AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+        )),
       );
     } else {
       return Scaffold(
         body: Container(
-            margin: EdgeInsets.only(top:12.0),
-            child: ListView(
-                children: availableEvents
-            )
-        ),
+            margin: EdgeInsets.only(top: 12.0),
+            child: ListView(children: availableEvents)),
       );
     }
   }
@@ -48,15 +47,14 @@ class _HomeState extends State<Home> {
     List<EventCard> events = List();
     getEvents().then((response) {
       if (response != null) {
-        response["events"].forEach((event) =>
-            events.add(EventCard(EventModel.fromJson(event))));
+        response["events"].forEach(
+            (event) => events.add(EventCard(EventModel.fromJson(event))));
         setState(() {
           this.availableEvents = events;
         });
       }
     });
   }
-
 
   Future<dynamic> getEvents() async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(

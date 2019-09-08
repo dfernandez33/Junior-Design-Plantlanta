@@ -73,7 +73,7 @@ class _EventCardState extends State<EventCard> {
             children: <Widget>[
               Column(
                   children: <Widget>[
-                    Text("6/1/2019",
+                    Text(_getDate(DateTime.fromMillisecondsSinceEpoch(widget._model.datetime.seconds * 1000)),
                       textAlign: TextAlign.start,
                       style: TextStyle(
                           color: Colors.black38,
@@ -117,7 +117,7 @@ class _EventCardState extends State<EventCard> {
                         fontSize: 16.0)),
               ),
               Container(
-                child: Text("10:00am - 7:00pm",
+                child: Text(_getTime(DateTime.fromMillisecondsSinceEpoch(widget._model.datetime.seconds * 1000)),
                     style: TextStyle(
                         color: Colors.black54,
                         fontSize: 16.0)),
@@ -156,6 +156,20 @@ class _EventCardState extends State<EventCard> {
           Theme.of(context).primaryColor,
           Colors.grey,
           "Sign Up");
+    }
+  }
+
+  String _getDate(DateTime date) {
+    return date.month.toString()
+        + "/" + date.day.toString()
+        + "/" + date.year.toString();
+  }
+
+  String _getTime(DateTime date) {
+    if (date.hour >= 12) {
+      return date.hour.toString() + ":" + (date.minute <= 9 ? "0" + date.minute.toString() : date.minute.toString())  + " PM";
+    } else {
+      return date.hour.toString() + ":" + (date.minute <= 9 ? "0" + date.minute.toString() : date.minute.toString()) + " AM";
     }
   }
 
