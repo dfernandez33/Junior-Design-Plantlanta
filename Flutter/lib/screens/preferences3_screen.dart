@@ -10,9 +10,12 @@ class Preferences3 extends StatefulWidget {
 class _Preferences3State extends State<Preferences3> {
   PageController _pageController;
   int _page = 2;
-  Map<String, bool> friends = {
-    'Sync contacts from linked authorized account?': false,
-  };
+  int _radioValue3 = -1;
+
+  void _handleRadioValueChange3(int value) {
+    setState(() {
+      _radioValue3 = value; } );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +27,14 @@ class _Preferences3State extends State<Preferences3> {
           title: Text("Tell us about you!")
       ),
       body: new Container(
-        padding: new EdgeInsets.all(10),
+        padding: EdgeInsets.all(8.0),
         child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Row(
               children: <Widget> [
                 Padding(
-                  padding: const EdgeInsets.only(left: 40, top: 60, right: 10),
+                  padding: const EdgeInsets.only(left: 10, top: 40, right: 10),
                   child: Text(
                     "Volunteering is more fun with friends!",
                     style: new TextStyle(
@@ -43,26 +46,35 @@ class _Preferences3State extends State<Preferences3> {
               ],
             ),
             new Expanded(
-              child: new ListView(
-                padding: EdgeInsets.only(top: 70),
-                children: friends.keys.map((String key) {
-                  return new CheckboxListTile(
-                    title: new Text(key),
-                    value: friends[key],
-                    onChanged: (bool value) {
-                      setState(() {
-                        friends[key] = value;
-                      });
-                    },
-                  );
-                }).toList(),
+              child: new Column(
+                children: <Widget>[
+                  new Padding(
+                    padding: new EdgeInsets.all(10),
+                  ),
+                  new Padding(
+                    padding: new EdgeInsets.all(10),
+                  ),
+                  new Text('Sync contacts from linked authorized accounts?', style: new TextStyle(fontSize: 16)),
+                  new Divider(height: 5, color: Colors.black),
+                  new Padding(padding: new EdgeInsets.all(10)),
+                  new Text('Yes', style: new TextStyle(fontSize: 16)),
+                  new Radio(
+                    value: 1,
+                    groupValue: _radioValue3,
+                    onChanged: _handleRadioValueChange3,
+                  ),
+                  new Text('Not right now', style: new TextStyle(fontSize: 16)),
+                  new Radio(
+                    value: 2,
+                    groupValue: _radioValue3,
+                    onChanged: _handleRadioValueChange3,
+                  ),
+                ],
               ),
             ),
-
           ],
         ),
       ),
-
       floatingActionButton: FloatingActionButton(
         elevation: 10.0,
         backgroundColor: Theme.of(context).primaryColor,

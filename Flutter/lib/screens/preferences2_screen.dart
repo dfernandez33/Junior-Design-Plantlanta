@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:junior_design_plantlanta/screens/home.dart';
+import 'package:junior_design_plantlanta/screens/preferences3_screen.dart';
 
 class Preferences2 extends StatefulWidget {
   @override
@@ -9,11 +10,19 @@ class Preferences2 extends StatefulWidget {
 
 class _Preferences2State extends State<Preferences2> {
   PageController _pageController;
-  int _page = 1;
-  Map<String, bool> volunteerType = {
-    'Sporadically': false,
-    'Recurringly': false,
-  };
+  int _page = 0;
+  int _radioValue1 = -1;
+  int _radioValue2 = -1;
+
+  void _handleRadioValueChange1(int value) {
+    setState(() {
+      _radioValue1 = value; } );
+  }
+
+  void _handleRadioValueChange2(int value) {
+    setState(() {
+      _radioValue2 = value; } );
+  }
 
   Map<String, bool> location = {
     'Your city': false,
@@ -31,16 +40,16 @@ class _Preferences2State extends State<Preferences2> {
           title: Text("Tell us about you!")
       ),
       body: new Container(
-        padding: new EdgeInsets.all(10),
+        padding: EdgeInsets.all(8.0),
         child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Row(
               children: <Widget> [
                 Padding(
                   padding: const EdgeInsets.only(left: 10, top: 40, right: 10),
                   child: Text(
-                    "How often would you like to volunteer?",
+                    "Do you want to volunteer:",
                     style: new TextStyle(
                         fontSize: 15.0,
                         fontWeight: FontWeight.bold,
@@ -50,29 +59,36 @@ class _Preferences2State extends State<Preferences2> {
               ],
             ),
             new Expanded(
-              child: new ListView(
-                padding: EdgeInsets.only(top: 20),
-                children: volunteerType.keys.map((String key) {
-                  return new CheckboxListTile(
-                    title: new Text(key),
-                    //padding: EdgeInsets.only(top: 10),
-                    value: volunteerType[key],
-                    onChanged: (bool value) {
-                      setState(() {
-                        volunteerType[key] = value;
-                      });
-                    },
-                  );
-                }).toList(),
+              child: new Column(
+                children: <Widget>[
+                  new Padding(
+                    padding: new EdgeInsets.all(10),
+                  ),
+                  new Divider(height: 5, color: Colors.black),
+                  new Padding(
+                  padding: new EdgeInsets.all(10),
+                  ),
+                  new Text('Sporadically', style: new TextStyle(fontSize: 16)),
+                  new Radio(
+                    value: 1,
+                    groupValue: _radioValue1,
+                    onChanged: _handleRadioValueChange1,
+                  ),
+                  new Text('Recurringly', style: new TextStyle(fontSize: 16)),
+                  new Radio(
+                  value: 2,
+                  groupValue: _radioValue1,
+                  onChanged: _handleRadioValueChange1,
+                  ),
+                ],
               ),
             ),
-
             new Row(
               children: <Widget> [
                 Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  padding: const EdgeInsets.only(left: 10, top: 40, right: 10),
                   child: Text(
-                    "In what area would you like to volunteer?",
+                    "Do you want to volunteer anywhere in:",
                     style: new TextStyle(
                         fontSize: 15.0,
                         fontWeight: FontWeight.bold,
@@ -82,20 +98,34 @@ class _Preferences2State extends State<Preferences2> {
               ],
             ),
             new Expanded(
-              child: new ListView(
-                padding: EdgeInsets.only(top: 20, bottom: 30),
-                children: location.keys.map((String key) {
-                  return new CheckboxListTile(
-                    title: new Text(key),
-                    //padding: EdgeInsets.only(top: 10),
-                    value: location[key],
-                    onChanged: (bool value) {
-                      setState(() {
-                        location[key] = value;
-                      });
-                    },
-                  );
-                }).toList(),
+              child: new Column(
+                children: <Widget>[
+                  new Padding(
+                      padding: new EdgeInsets.all(10),
+                  ),
+                  new Divider(height: 5, color: Colors.black),
+                  new Padding(
+                      padding: new EdgeInsets.all(10),
+                  ),
+                  new Text('Your city', style: new TextStyle(fontSize: 16)),
+                  new Radio(
+                    value: 1,
+                    groupValue: _radioValue2,
+                    onChanged: _handleRadioValueChange2,
+                  ),
+                  new Text('Your county', style: new TextStyle(fontSize: 16)),
+                  new Radio(
+                    value: 2,
+                    groupValue: _radioValue2,
+                    onChanged: _handleRadioValueChange2,
+                  ),
+                  new Text('Your state', style: new TextStyle(fontSize: 16)),
+                  new Radio(
+                    value: 3,
+                    groupValue: _radioValue2,
+                    onChanged: _handleRadioValueChange2,
+                  ),
+                ],
               ),
             ),
           ],
@@ -109,14 +139,24 @@ class _Preferences2State extends State<Preferences2> {
           Icons.arrow_forward,
           color: Theme.of(context).backgroundColor,
         ),
-        onPressed: () => navigationTapped(2),
+        onPressed: () { preferences3(); },
       ),
     );
   }
 
   void navigationTapped(int page) {
+    //Navigator.push(context, )
     onPageChanged(page);
     _pageController.jumpToPage(page);
+  }
+
+  Future<void> preferences3() async {
+    try {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Preferences3()));
+    } catch (e) {
+      print(e.message);
+    }
   }
 
   @override

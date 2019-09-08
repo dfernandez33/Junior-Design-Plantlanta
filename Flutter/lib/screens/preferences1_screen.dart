@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:junior_design_plantlanta/screens/home.dart';
+import 'package:junior_design_plantlanta/screens/preferences2_screen.dart';
 
 class Preferences1 extends StatefulWidget {
   @override
@@ -75,7 +76,7 @@ class _Preferences1State extends State<Preferences1> {
           Icons.arrow_forward,
           color: Theme.of(context).backgroundColor,
         ),
-        onPressed: () => navigationTapped(1),
+        onPressed: () { preferences2(); },
       ),
     );
   }
@@ -89,6 +90,15 @@ class _Preferences1State extends State<Preferences1> {
   void initState() {
     super.initState();
     _pageController = PageController();
+  }
+
+  Future<void> preferences2() async {
+    try {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Preferences2()));
+    } catch (e) {
+      print(e.message);
+    }
   }
 
   @override
