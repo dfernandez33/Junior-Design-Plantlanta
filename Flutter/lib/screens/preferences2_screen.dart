@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:junior_design_plantlanta/model/registration_model.dart';
+import 'package:junior_design_plantlanta/model/user_preference.dart';
 
 import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:junior_design_plantlanta/screens/preferences3_screen.dart';
 
 class Preferences2 extends StatefulWidget {
+  UserRegistrationModelBuilder _newUser;
+  UserPreferenceModelBuilder _userPreferences;
+
+  Preferences2(this._newUser, this._userPreferences);
   @override
   _Preferences2State createState() => _Preferences2State();
 }
@@ -16,10 +22,22 @@ class _Preferences2State extends State<Preferences2> {
 
   void _handleRadioValueChange1(int value) {
     setState(() {
+      widget._userPreferences..sporadic = value == 1;
       _radioValue1 = value; } );
   }
 
   void _handleRadioValueChange2(int value) {
+    String proximity;
+
+    if (value == 1) {
+      proximity = "City";
+    } else if (value == 2) {
+      proximity = "County";
+    } else {
+      proximity = "State";
+    }
+    widget._userPreferences..proximity = proximity;
+
     setState(() {
       _radioValue2 = value; } );
   }
@@ -151,9 +169,12 @@ class _Preferences2State extends State<Preferences2> {
   }
 
   Future<void> preferences3() async {
+    widget._newUser..preference = widget._userPreferences;
+
+    final _newUser = widget._newUser.build();
     try {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Preferences3()));
+          context, MaterialPageRoute(builder: (context) => Preferences3(_newUser)));
     } catch (e) {
       print(e.message);
     }

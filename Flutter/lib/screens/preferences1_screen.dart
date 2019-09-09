@@ -1,9 +1,16 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
+import 'package:junior_design_plantlanta/model/registration_model.dart';
+import 'package:junior_design_plantlanta/model/user_preference.dart';
 
 import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:junior_design_plantlanta/screens/preferences2_screen.dart';
 
 class Preferences1 extends StatefulWidget {
+  UserRegistrationModelBuilder _newUser;
+
+  Preferences1(this._newUser);
+
   @override
   _Preferences1State createState() => _Preferences1State();
 }
@@ -11,6 +18,8 @@ class Preferences1 extends StatefulWidget {
 class _Preferences1State extends State<Preferences1> {
   PageController _pageController;
   int _page = 0;
+  UserPreferenceModelBuilder _userPreferences = UserPreferenceModelBuilder();
+
   Map<String, bool> interests = {
     'Education': false,
     'Environmental Sustainability': false,
@@ -93,9 +102,15 @@ class _Preferences1State extends State<Preferences1> {
   }
 
   Future<void> preferences2() async {
+
+    interests.forEach((k, v) {
+      if (v) {
+        _userPreferences..eventType.add(k);
+      }
+    });
     try {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Preferences2()));
+          context, MaterialPageRoute(builder: (context) => Preferences2(widget._newUser, _userPreferences)));
     } catch (e) {
       print(e.message);
     }
