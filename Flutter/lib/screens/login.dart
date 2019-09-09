@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:junior_design_plantlanta/screens/preferences1_screen.dart';
+import 'package:junior_design_plantlanta/screens/registration.dart';
 
 class LoginPage extends StatefulWidget {
   // This widget is the root of your application.
@@ -182,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> register() async {
     try {
       //TODO: add naviation to register screen
-
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Registration()));
     } catch (e) {
       print(e.message);
     }

@@ -31,6 +31,7 @@ dependencies:
   build_runner: ^1.0.0
   built_value_generator: ^6.7.1
   source_gen: ^0.9.0
+  intl: 0.15.8
 
 
 
