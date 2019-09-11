@@ -20,6 +20,8 @@ class _RegistrationState extends State<Registration> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final TextEditingController _controller = new TextEditingController();
+  final _UsNumberTextInputFormatter _phoneNumberFormatter = new _UsNumberTextInputFormatter();
+
 
   String name1 = 'roberto';
   String dob1 = '';
@@ -48,8 +50,8 @@ class _RegistrationState extends State<Registration> {
   DateTime convertToDate(String input) {
     try
     {
-      var d = new DateFormat.yMd().parseStrict(input);
-      return d;
+      var parsedDate = new DateFormat.yMd().parseStrict(input);
+      return parsedDate;
     } catch (e) {
       return null;
     }
@@ -73,8 +75,8 @@ class _RegistrationState extends State<Registration> {
 
   bool isValidDob(String dob) {
     if (dob.isEmpty) return true;
-    var d = convertToDate(dob);
-    return d != null && d.isBefore(new DateTime.now());
+    var parsedDate = convertToDate(dob);
+    return parsedDate != null && parsedDate.isBefore(new DateTime.now());
   }
 
   bool isValidPhoneNumber(String input) {
@@ -178,13 +180,13 @@ class _RegistrationState extends State<Registration> {
                       labelText: 'Phone',
                     ),
                     keyboardType: TextInputType.phone,
-                    inputFormatters: [
-                      new WhitelistingTextInputFormatter(
-                          new RegExp(r'^[()\d -]{1,15}$')),
+                    inputFormatters: <TextInputFormatter>[
+                      WhitelistingTextInputFormatter.digitsOnly,
+                      _phoneNumberFormatter,
                     ],
                     validator: (value) => isValidPhoneNumber(value)
                         ? null
-                        : 'Phone number must be entered as (###)###-####',
+                        : 'Phone number must be entered as digits only',
                     //onSaved: (val) => newContact.rebuild((b) => b.phone = val),
                     onSaved: (val) => phone1 = val,
                   ),
@@ -236,6 +238,46 @@ class _RegistrationState extends State<Registration> {
                       )),
                 ],
               ))),
+    );
+  }
+}
+
+class _UsNumberTextInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    final int newTextLength = newValue.text.length;
+    int selectionIndex = newValue.selection.end;
+    int usedSubstringIndex = 0;
+    final StringBuffer newText = StringBuffer();
+    if (newTextLength >= 1) {
+      newText.write('(');
+      if (newValue.selection.end >= 1)
+        selectionIndex++;
+    }
+    if (newTextLength >= 4) {
+      newText.write(newValue.text.substring(0, usedSubstringIndex = 3) + ') ');
+      if (newValue.selection.end >= 3)
+        selectionIndex += 2;
+    }
+    if (newTextLength >= 7) {
+      newText.write(newValue.text.substring(3, usedSubstringIndex = 6) + '-');
+      if (newValue.selection.end >= 6)
+        selectionIndex++;
+    }
+    if (newTextLength >= 11) {
+      newText.write(newValue.text.substring(6, usedSubstringIndex = 10) + ' ');
+      if (newValue.selection.end >= 10)
+        selectionIndex++;
+    }
+    // Dump the rest.
+    if (newTextLength >= usedSubstringIndex)
+      newText.write(newValue.text.substring(usedSubstringIndex));
+    return TextEditingValue(
+      text: newText.toString(),
+      selection: TextSelection.collapsed(offset: selectionIndex),
     );
   }
 }
