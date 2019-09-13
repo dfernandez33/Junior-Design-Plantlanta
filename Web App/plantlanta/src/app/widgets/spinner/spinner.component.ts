@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { NgxSpinnerService } from '../../../../node_modules/ngx-spinner';
 
 @Component({
@@ -7,6 +7,8 @@ import { NgxSpinnerService } from '../../../../node_modules/ngx-spinner';
   styleUrls: ['./spinner.component.sass']
 })
 export class SpinnerComponent implements OnInit {
+
+  @Input() message: string;
 
   constructor(private spinner: NgxSpinnerService) { }
 

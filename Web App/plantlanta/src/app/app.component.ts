@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import { AngularFireAuth } from '../../node_modules/@angular/fire/auth';
-import { Router } from '../../node_modules/@angular/router';
-import { first } from "../../node_modules/rxjs/operators";
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +8,8 @@ import { first } from "../../node_modules/rxjs/operators";
 })
 export class AppComponent {
 
-  constructor() {}
+  constructor(private authService: AuthService) {
+    this.authService.subscribeToUser();
+  }
 
 }

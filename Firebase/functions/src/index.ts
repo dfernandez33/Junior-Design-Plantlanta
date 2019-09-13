@@ -9,6 +9,7 @@ import signupForEvent = require("./Event_Interactions/signupForEvent");
 import getAllEvents = require("./Event_Interactions/getAllEvents");
 import registerUser = require("./User_Interactions/registerUser");
 import registerAdmin = require("./User_Interactions/registerAdmin");
+import isUserAdmin = require("./User_Interactions/isUserAdmin");
 /*========================================================================
 EVENT INTERACTIONS CLOUD FUNCTIONS
 ==========================================================================*/
@@ -25,7 +26,7 @@ exports.getAllEvents = functions.https.onCall((data, context) => {
 })
 
 /*========================================================================
-REGISTER USER/Admin
+User Interactoins USER/Admin
 ==========================================================================*/
 exports.registerUser = functions.https.onCall((data, context) => {
     return registerUser.handler(data, context, firestore);
@@ -33,4 +34,8 @@ exports.registerUser = functions.https.onCall((data, context) => {
 
 exports.registerAdmin = functions.https.onCall((data, context) => {
     return registerAdmin.handler(data, context, firestore);
+})
+
+exports.isUserAdmin = functions.https.onCall((data, context) => {
+    return isUserAdmin.handler(data, context, firestore);
 })

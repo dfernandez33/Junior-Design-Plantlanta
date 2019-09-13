@@ -10,10 +10,13 @@
             <button class="button is-success is-fullwidth" (click)="sendVerificationEmail()">
               Send Verification Email
             </button>
+            <p class="has-text-centered" *ngIf="error">
+              {{errMessage}}
+            </p>
           </div>
         </div>
       </div> 
     </div>
   </div>
 </section>
-<app-spinner #spinner></app-spinner>
+<app-spinner #spinner message="Waiting for Verification..."></app-spinner>
