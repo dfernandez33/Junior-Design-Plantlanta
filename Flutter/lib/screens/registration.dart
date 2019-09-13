@@ -19,15 +19,17 @@ class _RegistrationState extends State<Registration> {
   UserRegistrationModelBuilder newContact;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  var passKey = GlobalKey<FormFieldState>();
   final TextEditingController _controller = new TextEditingController();
   final _UsNumberTextInputFormatter _phoneNumberFormatter = new _UsNumberTextInputFormatter();
 
 
-  String name1 = 'roberto';
+  String name1 = '';
   String dob1 = '';
   String phone1 = '';
   String email1 = '';
   String password1 = '';
+  String address1 = '';
 
   Future _chooseDate(BuildContext context, String initialDateString) async {
     var now = new DateTime.now();
@@ -64,6 +66,7 @@ class _RegistrationState extends State<Registration> {
         ..password = password1
         ..name = name1
         ..phone = phone1
+        ..address = address1
         ..email = email1;
 
       Navigator.push(
@@ -80,7 +83,7 @@ class _RegistrationState extends State<Registration> {
   }
 
   bool isValidPhoneNumber(String input) {
-    final RegExp regex = new RegExp(r'^\(\d\d\d\)\d\d\d\-\d\d\d\d$');
+    final RegExp regex = new RegExp(r'^\(\d\d\d\) \d\d\d\-\d\d\d\d$');
     return regex.hasMatch(input);
   }
 
@@ -91,7 +94,12 @@ class _RegistrationState extends State<Registration> {
 
   bool isValidPassword(String input) {
     final RegExp regex = new RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]$");
-    return regex.hasMatch(input);
+    return regex.hasMatch(input) && input.length > 5;
+  }
+
+  bool confirmPassword(String input, String passwordCheck) {
+    passwordCheck = newContact.password;
+    return input == passwordCheck;
   }
 
   void _submitForm() {
@@ -146,9 +154,9 @@ class _RegistrationState extends State<Registration> {
                       labelText: 'Name',
                     ),
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                    validator: (val) => val.isEmpty ? 'Name is required' : null,
+                    validator: (name) => name.isEmpty ? 'Name is required' : null,
                     //onSaved: (val) => newContact.rebuild((b) => b.name = val),
-                      onSaved: (val) => name1 = val,
+                      onSaved: (name) => name1 = name,
                   ),
                   new Row(children: <Widget>[
                     new Expanded(
@@ -160,10 +168,10 @@ class _RegistrationState extends State<Registration> {
                           ),
                           controller: _controller,
                           keyboardType: TextInputType.datetime,
-                          validator: (val) =>
-                          isValidDob(val) ? null : 'Not a valid date',
+                          validator: (dob) =>
+                          isValidDob(dob) ? null : 'Not a valid date',
                           //onSaved: (val) => newContact.rebuild((b) => b.dob = val),
-                          onSaved: (val) => dob1 = val,
+                          onSaved: (dob) => dob1 = dob,
                         )),
                     new IconButton(
                       icon: new Icon(Icons.more_horiz),
@@ -183,25 +191,38 @@ class _RegistrationState extends State<Registration> {
                     inputFormatters: <TextInputFormatter>[
                       WhitelistingTextInputFormatter.digitsOnly,
                       _phoneNumberFormatter,
+                      new LengthLimitingTextInputFormatter(14)
                     ],
-                    validator: (value) => isValidPhoneNumber(value)
+                    validator: (phone) => isValidPhoneNumber(phone)
                         ? null
                         : 'Phone number must be entered as digits only',
                     //onSaved: (val) => newContact.rebuild((b) => b.phone = val),
-                    onSaved: (val) => phone1 = val,
+                    onSaved: (phone) => phone1 = phone,
+                  ),
+                  new TextFormField(
+                    decoration: const InputDecoration(
+                      icon: const Icon(Icons.home),
+                      hintText: 'Enter your address',
+                      labelText: 'Address',
+                    ),
+                    inputFormatters: [new LengthLimitingTextInputFormatter(30)],
+                    validator: (address) => address.isEmpty ? 'Address is required' : null,
+                    //onSaved: (val) => newContact.rebuild((b) => b.password = val),
+                    onSaved: (address) => address1 = address,
+                    //onSaved: (val) => newContact.password = val,
                   ),
                   new TextFormField(
                     decoration: const InputDecoration(
                       icon: const Icon(Icons.email),
-                      hintText: 'Enter a email address',
+                      hintText: 'Enter an email address',
                       labelText: 'Email',
                     ),
                     keyboardType: TextInputType.emailAddress,
-                    validator: (value) => isValidEmail(value)
+                    validator: (email) => isValidEmail(email)
                         ? null
                         : 'Please enter a valid email address',
                     //onSaved: (val) => newContact.rebuild((b) => b.email = val),
-                    onSaved: (val) => email1 = val,
+                    onSaved: (email) => email1 = email,
                   ),
                   new TextFormField(
                     decoration: const InputDecoration(
@@ -210,10 +231,12 @@ class _RegistrationState extends State<Registration> {
                       labelText: 'Password',
                     ),
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                    validator: (val) => val.isEmpty ? 'Password is required' : null,
+                    //validator: (password) => password.isEmpty ? 'Password is required' : null,
+                    validator: (password) => password.length > 5 ? 'Password must be at least 6 characters' : null,
                     //onSaved: (val) => newContact.rebuild((b) => b.password = val),
-                    onSaved: (val) => password1 = val,
+                    onSaved: (password) => password1 = password,
                     obscureText: true,
+                    key: passKey,
                     //onSaved: (val) => newContact.password = val,
                   ),
                   new TextFormField(
@@ -223,7 +246,7 @@ class _RegistrationState extends State<Registration> {
                       labelText: 'Confirm your password',
                     ),
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                    validator: (val) => val.isEmpty ? 'Password is required' : null,
+                    validator: (confirmation) => (confirmation == passKey.currentState.value.toString()) ? null : 'Passwords dont match',
                     obscureText: true,
                     //onSaved: (val) => newContact.password = val,
                   ),
