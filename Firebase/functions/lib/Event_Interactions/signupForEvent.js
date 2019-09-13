@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const admin = require("firebase-admin");
 const responseCode_1 = require("../Enums/responseCode");
 exports.handler = function (data, context, firestore) {
-    debugger;
     const eventID = data.EventID;
     let UUID;
     if (context.auth !== undefined) {

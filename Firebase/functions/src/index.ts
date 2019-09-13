@@ -8,6 +8,7 @@ import removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent"
 import signupForEvent = require("./Event_Interactions/signupForEvent");
 import getAllEvents = require("./Event_Interactions/getAllEvents");
 import registerUser = require("./User_Interactions/registerUser");
+import registerAdmin = require("./User_Interactions/registerAdmin");
 /*========================================================================
 EVENT INTERACTIONS CLOUD FUNCTIONS
 ==========================================================================*/
@@ -24,8 +25,12 @@ exports.getAllEvents = functions.https.onCall((data, context) => {
 })
 
 /*========================================================================
-REGISTER USER
+REGISTER USER/Admin
 ==========================================================================*/
 exports.registerUser = functions.https.onCall((data, context) => {
     return registerUser.handler(data, context, firestore);
+})
+
+exports.registerAdmin = functions.https.onCall((data, context) => {
+    return registerAdmin.handler(data, context, firestore);
 })
