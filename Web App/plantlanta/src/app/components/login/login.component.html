@@ -1,0 +1,49 @@
+<section class="hero is-primary is-fullheight is-bold">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+          <form action="" class="box" [formGroup]="loginForm">
+            <figure class="image is-square">
+                <img src="assets/logo.jpeg" alt="Plantlanta Logo">
+            </figure>
+            <div class="field">
+              <label class="label">Email</label>
+              <div class="control has-icons-left">
+                <input type="email" placeholder="e.g. bobsmith@gmail.com" class="input" required formControlName="email">
+                <span class="icon is-small is-left">
+                  <i class="fa fa-envelope"></i>
+                </span>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Password</label>
+              <div class="control has-icons-left">
+                <input type="password" placeholder="*******" class="input" required formControlName="password">
+                <span class="icon is-small is-left">
+                  <i class="fa fa-lock"></i>
+                </span>
+              </div>
+            </div>
+            <div *ngIf="!validForm">
+              {{errMessage}}
+            </div>
+            <div class="columns">
+              <div class="column">
+                  <button class="button is-success is-fullwidth" (click)="login()">
+                    Login
+                  </button>
+              </div>
+              <div class="column">
+                  <button class="button is-light is-fullwidth" routerLink="/register">
+                    Register
+                  </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<app-spinner #spinner message="Logging In..."></app-spinner>
