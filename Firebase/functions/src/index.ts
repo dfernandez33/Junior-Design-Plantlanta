@@ -6,6 +6,7 @@ const firestore = admin.firestore();
 
 import removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent");
 import signupForEvent = require("./Event_Interactions/signupForEvent");
+import confirmEvent = require("./Event_Interactions/confirmEvent");
 import getAllEvents = require("./Event_Interactions/getAllEvents");
 import registerUser = require("./User_Interactions/registerUser");
 import registerAdmin = require("./User_Interactions/registerAdmin");
@@ -19,6 +20,10 @@ exports.removeUserFromEvents = functions.https.onCall((data, context) => {
 
 exports.signupForEvent = functions.https.onCall((data, context) => {
     return signupForEvent.handler(data, context, firestore);
+});
+
+exports.confirmEvent = functions.https.onCall((data, context) => {
+    return confirmEvent.handler(data, context, firestore);
 });
 
 exports.getAllEvents = functions.https.onCall((data, context) => {
