@@ -1,9 +1,9 @@
 <section class="hero is-primary is-fullheight is-bold">
   <div class="hero-body">
     <div class="container">
-      <div class="title">Sign Up</div>
+      <div class="title">Request Admin Account</div>
       <div class="subtitle">With Your Email</div>
-      <form *ngIf="!badRequestId" action="" class="box" [formGroup]="registerForm">
+      <form action="" class="box" [formGroup]="requestForm">
         <div class="field">
           <label class="label">Email</label>
           <div class="control has-icons-left">
@@ -31,37 +31,22 @@
             </div>
           </div>
         </div>
-        <div class="columns">
-          <div class="column">
-            <div class="field">
-              <label class="label">Password</label>
-              <div class="control has-icons-left">
-                <input class="input" type="password" placeholder="Password" formControlName="password" required/>
-                <span class="icon is-small is-left">
-                  <i class="fa fa-lock"></i>
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="column">
-            <div class="field">
-              <label class="label">Re-Type Password</label>
-              <div class="control has-icons-left">
-                <input class="input" type="password" placeholder="Confirm Password" formControlName="verify_password" required/>
-                <span class="icon is-small is-left">
-                  <i class="fa fa-lock"></i>
-                </span>
-              </div>
-            </div>
+        <div class="field">
+          <label class="label">Message</label>
+          <div class="control">
+            <textarea class="textarea" placeholder="Message" formControlName="message" required></textarea>
           </div>
         </div>
         <div *ngIf="!validForm">
           {{errMessage}}
         </div>
+        <div *ngIf="requestSent">
+          Your request has been sent. You will get an email notification when it is reviewed.
+        </div>
         <div class="field is-grouped">
           <p class="control">
-            <a class="button is-primary" (click)="register()">
-              Create Account
+            <a class="button is-primary" (click)="requestAccount()">
+              Request Account
             </a>
           </p>
           <p class="control">
@@ -71,12 +56,7 @@
           </p>
         </div>
       </form>
-      <div *ngIf="badRequestId" class="box">
-        <p class="has-text-centered">
-          The request ID associated with this registration link is invalid, or has already been used.
-        </p>
-      </div>
     </div>
   </div>
 </section>
-<app-spinner #spinner message="Registering and Logging In..."></app-spinner>
+<app-spinner #spinner message="Sending Account Request..."></app-spinner>

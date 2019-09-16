@@ -8,8 +8,11 @@ import removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent"
 import signupForEvent = require("./Event_Interactions/signupForEvent");
 import getAllEvents = require("./Event_Interactions/getAllEvents");
 import registerUser = require("./User_Interactions/registerUser");
-import registerAdmin = require("./User_Interactions/registerAdmin");
-import isUserAdmin = require("./User_Interactions/isUserAdmin");
+import registerAdmin = require("./User_Interactions/Admin/registerAdmin");
+import isUserAdmin = require("./User_Interactions/Admin/isUserAdmin");
+import requestAdminAccount = require("./User_Interactions/Admin/requestAdminAccount");
+import getAdminRequest = require("./User_Interactions/Admin/getAdminRequest");
+import reviewAdminRequest = require("./User_Interactions/Admin/reviewAdminRequest")
 /*========================================================================
 EVENT INTERACTIONS CLOUD FUNCTIONS
 ==========================================================================*/
@@ -38,4 +41,16 @@ exports.registerAdmin = functions.https.onCall((data, context) => {
 
 exports.isUserAdmin = functions.https.onCall((data, context) => {
     return isUserAdmin.handler(data, context, firestore);
+})
+
+exports.requestAdminAccount = functions.https.onRequest((req, res) => {
+    return requestAdminAccount.handler(req, res, firestore);
+})
+
+exports.getAdminRequest = functions.https.onCall((data, context) => {
+    return getAdminRequest.handler(data, context, firestore);
+})
+
+exports.reviewAdminRequest = functions.https.onCall((data, context) => {
+    return reviewAdminRequest.handler(data, context, firestore);
 })

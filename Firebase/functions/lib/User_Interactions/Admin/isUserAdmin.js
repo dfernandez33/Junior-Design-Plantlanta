@@ -1,13 +1,14 @@
-import * as functions from "firebase-functions"
-import {ResponseCode} from "../Enums/responseCode";
-
-export const handler = function(data: any, context:functions.https.CallableContext, firestore: FirebaseFirestore.Firestore) {
-    let UUID: string;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const responseCode_1 = require("../../Enums/responseCode");
+exports.handler = function (data, context, firestore) {
+    let UUID;
     if (context.auth !== undefined) {
-        UUID = context.auth.uid
-    } else {
+        UUID = context.auth.uid;
+    }
+    else {
         return {
-            status: ResponseCode.FAILURE,
+            status: responseCode_1.ResponseCode.FAILURE,
             message: "No UUID received from context."
         };
     }
@@ -21,14 +22,16 @@ export const handler = function(data: any, context:functions.https.CallableConte
         });
         if (isAdmin) {
             return {
-                status: ResponseCode.SUCCESS,
+                status: responseCode_1.ResponseCode.SUCCESS,
                 message: "The user is an admin"
-            }
-        } else {
-            return {
-                status: ResponseCode.FAILURE,
-                message: "This user is not an admin"
-            }
+            };
         }
-    })
-}
+        else {
+            return {
+                status: responseCode_1.ResponseCode.FAILURE,
+                message: "This user is not an admin"
+            };
+        }
+    });
+};
+//# sourceMappingURL=isUserAdmin.js.map

@@ -14,6 +14,9 @@ import { HomeComponent } from './components/home/home.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { SpinnerComponent } from './widgets/spinner/spinner.component';
+import { VerifyAdminComponent } from './components/verify-admin/verify-admin.component';
+import { RequestAdminComponent } from './components/request-admin/request-admin.component';
+import { HttpClientModule } from '../../node_modules/@angular/common/http';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBmvdgLNheowskj5H1WDtVnnRUYxIUfix8",
@@ -32,7 +35,9 @@ const firebaseConfig = {
     RegisterComponent,
     HomeComponent,
     VerifyEmailComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    VerifyAdminComponent,
+    RequestAdminComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +46,8 @@ const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
     AngularFireFunctionsModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

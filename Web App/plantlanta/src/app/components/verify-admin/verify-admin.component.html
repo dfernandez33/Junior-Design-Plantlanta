@@ -1,0 +1,42 @@
+<section class="hero is-primary is-fullheight is-bold">
+  <div class="hero-body">
+    <div class="container is-centered">
+      <div class="columns is-centered">
+        <div class="column is-5-tablet is-4-desktop is-4-widescreen">
+          <p class="title">
+              Admin Account Request
+          </p>
+          <div *ngIf="!badRequestId && !submitted" class="box is-centered">
+            <label class="label">Name:</label>
+            <p>{{requestInfo?.name}}</p>
+            <br>
+            <label class="label">Email:</label>
+            <p>{{requestInfo?.email}}</p>
+            <br>
+            <label class="label">Message:</label>
+            <p>{{requestInfo?.message}}</p>
+            <br>
+            <div class="columns">
+              <div class="column">
+                <button class="button is-success is-fullwidth" (click)="approveRequest()">
+                  Approve
+                </button>
+              </div>
+              <div class="column">
+                <button class="button is-danger is-fullwidth" (click)="denyRequest()">
+                  Deny
+                </button>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="submitted || badRequestId" class="box is-centered">
+            <p class="has-text-centered">
+              {{message}}
+            </p>
+          </div>
+        </div>
+      </div> 
+    </div>
+  </div>
+</section>
+<app-spinner #spinner message="Submitting review..."></app-spinner>
