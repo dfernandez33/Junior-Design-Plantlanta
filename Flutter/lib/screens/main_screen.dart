@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:junior_design_plantlanta/screens/home.dart';
+import 'package:junior_design_plantlanta/screens/login.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -20,6 +22,11 @@ class _MainScreenState extends State<MainScreen> {
         elevation: 10,
         backgroundColor: Theme.of(context).primaryColor,
         title: Text("Plantlanta"),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.exit_to_app),
+            onPressed: (){ _logOut();},
+          ),
+        ],
       ),
 
       body: PageView(
@@ -150,5 +157,11 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       this._page = page;
     });
+  }
+
+  Future<LoginPage> _logOut() async {
+    await FirebaseAuth.instance.signOut();
+
+    return LoginPage();
   }
 }
