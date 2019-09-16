@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '../../../../node_modules/@angular/forms';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { Router } from '../../../../node_modules/@angular/router';
+import { Router, ActivatedRoute } from '../../../../node_modules/@angular/router';
 import { SpinnerComponent } from '../../widgets/spinner/spinner.component';
 import { AngularFireFunctions } from '../../../../node_modules/@angular/fire/functions';
 import * as firebase from '../../../../node_modules/firebase';
@@ -18,16 +18,18 @@ export class LoginComponent implements OnInit {
   isUserAdminFunctions;
   validForm = true;
   errMessage = "";
+  returnUrl: string;
 
   loginForm = new FormGroup({
     email: new FormControl(''),
     password: new FormControl('')
   });
 
-  constructor(public afAuth: AngularFireAuth, private router: Router, private cloud: AngularFireFunctions) { }
+  constructor(public afAuth: AngularFireAuth, private router: Router, private cloud: AngularFireFunctions, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.isUserAdminFunctions = this.cloud.httpsCallable("isUserAdmin");
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   async login() {
@@ -46,7 +48,7 @@ export class LoginComponent implements OnInit {
           this.errMessage = "Only admins can access this page."
         } else {
           this.spin.hide();
-          this.router.navigate(['/home']);
+          this.router.navigateByUrl(this.returnUrl);
         }
       } catch (e) {
         this.spin.hide();
