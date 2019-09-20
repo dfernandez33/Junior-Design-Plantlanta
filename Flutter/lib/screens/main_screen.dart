@@ -1,8 +1,11 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:junior_design_plantlanta/model/event_model.dart';
 
 import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:junior_design_plantlanta/serializers/StatusResponse.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -132,56 +135,101 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> scan() async {
     try {
       String barcode = await BarcodeScanner.scan();
-      setState(() => this.barcode = barcode);
+      this.barcode = barcode;
 
       final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'confirmEvent',
+        functionName: 'getEvent',
       );
 
       try {
         final HttpsCallableResult result =
             await callable.call(<String, dynamic>{"EventID": barcode});
 
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            // return object of type Dialog
-            return AlertDialog(
-              //TODO: create pop-up confirmation with event confirmation data
-              title: new Text("Confirmed for: ${result.data}"),
-              actions: <Widget>[
-                // usually buttons at the bottom of the dialog
-                new FlatButton(
-                  child: new Text("Close"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
+        StatusResponse resp = new StatusResponse.fromJson(result.data);
 
+        EventModel event;
+        if (resp.status == 1) {
+          event = EventModel.fromJson(resp.message);
+        }
+
+        var user = await FirebaseAuth.instance.currentUser();
+
+        if (event.participants.contains(user.uid)) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              // return object of type Dialog
+              return AlertDialog(
+                title: new Text(
+                    "Confirm attendance for ${event.name}?"),
+                content: new Text(
+                    "Time: ${DateTime.fromMillisecondsSinceEpoch(event.datetime.seconds * 1000)} \nLocation: ${event.location} \nDescription: ${event.description}"),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                actions: <Widget>[
+                  // usually buttons at the bottom of the dialog
+                  new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      new FlatButton(
+                          child: new Text(
+                            "Confirm",
+                            style: new TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20.0,
+                                color: Color(0xFF25A325)),
+                          ),
+                          onPressed: confirmAttendance),
+                      new FlatButton(
+                        child: new Text(
+                          "Cancel",
+                          style: new TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                              color: Colors.red),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  )
+                ],
+              );
+            },
+          );
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              // return object of type Dialog
+              return AlertDialog(
+                title: new Text("Looks like you aren't signed up!"),
+                content: new Text(
+                    "Please sign up for the event before confirming your attendence."),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                actions: <Widget>[
+                  // usually buttons at the bottom of the dialog
+                  new FlatButton(
+                    child: new Text(
+                      "Close",
+                      style: new TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                          color: Color(0xFF25A325)),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
       } catch (e) {
         print(e.message);
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            // return object of type Dialog
-            return AlertDialog(
-              title: new Text("${e.message}"),
-              actions: <Widget>[
-                // usually buttons at the bottom of the dialog
-                new FlatButton(
-                  child: new Text("Close"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
       }
     } catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
@@ -192,8 +240,27 @@ class _MainScreenState extends State<MainScreen> {
         setState(() => this.barcode = 'Unknown error: $e');
       }
     }
+  }
 
-    print(this.barcode);
+  Future<void> confirmAttendance() async {
+    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
+      functionName: 'confirmEvent',
+    );
+    try {
+      final HttpsCallableResult result =
+          await callable.call(<String, dynamic>{"EventID": this.barcode});
+
+      StatusResponse resp = new StatusResponse.fromJson(result.data);
+      Navigator.of(context).pop();
+
+      if (resp.status == 1) {
+        print('success');
+      } else {
+        print('error');
+      }
+    } catch (e) {
+      print(e.message);
+    }
   }
 
   void onPageChanged(int page) {

@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from "firebase-admin";
 import {ResponseCode} from "../Enums/responseCode";
 
-export const handler = function(data: signupRequest, context: functions.https.CallableContext, firestore: FirebaseFirestore.Firestore) {
+export const handler =  function(data: signupRequest, context: functions.https.CallableContext, firestore: FirebaseFirestore.Firestore) {
     const eventID = data.EventID;
     let UUID;
     if (context.auth !== undefined) {
@@ -13,8 +13,8 @@ export const handler = function(data: signupRequest, context: functions.https.Ca
             message: "No UUID received from context."
         };
     }
-    const eventRef = firestore.doc("Events/" + eventID);
-    const userRef = firestore.doc("Users/" + UUID);
+    const eventRef = firestore.collection("Events").doc(eventID);
+    const userRef = firestore.collection("Users").doc(UUID);
 
     let eventUpdatePromise = eventRef.update({
         confirmed_participants: admin.firestore.FieldValue.arrayUnion(UUID)
@@ -24,10 +24,12 @@ export const handler = function(data: signupRequest, context: functions.https.Ca
     });
 
     return Promise.all([eventUpdatePromise, userUpdatePromise]).then(() => {
-        return {
-            status: ResponseCode.SUCCESS,
-            message: "User was signed up successfully"
-        };
+        return eventRef.get().then(doc => {
+            return {
+                status: ResponseCode.SUCCESS,
+                message: "Success updating user and event info"
+            };
+        });
     }).catch(() => {
         return {
             status: ResponseCode.FAILURE,
