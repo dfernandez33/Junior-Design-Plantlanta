@@ -3,7 +3,6 @@ import 'package:junior_design_plantlanta/model/registration_model.dart';
 import 'package:junior_design_plantlanta/model/user_preference.dart';
 import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:junior_design_plantlanta/screens/preferences3_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:junior_design_plantlanta/model/registration_model.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:junior_design_plantlanta/model/user_preference.dart';

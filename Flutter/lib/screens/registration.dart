@@ -103,33 +103,29 @@ class _RegistrationState extends State<Registration> {
   }
 
   void _submitForm() {
+    //do validation for all input fields
     final FormState form = _formKey.currentState;
-    form.save();
-//
-//    if (!form.validate()) {
-//      //showMessage('Form is not valid!  Please review and correct.');
-//    } else {
-//      form.save(); //This invokes each onSaved event
-//
-////      print('Form save called, newContact is now up to date...');
-////      print('Name: ${newContact.name}');
-////      print('Dob: ${newContact.dob}');
-////      print('Phone: ${newContact.phone}');
-////      print('Email: ${newContact.email}');
-////      print('========================================');
-////      print('Submitting to back end...');
-//      //var contactService = new ContactService();
-//      //contactService.createContact(newContact)
-//      //    .then((value) =>
-//      //    showMessage('New contact created for ${value.name}!', Colors.blue)
-//      //);    }
-//    }
+    //form.save();
+
+    if (!form.validate()) {
+      showMessage('Form is not valid!  Please review and correct.');
+    } else {
+      form.save(); //This invokes each onSaved event
+
+      print('Form save called, newContact is now up to date...');
+      print('Name: ${newContact.name}');
+      print('Dob: ${newContact.dob}');
+      print('Phone: ${newContact.phone}');
+      print('Email: ${newContact.email}');
+      print('========================================');
+      print('Submitting to back end...');
+    }
   }
 
-//  void showMessage(String message, [MaterialColor color = Colors.red]) {
-//    _scaffoldKey.currentState
-//        .showSnackBar(new SnackBar(backgroundColor: color, content: new Text(message)));
-//  }
+  void showMessage(String message, [MaterialColor color = Colors.red]) {
+    _scaffoldKey.currentState
+        .showSnackBar(new SnackBar(backgroundColor: color, content: new Text(message)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,9 +140,11 @@ class _RegistrationState extends State<Registration> {
           child: new Form(
               key: _formKey,
               autovalidate: true,
+              //padding: const EdgeInsets.only(),
               child: new ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 children: <Widget>[
+                  new Padding(padding: const EdgeInsets.only(top:15)),
                   new TextFormField(
                     decoration: const InputDecoration(
                       icon: const Icon(Icons.person),
@@ -156,7 +154,7 @@ class _RegistrationState extends State<Registration> {
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
                     validator: (name) => name.isEmpty ? 'Name is required' : null,
                     //onSaved: (val) => newContact.rebuild((b) => b.name = val),
-                      onSaved: (name) => name1 = name,
+                    onSaved: (name) => name1 = name,
                   ),
                   new Row(children: <Widget>[
                     new Expanded(
@@ -251,7 +249,7 @@ class _RegistrationState extends State<Registration> {
                     //onSaved: (val) => newContact.password = val,
                   ),
                   new Container(
-                      padding: const EdgeInsets.only(left: 40.0, top: 20.0),
+                      padding: const EdgeInsets.only(left: 0, top: 40.0),
                       child: new RaisedButton(
                         child: const Text('Submit'),
                         onPressed: (){
