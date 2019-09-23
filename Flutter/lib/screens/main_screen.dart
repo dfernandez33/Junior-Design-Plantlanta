@@ -16,6 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   PageController _pageController;
   int _page = 0;
   String barcode = "";
+  bool isConfirmedClicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -159,43 +160,7 @@ class _MainScreenState extends State<MainScreen> {
             context: context,
             builder: (BuildContext context) {
               // return object of type Dialog
-              return AlertDialog(
-                title: new Text(
-                    "Confirm attendance for ${event.name}?"),
-                content: new Text(
-                    "Time: ${DateTime.fromMillisecondsSinceEpoch(event.datetime.seconds * 1000)} \nLocation: ${event.location} \nDescription: ${event.description}"),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                actions: <Widget>[
-                  // usually buttons at the bottom of the dialog
-                  new Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      new FlatButton(
-                          child: new Text(
-                            "Confirm",
-                            style: new TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20.0,
-                                color: Color(0xFF25A325)),
-                          ),
-                          onPressed: confirmAttendance),
-                      new FlatButton(
-                        child: new Text(
-                          "Cancel",
-                          style: new TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20.0,
-                              color: Colors.red),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  )
-                ],
-              );
+              return _buildDialog(event);
             },
           );
         } else {
@@ -242,6 +207,77 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  Widget _buildDialog(EventModel event) {
+    if (!isConfirmedClicked) {
+      return AlertDialog(
+        title: Text("Confirm attendance for ${event.name}?"),
+        content: _buildContentPopUpConfirmation(event),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+        actions: <Widget>[
+          // usually buttons at the bottom of the dialog
+          new FlatButton(
+              child: new Text(
+                "Confirm",
+                style: new TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                    color: Color(0xFF25A325)),
+              ),
+              onPressed: () {
+                setState(() {
+                  isConfirmedClicked = true;
+                });
+                confirmAttendance;
+              }),
+        ],
+      );
+    } else {
+      return AlertDialog(
+          content: Center(
+              child: CircularProgressIndicator(
+        value: null,
+        valueColor:
+            AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+      )));
+    }
+  }
+
+  Widget _buildContentPopUpConfirmation(EventModel event) {
+    return Container(
+        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      Container(
+        child: Row(
+          children: <Widget>[
+            Container(
+                child: Text("Time: ",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor))),
+            Container(
+                child: Text(_getTime(DateTime.fromMillisecondsSinceEpoch(
+                    event.datetime.seconds * 1000)))),
+          ],
+        ),
+      ),
+      Container(
+        child: Row(
+          children: <Widget>[
+            Container(
+                child: Text("Location: ",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor))),
+            Container(child: Text("${event.location}")),
+          ],
+        ),
+      ),
+      Container(
+          padding: const EdgeInsets.only(top: 4.0),
+          child: Text("${event.description}")),
+    ]));
+  }
+
   Future<void> confirmAttendance() async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
       functionName: 'confirmEvent',
@@ -267,5 +303,23 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       this._page = page;
     });
+  }
+
+  String _getTime(DateTime date) {
+    if (date.hour >= 12) {
+      return date.hour.toString() +
+          ":" +
+          (date.minute <= 9
+              ? "0" + date.minute.toString()
+              : date.minute.toString()) +
+          " PM";
+    } else {
+      return date.hour.toString() +
+          ":" +
+          (date.minute <= 9
+              ? "0" + date.minute.toString()
+              : date.minute.toString()) +
+          " AM";
+    }
   }
 }
