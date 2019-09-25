@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-import 'package:junior_design_plantlanta/contact.dart';
 import 'package:junior_design_plantlanta/model/registration_model.dart';
 import 'package:junior_design_plantlanta/screens/preferences1_screen.dart';
-//import 'package:junior_design_plantlanta/contact_services.dart';
 
 class Registration extends StatefulWidget {
   // This widget is the root of your application.
@@ -16,13 +13,12 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-  UserRegistrationModelBuilder newContact;
+  UserRegistrationModelBuilder newUser;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   var passKey = GlobalKey<FormFieldState>();
   final TextEditingController _controller = new TextEditingController();
   final _UsNumberTextInputFormatter _phoneNumberFormatter = new _UsNumberTextInputFormatter();
-
 
   String name1 = '';
   String dob1 = '';
@@ -59,23 +55,6 @@ class _RegistrationState extends State<Registration> {
     }
   }
 
-  Future<void> preferences1() async {
-    try {
-      newContact = UserRegistrationModelBuilder()
-        ..dob = dob1
-        ..password = password1
-        ..name = name1
-        ..phone = phone1
-        ..address = address1
-        ..email = email1;
-
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Preferences1(newContact)));
-    } catch (e) {
-      print(e.message);
-    }
-  }
-
   bool isValidDob(String dob) {
     if (dob.isEmpty) return true;
     var parsedDate = convertToDate(dob);
@@ -98,27 +77,28 @@ class _RegistrationState extends State<Registration> {
   }
 
   bool confirmPassword(String input, String passwordCheck) {
-    passwordCheck = newContact.password;
+    passwordCheck = newUser.password;
     return input == passwordCheck;
   }
 
   void _submitForm() {
-    //do validation for all input fields
-    final FormState form = _formKey.currentState;
-    //form.save();
+    final formstate = _formKey.currentState;
+    if (formstate.validate()) {
+      formstate.save();
+      try {
+        newUser = UserRegistrationModelBuilder()
+          ..dob = dob1
+          ..password = password1
+          ..name = name1
+          ..phone = phone1
+          ..address = address1
+          ..email = email1;
 
-    if (!form.validate()) {
-      showMessage('Form is not valid!  Please review and correct.');
-    } else {
-      form.save(); //This invokes each onSaved event
-
-      print('Form save called, newContact is now up to date...');
-      print('Name: ${newContact.name}');
-      print('Dob: ${newContact.dob}');
-      print('Phone: ${newContact.phone}');
-      print('Email: ${newContact.email}');
-      print('========================================');
-      print('Submitting to back end...');
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Preferences1(newUser)));
+      } catch (e) {
+        print(e.message);
+      }
     }
   }
 
@@ -139,7 +119,7 @@ class _RegistrationState extends State<Registration> {
           bottom: false,
           child: new Form(
               key: _formKey,
-              autovalidate: true,
+              autovalidate: false,
               //padding: const EdgeInsets.only(),
               child: new ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -229,13 +209,10 @@ class _RegistrationState extends State<Registration> {
                       labelText: 'Password',
                     ),
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                    //validator: (password) => password.isEmpty ? 'Password is required' : null,
-                    validator: (password) => password.length > 5 ? 'Password must be at least 6 characters' : null,
-                    //onSaved: (val) => newContact.rebuild((b) => b.password = val),
+                    validator: (password) => password.length < 6 ? 'Password must be at least 6 characters' : null,
                     onSaved: (password) => password1 = password,
                     obscureText: true,
                     key: passKey,
-                    //onSaved: (val) => newContact.password = val,
                   ),
                   new TextFormField(
                     decoration: const InputDecoration(
@@ -246,7 +223,6 @@ class _RegistrationState extends State<Registration> {
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
                     validator: (confirmation) => (confirmation == passKey.currentState.value.toString()) ? null : 'Passwords dont match',
                     obscureText: true,
-                    //onSaved: (val) => newContact.password = val,
                   ),
                   new Container(
                       padding: const EdgeInsets.only(left: 0, top: 40.0),
@@ -254,7 +230,6 @@ class _RegistrationState extends State<Registration> {
                         child: const Text('Submit'),
                         onPressed: (){
                           _submitForm();
-                          preferences1();
                         },
                       )),
                 ],

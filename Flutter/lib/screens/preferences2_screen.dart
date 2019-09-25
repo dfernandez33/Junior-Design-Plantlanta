@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:junior_design_plantlanta/model/registration_model.dart';
 import 'package:junior_design_plantlanta/model/user_preference.dart';
-import 'package:junior_design_plantlanta/screens/home.dart';
-import 'package:junior_design_plantlanta/screens/preferences3_screen.dart';
-import 'package:junior_design_plantlanta/model/registration_model.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:junior_design_plantlanta/model/user_preference.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:junior_design_plantlanta/screens/verify_email.dart';
-import 'package:junior_design_plantlanta/serializers/StatusResponse.dart';
 
 class Preferences2 extends StatefulWidget {
   UserRegistrationModelBuilder _newUser;
@@ -21,8 +15,6 @@ class Preferences2 extends StatefulWidget {
 }
 
 class _Preferences2State extends State<Preferences2> {
-  PageController _pageController;
-  int _page = 0;
   int _radioValue1 = -1;
   int _radioValue2 = -1;
 
@@ -168,34 +160,16 @@ class _Preferences2State extends State<Preferences2> {
     );
   }
 
-  void navigationTapped(int page) {
-    //Navigator.push(context, )
-    onPageChanged(page);
-    _pageController.jumpToPage(page);
-  }
-/*
-  Future<void> preferences3() async {
-    widget._newUser..preference = widget._userPreferences;
-
-    final _newUser = widget._newUser.build();
-    try {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Preferences3(_newUser)));
-    } catch (e) {
-      print(e.message);
-    }
-  }
-*/
-
   Future<void> verify_email() async {
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: widget._newUser.email, password: widget._newUser.password);
-    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
-      functionName: 'registerUser',
-    );
-    final user = widget._newUser;
+    widget._newUser.preference = widget._userPreferences;
+    final user = widget._newUser.build();
     try {
       // TODO: Fix this error 500
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: user.email, password: user.password);
+      final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'registerUser',
+      );
       final HttpsCallableResult result =
       await callable.call(<String, dynamic> {
         "name" : user.name,
@@ -203,14 +177,13 @@ class _Preferences2State extends State<Preferences2> {
         "phone" : user.phone,
         "address" : user.address,
         "preferences" : {
-          "event_type" : user.preference.eventType.toString(), //toList method returns error(???)
+          "event_type" : user.preference.eventType,
           "sporadic" : user.preference.sporadic,
           "proximity" : user.preference.proximity
         }
       }
       );
     } catch (e) {
-      print(e.message);
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -236,23 +209,5 @@ class _Preferences2State extends State<Preferences2> {
     } catch (e) {
       print(e.message);
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _pageController.dispose();
-  }
-
-  void onPageChanged(int page) {
-    setState(() {
-      this._page = page;
-    });
   }
 }
