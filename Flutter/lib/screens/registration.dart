@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-import 'package:junior_design_plantlanta/contact.dart';
 import 'package:junior_design_plantlanta/model/registration_model.dart';
 import 'package:junior_design_plantlanta/screens/preferences1_screen.dart';
-//import 'package:junior_design_plantlanta/contact_services.dart';
 
 class Registration extends StatefulWidget {
-  // This widget is the root of your application.
   Registration({Key key, this.title}) : super(key: key);
   final String title;
   @override
@@ -16,16 +12,19 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-  UserRegistrationModelBuilder newContact;
+  UserRegistrationModelBuilder newUser;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  var passKey = GlobalKey<FormFieldState>();
   final TextEditingController _controller = new TextEditingController();
+  final _UsNumberTextInputFormatter _phoneNumberFormatter = new _UsNumberTextInputFormatter();
 
-  String name1 = 'roberto';
+  String name1 = '';
   String dob1 = '';
   String phone1 = '';
   String email1 = '';
   String password1 = '';
+  String address1 = '';
 
   Future _chooseDate(BuildContext context, String initialDateString) async {
     var now = new DateTime.now();
@@ -48,37 +47,21 @@ class _RegistrationState extends State<Registration> {
   DateTime convertToDate(String input) {
     try
     {
-      var d = new DateFormat.yMd().parseStrict(input);
-      return d;
+      var parsedDate = new DateFormat.yMd().parseStrict(input);
+      return parsedDate;
     } catch (e) {
       return null;
     }
   }
 
-  Future<void> preferences1() async {
-    try {
-      newContact = UserRegistrationModelBuilder()
-        ..dob = dob1
-        ..password = password1
-        ..name = name1
-        ..phone = phone1
-        ..email = email1;
-
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Preferences1(newContact)));
-    } catch (e) {
-      print(e.message);
-    }
-  }
-
   bool isValidDob(String dob) {
     if (dob.isEmpty) return true;
-    var d = convertToDate(dob);
-    return d != null && d.isBefore(new DateTime.now());
+    var parsedDate = convertToDate(dob);
+    return parsedDate != null && parsedDate.isBefore(new DateTime.now());
   }
 
   bool isValidPhoneNumber(String input) {
-    final RegExp regex = new RegExp(r'^\(\d\d\d\)\d\d\d\-\d\d\d\d$');
+    final RegExp regex = new RegExp(r'^\(\d\d\d\) \d\d\d\-\d\d\d\d$');
     return regex.hasMatch(input);
   }
 
@@ -89,37 +72,39 @@ class _RegistrationState extends State<Registration> {
 
   bool isValidPassword(String input) {
     final RegExp regex = new RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]$");
-    return regex.hasMatch(input);
+    return regex.hasMatch(input) && input.length > 5;
+  }
+
+  bool confirmPassword(String input, String passwordCheck) {
+    passwordCheck = newUser.password;
+    return input == passwordCheck;
   }
 
   void _submitForm() {
-    final FormState form = _formKey.currentState;
-    form.save();
-//
-//    if (!form.validate()) {
-//      //showMessage('Form is not valid!  Please review and correct.');
-//    } else {
-//      form.save(); //This invokes each onSaved event
-//
-////      print('Form save called, newContact is now up to date...');
-////      print('Name: ${newContact.name}');
-////      print('Dob: ${newContact.dob}');
-////      print('Phone: ${newContact.phone}');
-////      print('Email: ${newContact.email}');
-////      print('========================================');
-////      print('Submitting to back end...');
-//      //var contactService = new ContactService();
-//      //contactService.createContact(newContact)
-//      //    .then((value) =>
-//      //    showMessage('New contact created for ${value.name}!', Colors.blue)
-//      //);    }
-//    }
+    final formstate = _formKey.currentState;
+    if (formstate.validate()) {
+      formstate.save();
+      try {
+        newUser = UserRegistrationModelBuilder()
+          ..dob = dob1
+          ..password = password1
+          ..name = name1
+          ..phone = phone1
+          ..address = address1
+          ..email = email1;
+
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Preferences1(newUser)));
+      } catch (e) {
+        print(e.message);
+      }
+    }
   }
 
-//  void showMessage(String message, [MaterialColor color = Colors.red]) {
-//    _scaffoldKey.currentState
-//        .showSnackBar(new SnackBar(backgroundColor: color, content: new Text(message)));
-//  }
+  void showMessage(String message, [MaterialColor color = Colors.red]) {
+    _scaffoldKey.currentState
+        .showSnackBar(new SnackBar(backgroundColor: color, content: new Text(message)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,10 +118,11 @@ class _RegistrationState extends State<Registration> {
           bottom: false,
           child: new Form(
               key: _formKey,
-              autovalidate: true,
+              autovalidate: false,
               child: new ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 children: <Widget>[
+                  new Padding(padding: const EdgeInsets.only(top:15)),
                   new TextFormField(
                     decoration: const InputDecoration(
                       icon: const Icon(Icons.person),
@@ -144,9 +130,8 @@ class _RegistrationState extends State<Registration> {
                       labelText: 'Name',
                     ),
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                    validator: (val) => val.isEmpty ? 'Name is required' : null,
-                    //onSaved: (val) => newContact.rebuild((b) => b.name = val),
-                      onSaved: (val) => name1 = val,
+                    validator: (name) => name.isEmpty ? 'Name is required' : null,
+                    onSaved: (name) => name1 = name,
                   ),
                   new Row(children: <Widget>[
                     new Expanded(
@@ -158,10 +143,9 @@ class _RegistrationState extends State<Registration> {
                           ),
                           controller: _controller,
                           keyboardType: TextInputType.datetime,
-                          validator: (val) =>
-                          isValidDob(val) ? null : 'Not a valid date',
-                          //onSaved: (val) => newContact.rebuild((b) => b.dob = val),
-                          onSaved: (val) => dob1 = val,
+                          validator: (dob) =>
+                          isValidDob(dob) ? null : 'Not a valid date',
+                          onSaved: (dob) => dob1 = dob,
                         )),
                     new IconButton(
                       icon: new Icon(Icons.more_horiz),
@@ -178,28 +162,38 @@ class _RegistrationState extends State<Registration> {
                       labelText: 'Phone',
                     ),
                     keyboardType: TextInputType.phone,
-                    inputFormatters: [
-                      new WhitelistingTextInputFormatter(
-                          new RegExp(r'^[()\d -]{1,15}$')),
+                    inputFormatters: <TextInputFormatter>[
+                      WhitelistingTextInputFormatter.digitsOnly,
+                      _phoneNumberFormatter,
+                      new LengthLimitingTextInputFormatter(14)
                     ],
-                    validator: (value) => isValidPhoneNumber(value)
+                    validator: (phone) => isValidPhoneNumber(phone)
                         ? null
-                        : 'Phone number must be entered as (###)###-####',
+                        : 'Phone number must be entered as digits only',
                     //onSaved: (val) => newContact.rebuild((b) => b.phone = val),
-                    onSaved: (val) => phone1 = val,
+                    onSaved: (phone) => phone1 = phone,
+                  ),
+                  new TextFormField(
+                    decoration: const InputDecoration(
+                      icon: const Icon(Icons.home),
+                      hintText: 'Enter your address',
+                      labelText: 'Address',
+                    ),
+                    inputFormatters: [new LengthLimitingTextInputFormatter(30)],
+                    validator: (address) => address.isEmpty ? 'Address is required' : null,
+                    onSaved: (address) => address1 = address,
                   ),
                   new TextFormField(
                     decoration: const InputDecoration(
                       icon: const Icon(Icons.email),
-                      hintText: 'Enter a email address',
+                      hintText: 'Enter an email address',
                       labelText: 'Email',
                     ),
                     keyboardType: TextInputType.emailAddress,
-                    validator: (value) => isValidEmail(value)
+                    validator: (email) => isValidEmail(email)
                         ? null
                         : 'Please enter a valid email address',
-                    //onSaved: (val) => newContact.rebuild((b) => b.email = val),
-                    onSaved: (val) => email1 = val,
+                    onSaved: (email) => email1 = email,
                   ),
                   new TextFormField(
                     decoration: const InputDecoration(
@@ -208,11 +202,10 @@ class _RegistrationState extends State<Registration> {
                       labelText: 'Password',
                     ),
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                    validator: (val) => val.isEmpty ? 'Password is required' : null,
-                    //onSaved: (val) => newContact.rebuild((b) => b.password = val),
-                    onSaved: (val) => password1 = val,
+                    validator: (password) => password.length < 6 ? 'Password must be at least 6 characters' : null,
+                    onSaved: (password) => password1 = password,
                     obscureText: true,
-                    //onSaved: (val) => newContact.password = val,
+                    key: passKey,
                   ),
                   new TextFormField(
                     decoration: const InputDecoration(
@@ -221,21 +214,59 @@ class _RegistrationState extends State<Registration> {
                       labelText: 'Confirm your password',
                     ),
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                    validator: (val) => val.isEmpty ? 'Password is required' : null,
+                    validator: (confirmation) => (confirmation == passKey.currentState.value.toString()) ? null : 'Passwords dont match',
                     obscureText: true,
-                    //onSaved: (val) => newContact.password = val,
                   ),
                   new Container(
-                      padding: const EdgeInsets.only(left: 40.0, top: 20.0),
+                      padding: const EdgeInsets.only(left: 0, top: 40.0),
                       child: new RaisedButton(
                         child: const Text('Submit'),
                         onPressed: (){
                           _submitForm();
-                          preferences1();
                         },
                       )),
                 ],
               ))),
+    );
+  }
+}
+
+class _UsNumberTextInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    final int newTextLength = newValue.text.length;
+    int selectionIndex = newValue.selection.end;
+    int usedSubstringIndex = 0;
+    final StringBuffer newText = StringBuffer();
+    if (newTextLength >= 1) {
+      newText.write('(');
+      if (newValue.selection.end >= 1)
+        selectionIndex++;
+    }
+    if (newTextLength >= 4) {
+      newText.write(newValue.text.substring(0, usedSubstringIndex = 3) + ') ');
+      if (newValue.selection.end >= 3)
+        selectionIndex += 2;
+    }
+    if (newTextLength >= 7) {
+      newText.write(newValue.text.substring(3, usedSubstringIndex = 6) + '-');
+      if (newValue.selection.end >= 6)
+        selectionIndex++;
+    }
+    if (newTextLength >= 11) {
+      newText.write(newValue.text.substring(6, usedSubstringIndex = 10) + ' ');
+      if (newValue.selection.end >= 10)
+        selectionIndex++;
+    }
+    // Dump the rest.
+    if (newTextLength >= usedSubstringIndex)
+      newText.write(newValue.text.substring(usedSubstringIndex));
+    return TextEditingValue(
+      text: newText.toString(),
+      selection: TextSelection.collapsed(offset: selectionIndex),
     );
   }
 }
