@@ -5,7 +5,6 @@ import 'package:junior_design_plantlanta/model/registration_model.dart';
 import 'package:junior_design_plantlanta/screens/preferences1_screen.dart';
 
 class Registration extends StatefulWidget {
-  // This widget is the root of your application.
   Registration({Key key, this.title}) : super(key: key);
   final String title;
   @override
@@ -120,7 +119,6 @@ class _RegistrationState extends State<Registration> {
           child: new Form(
               key: _formKey,
               autovalidate: false,
-              //padding: const EdgeInsets.only(),
               child: new ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 children: <Widget>[
@@ -133,7 +131,6 @@ class _RegistrationState extends State<Registration> {
                     ),
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
                     validator: (name) => name.isEmpty ? 'Name is required' : null,
-                    //onSaved: (val) => newContact.rebuild((b) => b.name = val),
                     onSaved: (name) => name1 = name,
                   ),
                   new Row(children: <Widget>[
@@ -148,7 +145,6 @@ class _RegistrationState extends State<Registration> {
                           keyboardType: TextInputType.datetime,
                           validator: (dob) =>
                           isValidDob(dob) ? null : 'Not a valid date',
-                          //onSaved: (val) => newContact.rebuild((b) => b.dob = val),
                           onSaved: (dob) => dob1 = dob,
                         )),
                     new IconButton(
@@ -185,9 +181,7 @@ class _RegistrationState extends State<Registration> {
                     ),
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
                     validator: (address) => address.isEmpty ? 'Address is required' : null,
-                    //onSaved: (val) => newContact.rebuild((b) => b.password = val),
                     onSaved: (address) => address1 = address,
-                    //onSaved: (val) => newContact.password = val,
                   ),
                   new TextFormField(
                     decoration: const InputDecoration(
@@ -199,7 +193,6 @@ class _RegistrationState extends State<Registration> {
                     validator: (email) => isValidEmail(email)
                         ? null
                         : 'Please enter a valid email address',
-                    //onSaved: (val) => newContact.rebuild((b) => b.email = val),
                     onSaved: (email) => email1 = email,
                   ),
                   new TextFormField(
