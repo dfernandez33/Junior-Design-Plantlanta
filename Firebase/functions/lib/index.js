@@ -14,6 +14,7 @@ const isUserAdmin = require("./User_Interactions/Admin/isUserAdmin");
 const requestAdminAccount = require("./User_Interactions/Admin/requestAdminAccount");
 const getAdminRequest = require("./User_Interactions/Admin/getAdminRequest");
 const reviewAdminRequest = require("./User_Interactions/Admin/reviewAdminRequest");
+const deleteUser = require("./User_Interactions/deleteUser");
 /*========================================================================
 EVENT INTERACTIONS CLOUD FUNCTIONS
 ==========================================================================*/
@@ -46,5 +47,8 @@ exports.getAdminRequest = functions.https.onCall((data, context) => {
 });
 exports.reviewAdminRequest = functions.https.onCall((data, context) => {
     return reviewAdminRequest.handler(data, context, firestore);
+});
+exports.deleteUser = functions.auth.user().onDelete((user) => {
+    return deleteUser.handler(user, firestore);
 });
 //# sourceMappingURL=index.js.map
