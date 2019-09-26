@@ -1,0 +1,33 @@
+<header class="card-header">
+    <p class="card-header-title">{{event.Name}}</p>
+</header>
+<div class="card-content">
+    <div class="columns">
+        <div class="column">
+            <p><strong>Location: </strong>{{event.Location}}</p>
+            <p><strong>Description: </strong>{{event.Description}}</p>
+            <p><strong>Date: </strong>{{event.datetime._seconds * 1000 | date}}</p>
+            <p><strong>Event Code</strong></p>
+            <qrcode [qrdata]="event.eventId" [size]="128" [level]="'M'"></qrcode>     
+        </div>
+        <div class="column">
+            <button class="button" (click)="toggleParticipants()">Toggle Participants</button>
+            <div *ngIf="showParticipants" class="table-container">
+                <table class="table is-hoverable is-fullwidth is-scrollable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Participants</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let participant of event.participants; let i = index">
+                            <th>{{i + 1}}</th>
+                            <td>{{participant}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

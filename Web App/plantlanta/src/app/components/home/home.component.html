@@ -1,9 +1,12 @@
-<p class="title">
-    Simon Es Un Choto
-</p>
-<a class="button" (click)="logOut()">
-    <span class="icon">
-        <i class="fa fa-sign-out"></i>
-    </span>
-    <span>Log Out</span>
-</a>
+<section class="hero is-fullheight-with-navbar is-primary is-bold">
+    <div class="hero-body">
+        <div class="container">
+            <div class="title">Upcoming Events</div>
+            <div *ngIf="loaded">
+                <div *ngFor="let event of events" class="card">
+                    <app-eventcard [event]="event"></app-eventcard>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

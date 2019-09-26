@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '../../../../node_modules/@angular/router';
 import { VerifyAdminRequestInfo } from '../../interfaces/verify-admin-request-info';
-import { AngularFireFunctions, AngularFireFunctionsModule } from '../../../../node_modules/@angular/fire/functions';
+import { AngularFireFunctions } from '../../../../node_modules/@angular/fire/functions';
 import { SpinnerComponent } from 'src/app/widgets/spinner/spinner.component';
 
 @Component({
