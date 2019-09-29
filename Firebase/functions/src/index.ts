@@ -19,6 +19,7 @@ import signupForEvent = require("./Event_Interactions/signupForEvent");
 import removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent");
 import getAllEvents = require("./Event_Interactions/getAllEvents");
 import getEvent = require("./Event_Interactions/getEvent")
+import confirmEvent = require("./Event_Interactions/confirmEvent");
 
 /*========================================================================
 Event Interactions
