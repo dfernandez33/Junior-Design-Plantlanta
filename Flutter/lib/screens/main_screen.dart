@@ -146,8 +146,7 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> scan() async {
     try {
         String barcode = await BarcodeScanner.scan();
-        this.barcode = barcode
-      
+        this.barcode = barcode;
       final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
         functionName: 'getEvent',
       );
@@ -216,8 +215,7 @@ class _MainScreenState extends State<MainScreen> {
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).primaryColor))),
             Container(
-                child: Text(_getTime(DateTime.fromMillisecondsSinceEpoch(
-                    event.datetime.seconds * 1000)))),
+                child: Text(event.startTime)),
           ],
         ),
       ),

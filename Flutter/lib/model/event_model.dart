@@ -16,18 +16,22 @@ abstract class EventModel implements Built<EventModel, EventModelBuilder> {
 
   static Serializer<EventModel> get serializer => _$eventModelSerializer;
 
-  @BuiltValueField(wireName: 'datetime')
-  Datetime get datetime;
-  @BuiltValueField(wireName: 'Description')
+  @BuiltValueField(wireName: 'date')
+  Datetime get date;
+  @BuiltValueField(wireName: 'description')
   String get description;
-  @BuiltValueField(wireName: 'Location')
+  @BuiltValueField(wireName: 'location')
   String get location;
   @BuiltValueField(wireName: 'participants')
   BuiltList<String> get participants;
-  @BuiltValueField(wireName: 'Name')
+  @BuiltValueField(wireName: 'name')
   String get name;
   @BuiltValueField(wireName: 'eventId')
   String get eventId;
+  @BuiltValueField(wireName: 'startTime')
+  String get startTime;
+  @BuiltValueField(wireName: 'endTime')
+  String get endTime;
 
   String toJson() {
     return json.encode(serializers.serializeWith(EventModel.serializer, this));
