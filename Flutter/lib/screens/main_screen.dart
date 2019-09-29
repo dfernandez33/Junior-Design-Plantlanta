@@ -6,6 +6,7 @@ import 'package:junior_design_plantlanta/model/event_model.dart';
 import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:junior_design_plantlanta/serializers/StatusResponse.dart';
+import 'package:junior_design_plantlanta/widgets/progress_dialog.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -135,16 +136,16 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> scan() async {
     try {
-      String barcode = await BarcodeScanner.scan();
-      this.barcode = barcode;
-
+//      String barcode = await BarcodeScanner.scan();
+//      this.barcode = barcode;
+//
       final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
         functionName: 'getEvent',
       );
 
       try {
-        final HttpsCallableResult result =
-            await callable.call(<String, dynamic>{"EventID": barcode});
+        final HttpsCallableResult result = await callable
+            .call(<String, dynamic>{"EventID": "VcqCEeD78YsmMdEbUSUv"});
 
         StatusResponse resp = new StatusResponse.fromJson(result.data);
 
@@ -160,36 +161,23 @@ class _MainScreenState extends State<MainScreen> {
             context: context,
             builder: (BuildContext context) {
               // return object of type Dialog
-              return _buildDialog(event);
+              return ProgressDialog(
+                  confirmAttendance,
+                  _buildContentPopUpConfirmation(event),
+                  "Confirm",
+                  "Confirm attendance for ${event.name}?");
             },
           );
         } else {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              // return object of type Dialog
-              return AlertDialog(
-                title: new Text("Looks like you aren't signed up!"),
-                content: new Text(
-                    "Please sign up for the event before confirming your attendence."),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                actions: <Widget>[
-                  // usually buttons at the bottom of the dialog
-                  new FlatButton(
-                    child: new Text(
-                      "Close",
-                      style: new TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                          color: Color(0xFF25A325)),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
+              return ProgressDialog(
+                  null,
+                  Text(
+                      "Please sign up for the event before confirming your attendence."),
+                  "Close",
+                  "Looks like you aren't signed up!");
             },
           );
         }
@@ -204,42 +192,6 @@ class _MainScreenState extends State<MainScreen> {
       } else {
         setState(() => this.barcode = 'Unknown error: $e');
       }
-    }
-  }
-
-  Widget _buildDialog(EventModel event) {
-    if (!isConfirmedClicked) {
-      return AlertDialog(
-        title: Text("Confirm attendance for ${event.name}?"),
-        content: _buildContentPopUpConfirmation(event),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20.0))),
-        actions: <Widget>[
-          // usually buttons at the bottom of the dialog
-          new FlatButton(
-              child: new Text(
-                "Confirm",
-                style: new TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
-                    color: Color(0xFF25A325)),
-              ),
-              onPressed: () {
-                setState(() {
-                  isConfirmedClicked = true;
-                });
-                confirmAttendance;
-              }),
-        ],
-      );
-    } else {
-      return AlertDialog(
-          content: Center(
-              child: CircularProgressIndicator(
-        value: null,
-        valueColor:
-            AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-      )));
     }
   }
 
@@ -283,8 +235,8 @@ class _MainScreenState extends State<MainScreen> {
       functionName: 'confirmEvent',
     );
     try {
-      final HttpsCallableResult result =
-          await callable.call(<String, dynamic>{"EventID": this.barcode});
+      final HttpsCallableResult result = await callable
+          .call(<String, dynamic>{"EventID": "VcqCEeD78YsmMdEbUSUv"});
 
       StatusResponse resp = new StatusResponse.fromJson(result.data);
       Navigator.of(context).pop();
