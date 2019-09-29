@@ -8,7 +8,9 @@ import { RegisterComponent } from './components/register/register.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { QRCodeModule } from 'angularx-qrcode';
 import { DeviceDetectorModule } from 'ngx-device-detector';
-import { MatTableModule } from "@angular/material";
+import { MatTableModule, MatNativeDateModule } from "@angular/material";
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
@@ -23,6 +25,7 @@ import { HttpClientModule } from '../../node_modules/@angular/common/http';
 import { MenuComponent } from './components/menu/menu.component';
 import { EventcardComponent } from './widgets/eventcard/eventcard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CreateEventComponent } from './components/create-event/create-event.component';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBmvdgLNheowskj5H1WDtVnnRUYxIUfix8",
@@ -46,6 +49,7 @@ const firebaseConfig = {
     RequestAdminComponent,
     MenuComponent,
     EventcardComponent,
+    CreateEventComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,9 +63,14 @@ const firebaseConfig = {
     QRCodeModule,
     DeviceDetectorModule.forRoot(),
     BrowserAnimationsModule,
-    MatTableModule
+    MatTableModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    NgxMaterialTimepickerModule,
   ],
-  providers: [],
+  providers: [
+    MatDatepickerModule
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
