@@ -1,6 +1,6 @@
 class StatusResponse {
   int status;
-  String message;
+  dynamic message;
 
   StatusResponse({
     this.status,

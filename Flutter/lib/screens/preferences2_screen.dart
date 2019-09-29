@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:junior_design_plantlanta/model/registration_model.dart';
 import 'package:junior_design_plantlanta/model/user_preference.dart';
-
-import 'package:junior_design_plantlanta/screens/home.dart';
-import 'package:junior_design_plantlanta/screens/preferences3_screen.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:junior_design_plantlanta/screens/verify_email.dart';
 
 class Preferences2 extends StatefulWidget {
   UserRegistrationModelBuilder _newUser;
@@ -15,8 +15,6 @@ class Preferences2 extends StatefulWidget {
 }
 
 class _Preferences2State extends State<Preferences2> {
-  PageController _pageController;
-  int _page = 0;
   int _radioValue1 = -1;
   int _radioValue2 = -1;
 
@@ -157,44 +155,59 @@ class _Preferences2State extends State<Preferences2> {
           Icons.arrow_forward,
           color: Theme.of(context).backgroundColor,
         ),
-        onPressed: () { preferences3(); },
+        onPressed: () { verify_email(); },
       ),
     );
   }
 
-  void navigationTapped(int page) {
-    //Navigator.push(context, )
-    onPageChanged(page);
-    _pageController.jumpToPage(page);
-  }
-
-  Future<void> preferences3() async {
-    widget._newUser..preference = widget._userPreferences;
-
-    final _newUser = widget._newUser.build();
+  Future<void> verify_email() async {
+    widget._newUser.preference = widget._userPreferences;
+    final user = widget._newUser.build();
+    try {
+      // TODO: Fix this error 500
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: user.email, password: user.password);
+      final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'registerUser',
+      );
+      final HttpsCallableResult result =
+      await callable.call(<String, dynamic> {
+        "name" : user.name,
+        "dob" : user.dob,
+        "phone" : user.phone,
+        "address" : user.address,
+        "preferences" : {
+          "event_type" : user.preference.eventType,
+          "sporadic" : user.preference.sporadic,
+          "proximity" : user.preference.proximity
+        }
+      }
+      );
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: new Text("${e.message}"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Close"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
     try {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Preferences3(_newUser)));
+          context, MaterialPageRoute(builder: (context) => VerifyEmail()));
     } catch (e) {
       print(e.message);
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _pageController.dispose();
-  }
-
-  void onPageChanged(int page) {
-    setState(() {
-      this._page = page;
-    });
   }
 }

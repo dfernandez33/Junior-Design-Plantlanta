@@ -1,0 +1,77 @@
+<section class="hero is-primary is-fullheight is-bold">
+    <div class="hero-body">
+      <div class="container">
+        <div class="title">Create New Event</div>
+        <form *ngIf="!badRequestId" action="" class="box" [formGroup]="eventForm">
+          <div class="field">
+            <label class="label">Event name</label>
+            <div class="control">
+              <input class="input" type="text" placeholder="Event name" formControlName="eventName" required/>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Event location</label>
+            <div class="control">
+              <input class="input" type="text" placeholder="Event location" formControlName="eventLocation" required/>
+            </div>
+          </div>
+          <div class="columns row-one">
+            <div class="column">
+              <div class="field">
+                <label class="label">Event date</label>
+                <div class="control">
+                    <input class="small-input input" matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="eventDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">Start time</label>
+                <div class="control">
+                        <ngx-timepicker-field formControlName="eventStart"></ngx-timepicker-field>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                  <label class="label">End time</label>
+                  <div class="control">
+                        <ngx-timepicker-field formControlName="eventEnd"></ngx-timepicker-field>
+                  </div>
+                </div>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Event description</label>
+            <div class="control">
+                <textarea class="textarea" placeholder="Event description" formControlName="eventDescription" required></textarea>
+            </div>
+          </div>
+          <div *ngIf="!validForm">
+            {{errMessage}}
+          </div>
+          <div class="field is-grouped">
+            <p class="control">
+              <a class="button is-primary" (click)="registerEvent()">
+                Create Event
+              </a>
+            </p>
+          </div>
+          <div *ngIf="eventCreated">
+            <div class="modal is-active">
+                <div class="modal-background"></div>
+                <div class="modal-content">
+                    <div class="box">
+                        <p class="has-text-centered">Event Created Successfully</p>
+                    </div>
+                </div>
+                <button class="modal-close is-large" aria-label="close" (click)="closeModal()"></button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+  <app-spinner #spinner message="Creating event..."></app-spinner>

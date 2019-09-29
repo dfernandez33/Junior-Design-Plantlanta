@@ -12,11 +12,13 @@ import requestAdminAccount = require("./User_Interactions/Admin/requestAdminAcco
 import getAdminRequest = require("./User_Interactions/Admin/getAdminRequest");
 import reviewAdminRequest = require("./User_Interactions/Admin/reviewAdminRequest")
 import deleteUser = require("./User_Interactions/deleteUser");
+
 // Event interactions
 import createEvent = require("./Event_Interactions/createEvent");
 import signupForEvent = require("./Event_Interactions/signupForEvent");
 import removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent");
 import getAllEvents = require("./Event_Interactions/getAllEvents");
+import getEvent = require("./Event_Interactions/getEvent")
 
 /*========================================================================
 Event Interactions
@@ -27,6 +29,14 @@ exports.removeUserFromEvents = functions.https.onCall((data, context) => {
 
 exports.signupForEvent = functions.https.onCall((data, context) => {
     return signupForEvent.handler(data, context, firestore);
+});
+
+exports.confirmEvent = functions.https.onCall((data, context) => {
+    return confirmEvent.handler(data, context, firestore);
+});
+
+exports.getEvent = functions.https.onCall((data, context) => {
+    return getEvent.handler(data, context, firestore);
 });
 
 exports.getAllEvents = functions.https.onCall((data, context) => {
