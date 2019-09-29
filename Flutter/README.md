@@ -28,3 +28,6 @@ these become tedious to update as we scale.
 
 - Feel free to use any third_party library!
 
+- Don't use the keyword "new" on Dart code. This is redudant in this language and it makes the code
+longer for no need.
+

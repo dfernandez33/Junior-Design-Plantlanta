@@ -183,7 +183,6 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> register() async {
     try {
-      //TODO: add naviation to register screen
       Navigator.push(context, MaterialPageRoute(builder: (context) => Registration()));
     } catch (e) {
       print(e.message);
