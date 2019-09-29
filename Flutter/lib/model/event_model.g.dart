@@ -18,23 +18,29 @@ class _$EventModelSerializer implements StructuredSerializer<EventModel> {
   Iterable<Object> serialize(Serializers serializers, EventModel object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
-      'datetime',
-      serializers.serialize(object.datetime,
+      'date',
+      serializers.serialize(object.date,
           specifiedType: const FullType(Datetime)),
-      'Description',
+      'description',
       serializers.serialize(object.description,
           specifiedType: const FullType(String)),
-      'Location',
+      'location',
       serializers.serialize(object.location,
           specifiedType: const FullType(String)),
       'participants',
       serializers.serialize(object.participants,
           specifiedType:
               const FullType(BuiltList, const [const FullType(String)])),
-      'Name',
+      'name',
       serializers.serialize(object.name, specifiedType: const FullType(String)),
       'eventId',
       serializers.serialize(object.eventId,
+          specifiedType: const FullType(String)),
+      'startTime',
+      serializers.serialize(object.startTime,
+          specifiedType: const FullType(String)),
+      'endTime',
+      serializers.serialize(object.endTime,
           specifiedType: const FullType(String)),
     ];
 
@@ -52,15 +58,15 @@ class _$EventModelSerializer implements StructuredSerializer<EventModel> {
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
-        case 'datetime':
-          result.datetime.replace(serializers.deserialize(value,
+        case 'date':
+          result.date.replace(serializers.deserialize(value,
               specifiedType: const FullType(Datetime)) as Datetime);
           break;
-        case 'Description':
+        case 'description':
           result.description = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
-        case 'Location':
+        case 'location':
           result.location = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
@@ -70,12 +76,20 @@ class _$EventModelSerializer implements StructuredSerializer<EventModel> {
                       const FullType(BuiltList, const [const FullType(String)]))
               as BuiltList<dynamic>);
           break;
-        case 'Name':
+        case 'name':
           result.name = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
         case 'eventId':
           result.eventId = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'startTime':
+          result.startTime = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'endTime':
+          result.endTime = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
       }
@@ -87,7 +101,7 @@ class _$EventModelSerializer implements StructuredSerializer<EventModel> {
 
 class _$EventModel extends EventModel {
   @override
-  final Datetime datetime;
+  final Datetime date;
   @override
   final String description;
   @override
@@ -98,20 +112,26 @@ class _$EventModel extends EventModel {
   final String name;
   @override
   final String eventId;
+  @override
+  final String startTime;
+  @override
+  final String endTime;
 
   factory _$EventModel([void Function(EventModelBuilder) updates]) =>
       (new EventModelBuilder()..update(updates)).build();
 
   _$EventModel._(
-      {this.datetime,
+      {this.date,
       this.description,
       this.location,
       this.participants,
       this.name,
-      this.eventId})
+      this.eventId,
+      this.startTime,
+      this.endTime})
       : super._() {
-    if (datetime == null) {
-      throw new BuiltValueNullFieldError('EventModel', 'datetime');
+    if (date == null) {
+      throw new BuiltValueNullFieldError('EventModel', 'date');
     }
     if (description == null) {
       throw new BuiltValueNullFieldError('EventModel', 'description');
@@ -128,6 +148,12 @@ class _$EventModel extends EventModel {
     if (eventId == null) {
       throw new BuiltValueNullFieldError('EventModel', 'eventId');
     }
+    if (startTime == null) {
+      throw new BuiltValueNullFieldError('EventModel', 'startTime');
+    }
+    if (endTime == null) {
+      throw new BuiltValueNullFieldError('EventModel', 'endTime');
+    }
   }
 
   @override
@@ -141,12 +167,14 @@ class _$EventModel extends EventModel {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is EventModel &&
-        datetime == other.datetime &&
+        date == other.date &&
         description == other.description &&
         location == other.location &&
         participants == other.participants &&
         name == other.name &&
-        eventId == other.eventId;
+        eventId == other.eventId &&
+        startTime == other.startTime &&
+        endTime == other.endTime;
   }
 
   @override
@@ -154,22 +182,28 @@ class _$EventModel extends EventModel {
     return $jf($jc(
         $jc(
             $jc(
-                $jc($jc($jc(0, datetime.hashCode), description.hashCode),
-                    location.hashCode),
-                participants.hashCode),
-            name.hashCode),
-        eventId.hashCode));
+                $jc(
+                    $jc(
+                        $jc($jc($jc(0, date.hashCode), description.hashCode),
+                            location.hashCode),
+                        participants.hashCode),
+                    name.hashCode),
+                eventId.hashCode),
+            startTime.hashCode),
+        endTime.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('EventModel')
-          ..add('datetime', datetime)
+          ..add('date', date)
           ..add('description', description)
           ..add('location', location)
           ..add('participants', participants)
           ..add('name', name)
-          ..add('eventId', eventId))
+          ..add('eventId', eventId)
+          ..add('startTime', startTime)
+          ..add('endTime', endTime))
         .toString();
   }
 }
@@ -177,9 +211,9 @@ class _$EventModel extends EventModel {
 class EventModelBuilder implements Builder<EventModel, EventModelBuilder> {
   _$EventModel _$v;
 
-  DatetimeBuilder _datetime;
-  DatetimeBuilder get datetime => _$this._datetime ??= new DatetimeBuilder();
-  set datetime(DatetimeBuilder datetime) => _$this._datetime = datetime;
+  DatetimeBuilder _date;
+  DatetimeBuilder get date => _$this._date ??= new DatetimeBuilder();
+  set date(DatetimeBuilder date) => _$this._date = date;
 
   String _description;
   String get description => _$this._description;
@@ -203,16 +237,26 @@ class EventModelBuilder implements Builder<EventModel, EventModelBuilder> {
   String get eventId => _$this._eventId;
   set eventId(String eventId) => _$this._eventId = eventId;
 
+  String _startTime;
+  String get startTime => _$this._startTime;
+  set startTime(String startTime) => _$this._startTime = startTime;
+
+  String _endTime;
+  String get endTime => _$this._endTime;
+  set endTime(String endTime) => _$this._endTime = endTime;
+
   EventModelBuilder();
 
   EventModelBuilder get _$this {
     if (_$v != null) {
-      _datetime = _$v.datetime?.toBuilder();
+      _date = _$v.date?.toBuilder();
       _description = _$v.description;
       _location = _$v.location;
       _participants = _$v.participants?.toBuilder();
       _name = _$v.name;
       _eventId = _$v.eventId;
+      _startTime = _$v.startTime;
+      _endTime = _$v.endTime;
       _$v = null;
     }
     return this;
@@ -237,17 +281,19 @@ class EventModelBuilder implements Builder<EventModel, EventModelBuilder> {
     try {
       _$result = _$v ??
           new _$EventModel._(
-              datetime: datetime.build(),
+              date: date.build(),
               description: description,
               location: location,
               participants: participants.build(),
               name: name,
-              eventId: eventId);
+              eventId: eventId,
+              startTime: startTime,
+              endTime: endTime);
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'datetime';
-        datetime.build();
+        _$failedField = 'date';
+        date.build();
 
         _$failedField = 'participants';
         participants.build();
