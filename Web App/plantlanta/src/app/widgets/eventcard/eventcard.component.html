@@ -1,7 +1,7 @@
-<header class="card-header">
-    <p class="card-header-title">{{event.Name}}</p>
-</header>
-<div class="card-content">
+<div class="box">
+    <div class="content is-large">
+        <p><strong>{{event.Name}}</strong></p>
+    </div>
     <div class="columns">
         <div class="column">
             <p><strong>Location: </strong>{{event.Location}}</p>
@@ -11,22 +11,56 @@
             <qrcode [qrdata]="event.eventId" [size]="128" [level]="'M'"></qrcode>     
         </div>
         <div class="column">
-            <button class="button" (click)="toggleParticipants()">Toggle Participants</button>
-            <div *ngIf="showParticipants" class="table-container">
-                <table class="table is-hoverable is-fullwidth is-scrollable">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Participants</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let participant of event.participants; let i = index">
-                            <th>{{i + 1}}</th>
-                            <td>{{participant}}</td>
-                        </tr>
-                    </tbody>
+            <a class="button is-white" (click)="toggleParticipants()">
+                <span>Signed up users</span>
+                <span class="icon">
+                    <i *ngIf="!showParticipants" class="fa fa-angle-down"></i>
+                    <i *ngIf="showParticipants" class="fa fa-angle-up"></i>
+                </span>
+            </a>
+            <div *ngIf="showParticipants" class="table-column">
+                <table mat-table [dataSource]="event.participants">
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="#">
+                        <th mat-header-cell *matHeaderCellDef> # </th>
+                        <td mat-cell mat-h2 *matCellDef="let i = index"> {{i + 1}} </td>
+                    </ng-container>
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef> Name </th>
+                        <td mat-cell *matCellDef="let participant"> {{participant}} </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
                 </table>
+            </div>
+        </div>
+        <div class="column">
+            <a class="button is-white" (click)="toggleAtendees()">
+                <span>Confirmed users</span>
+                <span class="icon">
+                    <i *ngIf="!showAtendees" class="fa fa-angle-down"></i>
+                    <i *ngIf="showAtendees" class="fa fa-angle-up"></i>
+                </span>
+            </a>
+            <div *ngIf="showAtendees && event.confirmed_participants.length > 0" class="table-column">
+                <table mat-table [dataSource]="event.confirmed_participants">
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="#">
+                        <th mat-header-cell *matHeaderCellDef> # </th>
+                        <td mat-cell *matCellDef="let i = index"> {{i + 1}} </td>
+                    </ng-container>
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef> Name </th>
+                        <td mat-cell *matCellDef="let participant"> {{participant}} </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+                </table>
+            </div>
+            <div *ngIf="showAtendees && event.confirmed_participants.length <= 0">
+                <p class="has-text-centered">No confirmed users</p>
             </div>
         </div>
     </div>

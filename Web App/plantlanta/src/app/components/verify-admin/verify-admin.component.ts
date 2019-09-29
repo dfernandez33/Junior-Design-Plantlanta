@@ -11,7 +11,7 @@ import { SpinnerComponent } from 'src/app/widgets/spinner/spinner.component';
 })
 export class VerifyAdminComponent implements OnInit {
 
-  @ViewChild('spinner') spin: SpinnerComponent;
+  @ViewChild('spinner', {static: false}) spin: SpinnerComponent;
 
   badRequestId = false;
 

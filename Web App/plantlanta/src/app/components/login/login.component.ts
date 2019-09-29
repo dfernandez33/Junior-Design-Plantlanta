@@ -13,7 +13,7 @@ import * as firebase from '../../../../node_modules/firebase';
 })
 export class LoginComponent implements OnInit {
 
-  @ViewChild('spinner') spin: SpinnerComponent;
+  @ViewChild('spinner', {static: false}) spin: SpinnerComponent;
 
   isUserAdminFunctions;
   validForm = true;

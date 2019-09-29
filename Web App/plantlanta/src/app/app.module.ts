@@ -7,6 +7,8 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { QRCodeModule } from 'angularx-qrcode';
+import { DeviceDetectorModule } from 'ngx-device-detector';
+import { MatTableModule } from "@angular/material";
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
@@ -20,6 +22,7 @@ import { RequestAdminComponent } from './components/request-admin/request-admin.
 import { HttpClientModule } from '../../node_modules/@angular/common/http';
 import { MenuComponent } from './components/menu/menu.component';
 import { EventcardComponent } from './widgets/eventcard/eventcard.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBmvdgLNheowskj5H1WDtVnnRUYxIUfix8",
@@ -53,7 +56,10 @@ const firebaseConfig = {
     AngularFireFunctionsModule,
     NgxSpinnerModule,
     HttpClientModule,
-    QRCodeModule
+    QRCodeModule,
+    DeviceDetectorModule.forRoot(),
+    BrowserAnimationsModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

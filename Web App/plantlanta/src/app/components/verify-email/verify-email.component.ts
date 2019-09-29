@@ -11,7 +11,7 @@ import { SpinnerComponent } from '../../widgets/spinner/spinner.component';
 })
 export class VerifyEmailComponent implements OnInit {
 
-  @ViewChild('spinner') spin: SpinnerComponent;
+  @ViewChild('spinner', {static: false}) spin: SpinnerComponent;
 
   user: firebase.User;
   error = false;

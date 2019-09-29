@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.getEventsFunctions = this.cloud.httpsCallable("getAllEvents");
     this.getEventsFunctions().toPromise().then((data) => {
+      //TODO: figure out way to change participants from userIds to actual names
       this.events = data.events;
       this.loaded = true;
     });

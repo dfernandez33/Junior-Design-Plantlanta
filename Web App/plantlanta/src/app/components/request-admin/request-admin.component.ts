@@ -17,7 +17,7 @@ export class RequestAdminComponent implements OnInit {
   validForm = true;
   errMessage = "";
 
-  @ViewChild('spinner') spin: SpinnerComponent;
+  @ViewChild('spinner', {static: false}) spin: SpinnerComponent;
 
   requestForm = new FormGroup({
     email: new FormControl(''),
