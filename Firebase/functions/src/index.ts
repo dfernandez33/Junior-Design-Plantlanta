@@ -4,9 +4,7 @@ import admin = require("firebase-admin");
 admin.initializeApp();
 const firestore = admin.firestore();
 
-import removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent");
-import signupForEvent = require("./Event_Interactions/signupForEvent");
-import getAllEvents = require("./Event_Interactions/getAllEvents");
+// User/Admin Interactions
 import registerUser = require("./User_Interactions/registerUser");
 import registerAdmin = require("./User_Interactions/Admin/registerAdmin");
 import isUserAdmin = require("./User_Interactions/Admin/isUserAdmin");
@@ -14,8 +12,14 @@ import requestAdminAccount = require("./User_Interactions/Admin/requestAdminAcco
 import getAdminRequest = require("./User_Interactions/Admin/getAdminRequest");
 import reviewAdminRequest = require("./User_Interactions/Admin/reviewAdminRequest")
 import deleteUser = require("./User_Interactions/deleteUser");
+// Event interactions
+import createEvent = require("./Event_Interactions/createEvent");
+import signupForEvent = require("./Event_Interactions/signupForEvent");
+import removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent");
+import getAllEvents = require("./Event_Interactions/getAllEvents");
+
 /*========================================================================
-EVENT INTERACTIONS CLOUD FUNCTIONS
+Event Interactions
 ==========================================================================*/
 exports.removeUserFromEvents = functions.https.onCall((data, context) => {
    return removeUserFromEvents.handler(data, context, firestore);
@@ -29,8 +33,12 @@ exports.getAllEvents = functions.https.onCall((data, context) => {
     return getAllEvents.handler(data, context, firestore);
 })
 
+exports.createEvent = functions.https.onCall((data, context) => {
+    return createEvent.handler(data, context, firestore);
+})
+
 /*========================================================================
-User Interactoins USER/Admin
+User/Admin Interactions
 ==========================================================================*/
 exports.registerUser = functions.https.onCall((data, context) => {
     return registerUser.handler(data, context, firestore);

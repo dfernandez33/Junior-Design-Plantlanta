@@ -1,14 +1,19 @@
 <div class="box">
     <div class="content is-large">
-        <p><strong>{{event.Name}}</strong></p>
+        <p><strong>{{event.name}}</strong></p>
     </div>
     <div class="columns">
         <div class="column">
-            <p><strong>Location: </strong>{{event.Location}}</p>
-            <p><strong>Description: </strong>{{event.Description}}</p>
-            <p><strong>Date: </strong>{{event.datetime._seconds * 1000 | date}}</p>
+            <p><strong>Location: </strong>{{event.location}}</p>
+            <p><strong>Description: </strong>{{event.description}}</p>
+            <p><strong>Date: </strong>{{event.date._seconds * 1000 | date}}</p>
+            <p><strong>Start Time: </strong>{{event.startTime}}</p>
+            <p><strong>End Time: </strong>{{event.endTime}}</p>
             <p><strong>Event Code</strong></p>
-            <qrcode [qrdata]="event.eventId" [size]="128" [level]="'M'"></qrcode>     
+            <a (click)="download($event.srcElement.currentSrc)"  id="download">
+                <qrcode [qrdata]="event.eventId" [size]="128" [level]="'M'"></qrcode>
+            </a>
+            <p class="has-text-grey is-italic">Click to download</p>
         </div>
         <div class="column">
             <a class="button is-white" (click)="toggleParticipants()">
@@ -18,7 +23,7 @@
                     <i *ngIf="showParticipants" class="fa fa-angle-up"></i>
                 </span>
             </a>
-            <div *ngIf="showParticipants" class="table-column">
+            <div *ngIf="showParticipants && event.participants.length > 0" class="table-column">
                 <table mat-table [dataSource]="event.participants">
                     <!-- Position Column -->
                     <ng-container matColumnDef="#">
@@ -33,6 +38,9 @@
                     <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
                 </table>
+            </div>
+            <div *ngIf="showParticipants && event.participants.length <= 0">
+                <p class="has-text-centered">No confirmed users</p>
             </div>
         </div>
         <div class="column">
@@ -63,5 +71,9 @@
                 <p class="has-text-centered">No confirmed users</p>
             </div>
         </div>
+    </div>
+    <div class="content">
+        <div class="has-text-right">Created on: {{event.createdOn._seconds * 1000 | date}}</div>
+        <div class="has-text-right">Created by: {{event.createdBy}}</div>
     </div>
 </div>
