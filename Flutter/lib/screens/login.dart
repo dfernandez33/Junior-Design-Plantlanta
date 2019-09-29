@@ -151,10 +151,18 @@ class _LoginPageState extends State<LoginPage> {
             // return object of type Dialog
             return AlertDialog(
               title: new Text("${e.message}"),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
               actions: <Widget>[
                 // usually buttons at the bottom of the dialog
                 new FlatButton(
-                  child: new Text("Close"),
+                  child: new Text(
+                    "close",
+                    style: new TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                        color: Color(0xFF25A325)),
+                  ),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -183,7 +191,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> register() async {
     try {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Registration()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Registration()));
     } catch (e) {
       print(e.message);
     }

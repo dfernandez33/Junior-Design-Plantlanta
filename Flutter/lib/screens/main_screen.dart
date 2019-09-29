@@ -147,6 +147,7 @@ class _MainScreenState extends State<MainScreen> {
     try {
         String barcode = await BarcodeScanner.scan();
         this.barcode = barcode;
+      
       final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
         functionName: 'getEvent',
       );
