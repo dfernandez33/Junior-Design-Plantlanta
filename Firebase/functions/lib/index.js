@@ -5,21 +5,25 @@ const admin = require("firebase-admin");
 //ONLY INITIALIZE APP HERE!!!
 admin.initializeApp();
 const firestore = admin.firestore();
-const removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent");
-const signupForEvent = require("./Event_Interactions/signupForEvent");
-const confirmEvent = require("./Event_Interactions/confirmEvent");
-const getAllEvents = require("./Event_Interactions/getAllEvents");
+
+// User/Admin Interactions
 const registerUser = require("./User_Interactions/registerUser");
-const getEvent = require("./Event_Interactions/getEvent");
 const registerAdmin = require("./User_Interactions/Admin/registerAdmin");
 const isUserAdmin = require("./User_Interactions/Admin/isUserAdmin");
 const requestAdminAccount = require("./User_Interactions/Admin/requestAdminAccount");
 const getAdminRequest = require("./User_Interactions/Admin/getAdminRequest");
 const reviewAdminRequest = require("./User_Interactions/Admin/reviewAdminRequest");
 const deleteUser = require("./User_Interactions/deleteUser");
+// Event interactions
+const createEvent = require("./Event_Interactions/createEvent");
+const signupForEvent = require("./Event_Interactions/signupForEvent");
+const removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent");
+const getAllEvents = require("./Event_Interactions/getAllEvents");
+const getEvent = require("./Event_Interactions/getEvent");
+const confirmEvent = require("./Event_Interactions/confirmEvent");
 
 /*========================================================================
-EVENT INTERACTIONS CLOUD FUNCTIONS
+Event Interactions
 ==========================================================================*/
 exports.removeUserFromEvents = functions.https.onCall((data, context) => {
     return removeUserFromEvents.handler(data, context, firestore);
@@ -36,8 +40,11 @@ exports.getEvent = functions.https.onCall((data, context) => {
 exports.getAllEvents = functions.https.onCall((data, context) => {
     return getAllEvents.handler(data, context, firestore);
 });
+exports.createEvent = functions.https.onCall((data, context) => {
+    return createEvent.handler(data, context, firestore);
+});
 /*========================================================================
-User Interactoins USER/Admin
+User/Admin Interactions
 ==========================================================================*/
 exports.registerUser = functions.https.onCall((data, context) => {
     return registerUser.handler(data, context, firestore);
