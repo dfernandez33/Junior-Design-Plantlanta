@@ -146,7 +146,7 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> scan() async {
     try {
         String barcode = await BarcodeScanner.scan();
-        this.barcode = barcode
+        this.barcode = barcode;
       
       final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
         functionName: 'getEvent',
