@@ -35,13 +35,13 @@
               </div>
             </div>
             <div class="column">
-                    <div class="field">
-                      <label class="label">End time</label>
-                      <div class="control">
-                              <ngx-timepicker-field formControlName="eventEnd"></ngx-timepicker-field>
-                      </div>
-                    </div>
+                <div class="field">
+                  <label class="label">End time</label>
+                  <div class="control">
+                        <ngx-timepicker-field formControlName="eventEnd"></ngx-timepicker-field>
                   </div>
+                </div>
+            </div>
           </div>
           <div class="field">
             <label class="label">Event description</label>
@@ -58,6 +58,17 @@
                 Create Event
               </a>
             </p>
+          </div>
+          <div *ngIf="eventCreated">
+            <div class="modal is-active">
+                <div class="modal-background"></div>
+                <div class="modal-content">
+                    <div class="box">
+                        <p class="has-text-centered">Event Created Successfully</p>
+                    </div>
+                </div>
+                <button class="modal-close is-large" aria-label="close" (click)="closeModal()"></button>
+            </div>
           </div>
         </form>
       </div>
