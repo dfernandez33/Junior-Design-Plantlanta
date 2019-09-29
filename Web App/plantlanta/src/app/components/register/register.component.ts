@@ -18,7 +18,7 @@ export class RegisterComponent implements OnInit {
 
   requestId;
 
-  @ViewChild('spinner') spin: SpinnerComponent;
+  @ViewChild('spinner', {static: false}) spin: SpinnerComponent;
 
   registerAdminFunction;
 

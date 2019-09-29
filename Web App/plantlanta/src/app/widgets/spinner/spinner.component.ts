@@ -9,6 +9,7 @@ import { NgxSpinnerService } from '../../../../node_modules/ngx-spinner';
 export class SpinnerComponent implements OnInit {
 
   @Input() message: string;
+  @Input() isFullScreen: boolean = true;
 
   constructor(private spinner: NgxSpinnerService) { }
 
