@@ -1,14 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const responseCode_1 = require("../Enums/responseCode");
-const admin_key = "supersecretkey";
 exports.handler = function (data, context, firestore) {
-    if (data.admin_key !== admin_key) {
-        return {
-            status: responseCode_1.ResponseCode.FAILURE,
-            message: "Admin key provided was incorrect"
-        };
-    }
     let UUID;
     if (context.auth !== undefined) {
         UUID = context.auth.uid;

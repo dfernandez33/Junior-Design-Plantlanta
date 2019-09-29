@@ -3,7 +3,7 @@
     <div class="container">
       <div class="title">Sign Up</div>
       <div class="subtitle">With Your Email</div>
-      <form action="" class="box" [formGroup]="registerForm">
+      <form *ngIf="!badRequestId" action="" class="box" [formGroup]="registerForm">
         <div class="field">
           <label class="label">Email</label>
           <div class="control has-icons-left">
@@ -55,15 +55,6 @@
             </div>
           </div>
         </div>
-        <div class="field">
-          <label class="label">Admin Key</label>
-          <div class="control has-icons-left">
-            <input class="input" type="text" placeholder="Key" formControlName="admin_key" required/>
-            <span class="icon is-small is-left">
-              <i class="fa fa-key"></i>
-            </span>
-          </div>
-        </div>
         <div *ngIf="!validForm">
           {{errMessage}}
         </div>
@@ -80,6 +71,11 @@
           </p>
         </div>
       </form>
+      <div *ngIf="badRequestId" class="box">
+        <p class="has-text-centered">
+          The request ID associated with this registration link is invalid, or has already been used.
+        </p>
+      </div>
     </div>
   </div>
 </section>

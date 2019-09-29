@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl } from '../../../../node_modules/@angular/forms';
-import { Router } from '../../../../node_modules/@angular/router';
+import { Router, ActivatedRoute } from '../../../../node_modules/@angular/router';
 import { AngularFireAuth } from '../../../../node_modules/@angular/fire/auth';
 import { AngularFireFunctions } from '../../../../node_modules/@angular/fire/functions';
 import { SpinnerComponent } from '../../widgets/spinner/spinner.component';
@@ -14,8 +14,11 @@ export class RegisterComponent implements OnInit {
 
   validForm = true;
   errMessage = "";
+  badRequestId = false;
 
-  @ViewChild('spinner') spin: SpinnerComponent;
+  requestId;
+
+  @ViewChild('spinner', {static: false}) spin: SpinnerComponent;
 
   registerAdminFunction;
 
@@ -25,13 +28,28 @@ export class RegisterComponent implements OnInit {
     lastName: new FormControl(''),
     password: new FormControl(''),
     verify_password: new FormControl(''),
-    admin_key: new FormControl('')
   });
 
-  constructor(private afAuth: AngularFireAuth, private cloud: AngularFireFunctions, private router: Router) {}
+  constructor(private afAuth: AngularFireAuth, private cloud: AngularFireFunctions, private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.registerAdminFunction = this.cloud.httpsCallable("registerAdmin");
+    this.requestId = this.route.snapshot.paramMap.get("requestId");
+    const getAdminRequest = this.cloud.httpsCallable("getAdminRequest");
+    getAdminRequest({ requestId: this.requestId}).toPromise().then(resp => {
+      if (resp == undefined) {
+        this.badRequestId = true;
+        this.errMessage = "This request has either been reviewed already, or the link provided is invalid."
+      } else {
+        this.registerForm.setValue({
+          email: resp.email,
+          firstName: resp.name.substr(0, resp.name.indexOf(' ')),
+          lastName: resp.name.substr(resp.name.indexOf(' ') + 1),
+          password: '',
+          verify_password: ''
+        });
+      }
+    })
   }
 
   async register() {
@@ -42,7 +60,7 @@ export class RegisterComponent implements OnInit {
         let user = await this.afAuth.auth.createUserWithEmailAndPassword(formValues["email"], formValues["password"]);
         let resp = await this.registerAdminFunction({
             name: formValues["firstName"] + " " + formValues["lastName"],
-            admin_key: formValues["admin_key"]
+            requestId: this.requestId
         }).toPromise();
         if (!resp.status) {
           user.user.delete();

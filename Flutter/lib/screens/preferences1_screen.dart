@@ -1,9 +1,6 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:junior_design_plantlanta/model/registration_model.dart';
 import 'package:junior_design_plantlanta/model/user_preference.dart';
-
-import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:junior_design_plantlanta/screens/preferences2_screen.dart';
 
 class Preferences1 extends StatefulWidget {
@@ -16,8 +13,6 @@ class Preferences1 extends StatefulWidget {
 }
 
 class _Preferences1State extends State<Preferences1> {
-  PageController _pageController;
-  int _page = 0;
   UserPreferenceModelBuilder _userPreferences = UserPreferenceModelBuilder();
 
   Map<String, bool> interests = {
@@ -90,17 +85,6 @@ class _Preferences1State extends State<Preferences1> {
     );
   }
 
-  void navigationTapped(int page) {
-    onPageChanged(page);
-    _pageController.jumpToPage(page);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-  }
-
   Future<void> preferences2() async {
 
     interests.forEach((k, v) {
@@ -114,17 +98,5 @@ class _Preferences1State extends State<Preferences1> {
     } catch (e) {
       print(e.message);
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _pageController.dispose();
-  }
-
-  void onPageChanged(int page) {
-    setState(() {
-      this._page = page;
-    });
   }
 }

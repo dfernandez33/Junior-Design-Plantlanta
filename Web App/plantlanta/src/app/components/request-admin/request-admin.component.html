@@ -1,0 +1,62 @@
+<section class="hero is-primary is-fullheight is-bold">
+  <div class="hero-body">
+    <div class="container">
+      <div class="title">Request Admin Account</div>
+      <div class="subtitle">With Your Email</div>
+      <form action="" class="box" [formGroup]="requestForm">
+        <div class="field">
+          <label class="label">Email</label>
+          <div class="control has-icons-left">
+            <input class="input" type="email" placeholder="Email" formControlName="email" required/>
+            <span class="icon is-small is-left">
+              <i class="fa fa-envelope"></i>
+            </span>
+          </div>
+        </div>
+        <div class="columns row-one">
+          <div class="column">
+            <div class="field">
+              <label class="label">First Name</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="First Name" formControlName="firstName" required/>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label">Last Name</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Last Name" formControlName="lastName" required/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Message</label>
+          <div class="control">
+            <textarea class="textarea" placeholder="Message" formControlName="message" required></textarea>
+          </div>
+        </div>
+        <div *ngIf="!validForm">
+          {{errMessage}}
+        </div>
+        <div *ngIf="requestSent">
+          Your request has been sent. You will get an email notification when it is reviewed.
+        </div>
+        <div class="field is-grouped">
+          <p class="control">
+            <a class="button is-primary" (click)="requestAccount()">
+              Request Account
+            </a>
+          </p>
+          <p class="control">
+            <a class="button is-light" routerLink="/login">
+              Back to Login
+            </a>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+<app-spinner #spinner message="Sending Account Request..."></app-spinner>

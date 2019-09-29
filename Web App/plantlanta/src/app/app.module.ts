@@ -6,6 +6,9 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { QRCodeModule } from 'angularx-qrcode';
+import { DeviceDetectorModule } from 'ngx-device-detector';
+import { MatTableModule } from "@angular/material";
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
@@ -14,6 +17,12 @@ import { HomeComponent } from './components/home/home.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { SpinnerComponent } from './widgets/spinner/spinner.component';
+import { VerifyAdminComponent } from './components/verify-admin/verify-admin.component';
+import { RequestAdminComponent } from './components/request-admin/request-admin.component';
+import { HttpClientModule } from '../../node_modules/@angular/common/http';
+import { MenuComponent } from './components/menu/menu.component';
+import { EventcardComponent } from './widgets/eventcard/eventcard.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBmvdgLNheowskj5H1WDtVnnRUYxIUfix8",
@@ -32,7 +41,11 @@ const firebaseConfig = {
     RegisterComponent,
     HomeComponent,
     VerifyEmailComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    VerifyAdminComponent,
+    RequestAdminComponent,
+    MenuComponent,
+    EventcardComponent,
   ],
   imports: [
     BrowserModule,
@@ -41,7 +54,12 @@ const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
     AngularFireFunctionsModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    HttpClientModule,
+    QRCodeModule,
+    DeviceDetectorModule.forRoot(),
+    BrowserAnimationsModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,12 +1,16 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:junior_design_plantlanta/model/event_model.dart';
 
+import 'package:junior_design_plantlanta/model/event_model.dart';
 import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:junior_design_plantlanta/serializers/StatusResponse.dart';
 import 'package:junior_design_plantlanta/widgets/progress_dialog.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:junior_design_plantlanta/screens/login.dart';
+
 
 class MainScreen extends StatefulWidget {
   @override
@@ -27,6 +31,11 @@ class _MainScreenState extends State<MainScreen> {
         elevation: 10,
         backgroundColor: Theme.of(context).primaryColor,
         title: Text("Plantlanta"),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.exit_to_app),
+            onPressed: (){ _logOut();},
+          ),
+        ],
       ),
       body: PageView(
         physics: NeverScrollableScrollPhysics(),
@@ -136,16 +145,16 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> scan() async {
     try {
-//      String barcode = await BarcodeScanner.scan();
-//      this.barcode = barcode;
-//
+        String barcode = await BarcodeScanner.scan();
+        this.barcode = barcode
+      
       final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
         functionName: 'getEvent',
       );
 
       try {
         final HttpsCallableResult result = await callable
-            .call(<String, dynamic>{"EventID": "VcqCEeD78YsmMdEbUSUv"});
+            .call(<String, dynamic>{"EventID": this.barcode});
 
         StatusResponse resp = new StatusResponse.fromJson(result.data);
 
@@ -236,7 +245,7 @@ class _MainScreenState extends State<MainScreen> {
     );
     try {
       final HttpsCallableResult result = await callable
-          .call(<String, dynamic>{"EventID": "VcqCEeD78YsmMdEbUSUv"});
+          .call(<String, dynamic>{"EventID": this.barcode});
 
       StatusResponse resp = new StatusResponse.fromJson(result.data);
       Navigator.of(context).pop();
@@ -257,6 +266,7 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+
   String _getTime(DateTime date) {
     if (date.hour >= 12) {
       return date.hour.toString() +
@@ -274,4 +284,11 @@ class _MainScreenState extends State<MainScreen> {
           " AM";
     }
   }
+
+  Future<LoginPage> _logOut() async {
+    await FirebaseAuth.instance.signOut();
+
+    return LoginPage();
+  }
 }
+
