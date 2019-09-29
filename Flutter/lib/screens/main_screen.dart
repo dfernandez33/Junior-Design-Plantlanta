@@ -210,7 +210,7 @@ class _MainScreenState extends State<MainScreen> {
         child: Row(
           children: <Widget>[
             Container(
-                child: Text("Time: ",
+                child: Text("Start Time: ",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).primaryColor))),
@@ -219,6 +219,19 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
       ),
+          Container(
+            child: Row(
+              children: <Widget>[
+                Container(
+                    child: Text("End Time: ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor))),
+                Container(
+                    child: Text(event.endTime)),
+              ],
+            ),
+          ),
       Container(
         child: Row(
           children: <Widget>[

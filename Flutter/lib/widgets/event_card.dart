@@ -111,13 +111,29 @@ class _EventCardState extends State<EventCard> {
           Row(
             children: <Widget>[
               Container(
-                child: Text("Time: ",
+                child: Text("Start Time: ",
                     style: TextStyle(
                         color: Colors.black54,
                         fontSize: 16.0)),
               ),
               Container(
                 child: Text(widget._model.startTime,
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 16.0)),
+              )
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Container(
+                child: Text("End Time: ",
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 16.0)),
+              ),
+              Container(
+                child: Text(widget._model.endTime,
                     style: TextStyle(
                         color: Colors.black54,
                         fontSize: 16.0)),
