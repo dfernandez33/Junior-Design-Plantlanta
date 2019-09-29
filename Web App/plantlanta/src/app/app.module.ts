@@ -23,6 +23,7 @@ import { HttpClientModule } from '../../node_modules/@angular/common/http';
 import { MenuComponent } from './components/menu/menu.component';
 import { EventcardComponent } from './widgets/eventcard/eventcard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CreateEventComponent } from './components/create-event/create-event.component';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBmvdgLNheowskj5H1WDtVnnRUYxIUfix8",
@@ -46,6 +47,7 @@ const firebaseConfig = {
     RequestAdminComponent,
     MenuComponent,
     EventcardComponent,
+    CreateEventComponent,
   ],
   imports: [
     BrowserModule,
