@@ -73,7 +73,7 @@ class _EventCardState extends State<EventCard> {
             children: <Widget>[
               Column(
                   children: <Widget>[
-                    Text(_getDate(DateTime.fromMillisecondsSinceEpoch(widget._model.datetime.seconds * 1000)),
+                    Text(_getDate(DateTime.fromMillisecondsSinceEpoch(widget._model.date.seconds * 1000)),
                       textAlign: TextAlign.start,
                       style: TextStyle(
                           color: Colors.black38,
@@ -111,13 +111,29 @@ class _EventCardState extends State<EventCard> {
           Row(
             children: <Widget>[
               Container(
-                child: Text("Time: ",
+                child: Text("Start Time: ",
                     style: TextStyle(
                         color: Colors.black54,
                         fontSize: 16.0)),
               ),
               Container(
-                child: Text(_getTime(DateTime.fromMillisecondsSinceEpoch(widget._model.datetime.seconds * 1000)),
+                child: Text(widget._model.startTime,
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 16.0)),
+              )
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Container(
+                child: Text("End Time: ",
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 16.0)),
+              ),
+              Container(
+                child: Text(widget._model.endTime,
                     style: TextStyle(
                         color: Colors.black54,
                         fontSize: 16.0)),
@@ -165,13 +181,13 @@ class _EventCardState extends State<EventCard> {
         + "/" + date.year.toString();
   }
 
-  String _getTime(DateTime date) {
-    if (date.hour >= 12) {
-      return date.hour.toString() + ":" + (date.minute <= 9 ? "0" + date.minute.toString() : date.minute.toString())  + " PM";
-    } else {
-      return date.hour.toString() + ":" + (date.minute <= 9 ? "0" + date.minute.toString() : date.minute.toString()) + " AM";
-    }
-  }
+//  String _getTime(DateTime date) {
+//    if (date.hour >= 12) {
+//      return date.hour.toString() + ":" + (date.minute <= 9 ? "0" + date.minute.toString() : date.minute.toString())  + " PM";
+//    } else {
+//      return date.hour.toString() + ":" + (date.minute <= 9 ? "0" + date.minute.toString() : date.minute.toString()) + " AM";
+//    }
+//  }
 
   void _signupUser() async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
