@@ -8,7 +8,9 @@ import { RegisterComponent } from './components/register/register.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { QRCodeModule } from 'angularx-qrcode';
 import { DeviceDetectorModule } from 'ngx-device-detector';
-import { MatTableModule } from "@angular/material";
+import { MatTableModule, MatNativeDateModule } from "@angular/material";
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
@@ -61,9 +63,14 @@ const firebaseConfig = {
     QRCodeModule,
     DeviceDetectorModule.forRoot(),
     BrowserAnimationsModule,
-    MatTableModule
+    MatTableModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    NgxMaterialTimepickerModule,
   ],
-  providers: [],
+  providers: [
+    MatDatepickerModule
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

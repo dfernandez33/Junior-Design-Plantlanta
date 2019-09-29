@@ -25,7 +25,8 @@ export class CreateEventComponent implements OnInit {
     eventName: new FormControl(''),
     eventLocation: new FormControl(''),
     eventDate: new FormControl(new Date()),
-    eventDuration: new FormControl(0),
+    eventStart: new FormControl(''),
+    eventEnd: new FormControl(''),
     eventDescription: new FormControl(''),
   });
 
@@ -33,6 +34,9 @@ export class CreateEventComponent implements OnInit {
 
   ngOnInit() {
     this.createEventFunction = this.cloud.httpsCallable("createEvent");
+    this.eventForm.valueChanges.subscribe(change => {
+      console.log(change)
+    })
   }
 
   async registerEvent() {
@@ -44,7 +48,8 @@ export class CreateEventComponent implements OnInit {
           location: formValues["eventLocation"],
           description: formValues["eventDescription"],
           date: formValues["eventDate"],
-          duration: formValues["eventDuration"],
+          startTime: formValues["eventStart"],
+          endTime: formValues["eventEnd"]
       }).toPromise();
         this.spin.show()
         if (!resp.status) {
@@ -66,6 +71,4 @@ export class CreateEventComponent implements OnInit {
       this.errMessage = "All fields are required to create an event. Please fill them out.";
     }
   }
-
-
 }
