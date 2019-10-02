@@ -10,7 +10,7 @@
             <p><strong>Start Time: </strong>{{event.startTime}}</p>
             <p><strong>End Time: </strong>{{event.endTime}}</p>
             <p><strong>Event Code</strong></p>
-            <a (click)="download($event.srcElement.currentSrc)"  id="download">
+            <a (click)="download($event.srcElement.currentSrc)"  id="{{event.eventId}}">
                 <qrcode [qrdata]="event.eventId" [size]="128" [level]="'M'"></qrcode>
             </a>
             <p class="has-text-grey is-italic">Click to download</p>

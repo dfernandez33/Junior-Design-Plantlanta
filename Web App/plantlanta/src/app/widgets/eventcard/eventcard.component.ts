@@ -37,7 +37,7 @@ export class EventcardComponent implements OnInit {
   }
 
   download(data) {
-      const a: any = document.getElementById('download');
+      const a: any = document.getElementById(this.event.eventId);
       var file = this.dataURItoBlob(data);
       a.href = URL.createObjectURL(file);
       a.download = "Event_" + this.event.eventId;

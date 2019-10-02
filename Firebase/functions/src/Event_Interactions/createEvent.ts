@@ -25,6 +25,7 @@ export const handler = async function(data: Event, context: functions.https.Call
             endTime: data.endTime,
             description: data.description,
             eventId: newEventRef.id,
+            reward: data.reward,
             createdBy: UUID,
             createdOn: new Date(),
             participants: [],

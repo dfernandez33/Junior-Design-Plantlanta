@@ -18,7 +18,11 @@ export const handler = function(data: userRegistrationInterface, context:functio
         dob: new Date(Date.parse(data.dob)),
         phone: data.phone,
         address: data.address,
-        preferences: data.preferences
+        preferences: data.preferences,
+        events: [],
+        confirmed_events: [],
+        points: 0,
+        transaction_history: []
     }).then(() => {
         return {
             status: ResponseCode.SUCCESS,
