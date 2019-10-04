@@ -297,10 +297,14 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Future<LoginPage> _logOut() async {
-    await FirebaseAuth.instance.signOut();
-
-    return LoginPage();
+  Future<void> _logOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
+    } catch (e) {
+      print(e.message);
+    }
   }
 }
 
