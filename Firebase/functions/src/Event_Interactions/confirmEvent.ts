@@ -13,27 +13,42 @@ export const handler = async function(data: signupRequest, context: functions.ht
             message: "No UUID received from context."
         };
     }
+
+    var batch = firestore.batch();
+
     const eventRef = firestore.collection("Events").doc(eventID);
     const event = await eventRef.get();
     const eventData = event.data();
     const userRef = firestore.collection("Users").doc(UUID);
+    const transactionRef = firestore.collection("Transactions").doc();
+        
+    batch.create(transactionRef, 
+        {
+            amount: eventData.reward,
+            timestamp: new Date(),
+            description: "Participated in " + eventData.name,
+            uuid: UUID
+        }
+    );
 
-    let eventUpdatePromise = eventRef.update({
-        confirmed_participants: admin.firestore.FieldValue.arrayUnion(UUID),
-        points: admin.firestore.FieldValue.increment(eventData.reward),
-        transaction_history: admin.firestore.FieldValue.arrayUnion({amount: eventData.reward, date: new Date(), description: "Participated in: " + eventData.name})
-    });
-    let userUpdatePromise = userRef.update({
-        confirmed_events: admin.firestore.FieldValue.arrayUnion(eventID)
-    });
+    batch.update(eventRef, 
+        {
+            confirmed_participants: admin.firestore.FieldValue.arrayUnion(UUID),
+        }
+    );
 
-    return Promise.all([eventUpdatePromise, userUpdatePromise]).then(() => {
-        return eventRef.get().then(doc => {
-            return {
-                status: ResponseCode.SUCCESS,
-                message: "Success updating user and event info"
-            };
-        });
+    batch.update(userRef,
+        {
+            confirmed_events: admin.firestore.FieldValue.arrayUnion(eventID),
+            points: admin.firestore.FieldValue.increment(eventData.reward),
+        }
+    );
+
+    return batch.commit().then(() => {
+        return {
+            status: ResponseCode.SUCCESS,
+            message: "Success updating user and event info"
+        };
     }).catch(() => {
         return {
             status: ResponseCode.FAILURE,
