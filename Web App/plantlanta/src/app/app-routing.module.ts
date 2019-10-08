@@ -15,9 +15,10 @@ const routes: Routes = [
   { path: 'register/:requestId', component: RegisterComponent },
   { path: 'dashboard', component: HomeComponent, canActivate:[AuthGuard] },
   { path: 'verify_email', component: VerifyEmailComponent },
-  { path: 'verify_admin/:requestId', component: VerifyAdminComponent, canActivate:[AuthGuard] },
+  { path: 'verify_admin/:requestId', component: VerifyAdminComponent },
   { path: 'request_admin', component: RequestAdminComponent },
   { path: 'create_event', component: CreateEventComponent },
+  { path: 'create_event/:eventId', component: CreateEventComponent }
 ];
 
 @NgModule({

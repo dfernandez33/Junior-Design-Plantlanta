@@ -1,7 +1,30 @@
-<section class="hero is-fullheight is-primary is-bold">
+<section class="hero is-fullheight-with-navbar is-primary">
     <div class="hero-body">
         <div class="container">
-            <div class="title">Upcoming Events</div>
+            <div class="columns is-vcentered">
+                <div class="title column is-one-fourth">Upcoming Events</div>
+                <div class="column is-three-fifths">
+                    <div class="field">
+                        <p class="control has-icons-right">
+                            <input class="input" type="text" placeholder="Search Events...">
+                            <span class="icon is-small is-right">
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="column has-text-right">
+                    <a class="button is-medium is-primary" routerLink="/create_event">
+                        <span class="icon is-medium">
+                            <i class="fa fa-plus-circle fa-2x"></i>
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <div *ngIf="!loaded" class="content has-text-centered">
+                <div class="lds-ripple"><div></div><div></div><div></div></div>
+                <p>{{message}}</p>
+            </div>
             <div *ngIf="loaded">
                 <div *ngFor="let event of events">
                     <app-eventcard [event]="event"></app-eventcard>

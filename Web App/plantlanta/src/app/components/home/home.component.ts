@@ -14,11 +14,13 @@ export class HomeComponent implements OnInit {
   events: Event[];
   getEventsFunctions;
   loaded = false;
+  message = ""
 
   constructor(private afAuth: AngularFireAuth, private router: Router, private cloud: AngularFireFunctions) { }
 
   ngOnInit() {
     this.getEventsFunctions = this.cloud.httpsCallable("getAllEvents");
+    this.message = "Loading Events..."
     this.getEventsFunctions().toPromise().then((data) => {
       //TODO: figure out way to change participants from userIds to actual names
       this.events = data.events;

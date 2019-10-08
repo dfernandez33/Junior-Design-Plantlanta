@@ -1,6 +1,17 @@
 <div class="box">
-    <div class="content is-large">
-        <p><strong>{{event.name}}</strong></p>
+    <div class="columns">
+        <div class="column">
+            <div class="content is-large">
+                <p><strong>{{event.name}}</strong></p>
+            </div>
+        </div>
+        <div class="column has-text-right">
+            <a class="button is-medium is-white" (click)="editEvent()">
+                <span class="icon is-medium">
+                    <i class="fa fa-edit fa-lg"></i>
+                </span>
+            </a>
+        </div>
     </div>
     <div class="columns">
         <div class="column">
@@ -73,7 +84,7 @@
         </div>
     </div>
     <div class="content">
-        <div class="has-text-right">Created on: {{event.createdOn._seconds * 1000 | date}}</div>
-        <div class="has-text-right">Created by: {{event.createdBy}}</div>
+        <div class="has-text-left">Created on: {{event.createdOn._seconds * 1000 | date}}</div>
+        <div class="has-text-left">Created by: {{event.createdBy}}</div>
     </div>
 </div>

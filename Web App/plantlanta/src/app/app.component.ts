@@ -14,11 +14,13 @@ export class AppComponent {
     this.authService.subscribeToUser();
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
-        if (event.url == "/dashboard" || event.url == "/create_event" || event.url == "/") {
+        if (event.url == "/login" || event.url == "register/:requestId" 
+            || event.url == "/verify_email" || event.url == "verify_admin/:requestId"
+            || event.url == "/request_admin") {
+              this.navbarService.hide();
+        } else {
           this.navbarService.setActive(event.url);
           this.navbarService.show();
-        } else {
-          this.navbarService.hide();
         }
       }
     });
