@@ -20,6 +20,8 @@ import removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent"
 import getAllEvents = require("./Event_Interactions/getAllEvents");
 import getEvent = require("./Event_Interactions/getEvent")
 import confirmEvent = require("./Event_Interactions/confirmEvent");
+import editEvent = require("./Event_Interactions/editEvent");
+import deleteEvent = require("./Event_Interactions/deleteEvent");
 
 /*========================================================================
 Event Interactions
@@ -46,6 +48,14 @@ exports.getAllEvents = functions.https.onCall((data, context) => {
 
 exports.createEvent = functions.https.onCall((data, context) => {
     return createEvent.handler(data, context, firestore);
+})
+
+exports.editEvent = functions.https.onCall((data, context) => {
+    return editEvent.handler(data, context, firestore);
+})
+
+exports.editEvent = functions.https.onCall((data, context) => {
+    return deleteEvent.handler(data, context, firestore);
 })
 
 /*========================================================================

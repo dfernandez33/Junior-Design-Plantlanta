@@ -1,10 +1,9 @@
-import * as functions from 'firebase-functions';
-import { ResponseCode } from '../Enums/responseCode';
-
-export const handler = function(data: any, context: functions.https.CallableContext, firestore: FirebaseFirestore.Firestore) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const responseCode_1 = require("../Enums/responseCode");
+exports.handler = function (data, context, firestore) {
     const eventId = data.eventId;
     const eventRef = firestore.collection("Events").doc(eventId);
-
     return eventRef.update({
         name: data.name,
         location: data.location,
@@ -15,13 +14,14 @@ export const handler = function(data: any, context: functions.https.CallableCont
         reward: data.reward
     }).then(() => {
         return {
-            status: ResponseCode.SUCCESS,
+            status: responseCode_1.ResponseCode.SUCCESS,
             message: "Event updated successfully"
-        }
+        };
     }).catch((e) => {
         return {
-            status: ResponseCode.FAILURE,
+            status: responseCode_1.ResponseCode.FAILURE,
             message: e.message
-        }
+        };
     });
-}
+};
+//# sourceMappingURL=editEvent.js.map
