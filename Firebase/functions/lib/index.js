@@ -3,7 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 //ONLY INITIALIZE APP HERE!!!
-admin.initializeApp();
+admin.initializeApp({
+    storageBucket: "junior-design-plantlanta.appspot.com"
+});
 const firestore = admin.firestore();
 // User/Admin Interactions
 const registerUser = require("./User_Interactions/registerUser");
@@ -13,13 +15,29 @@ const requestAdminAccount = require("./User_Interactions/Admin/requestAdminAccou
 const getAdminRequest = require("./User_Interactions/Admin/getAdminRequest");
 const reviewAdminRequest = require("./User_Interactions/Admin/reviewAdminRequest");
 const deleteUser = require("./User_Interactions/deleteUser");
-// Event interactions
+// Event Interactions
 const createEvent = require("./Event_Interactions/createEvent");
 const signupForEvent = require("./Event_Interactions/signupForEvent");
 const removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent");
 const getAllEvents = require("./Event_Interactions/getAllEvents");
 const getEvent = require("./Event_Interactions/getEvent");
 const confirmEvent = require("./Event_Interactions/confirmEvent");
+// Organization Interactions
+const requestOrganization = require("./Organization_Interactions/requestOrganization");
+const getOrganizationRequest = require("./Organization_Interactions/getOrganizationRequest");
+const reviewOrganizationRequest = require("./Organization_Interactions/reviewOrganizationRequest");
+/*========================================================================
+Organization Interactions
+==========================================================================*/
+exports.requestOrganization = functions.https.onRequest((req, res) => {
+    return requestOrganization.handler(req, res, firestore);
+});
+exports.getOrganizationRequest = functions.https.onCall((data, context) => {
+    return getOrganizationRequest.handler(data, context, firestore);
+});
+exports.reviewOrganizationRequest = functions.https.onRequest((req, res) => {
+    return reviewOrganizationRequest.handler(req, res, firestore);
+});
 /*========================================================================
 Event Interactions
 ==========================================================================*/

@@ -1,6 +1,10 @@
 <div class="title">Part of a registered organization?</div>
 <div class="subtitle">Request an admin account</div>
-<form action="" class="box" [formGroup]="requestForm">
+<div *ngIf="submitting" class="content has-text-centered">
+    <div class="lds-ripple"><div></div><div></div><div></div></div>
+    <p>{{message}}</p>
+</div>
+<form *ngIf="!submitting" action="" class="box" [formGroup]="requestForm">
     <div class="field">
     <label class="label">Email</label>
     <div class="control has-icons-left">
@@ -52,4 +56,3 @@
     </a>
     </p>
 </form>
-<app-spinner #spinner message="Sending Account Request..."></app-spinner>

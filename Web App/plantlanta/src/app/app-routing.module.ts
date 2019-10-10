@@ -8,6 +8,7 @@ import { VerifyEmailComponent } from './components/verify-email/verify-email.com
 import { VerifyAdminComponent } from './components/verify-admin/verify-admin.component';
 import { RequestAdminComponent } from './components/request-admin/request-admin.component';
 import { CreateEventComponent } from './components/create-event/create-event.component';
+import { VerifyOrganizationComponent } from './components/verify-organization/verify-organization.component';
 
 const routes: Routes = [
   { path:'', redirectTo: '/dashboard', pathMatch:'full' },
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'verify_admin/:requestId', component: VerifyAdminComponent },
   { path: 'request_admin', component: RequestAdminComponent },
   { path: 'create_event', component: CreateEventComponent },
+  { path: 'verify_organization/:requestId', component: VerifyOrganizationComponent}
 ];
 
 @NgModule({

@@ -32,7 +32,6 @@ export const handler = async function(req: any, res: any , firestore: FirebaseFi
         orgQuerySnapshot.forEach(org => {
             organization = org;
         });
-        console.log(organization.data());
     
         let requestId:string = "";
         try { //create new entry in admin request table with new request info

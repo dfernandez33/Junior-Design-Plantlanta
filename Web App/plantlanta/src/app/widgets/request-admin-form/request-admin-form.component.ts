@@ -17,7 +17,7 @@ export class RequestAdminFormComponent implements OnInit {
   validForm = true;
   errMessage = "";
 
-  @ViewChild('spinner', {static: false}) spin: SpinnerComponent;
+  submitting = false;
 
   requestForm = new FormGroup({
     email: new FormControl(''),
@@ -41,14 +41,14 @@ export class RequestAdminFormComponent implements OnInit {
         message: formValues["message"],
         organizationName: formValues["organizationName"]
       };
-      this.spin.show();
+      this.submitting = true;
       this.http.post(this.REQUEST_ACCOUNT_URL, request).pipe(first()).toPromise().then((resp: any) => {
         this.requestSent = true;
-        this.spin.hide();
+        this.submitting = false;
       }).catch((error) => {
         this.validForm = false;
         this.errMessage = error.error.message;
-        this.spin.hide();
+        this.submitting = false;
       });
     } else {
       this.validForm = false;
