@@ -3,6 +3,8 @@ import { ActivatedRoute } from '../../../../node_modules/@angular/router';
 import { VerifyAdminRequestInfo } from '../../interfaces/verify-admin-request-info';
 import { AngularFireFunctions } from '../../../../node_modules/@angular/fire/functions';
 import { SpinnerComponent } from 'src/app/widgets/spinner/spinner.component';
+import { HttpClient } from '../../../../node_modules/@angular/common/http';
+import { first } from '../../../../node_modules/rxjs/operators';
 
 @Component({
   selector: 'app-verify-admin',
@@ -10,6 +12,8 @@ import { SpinnerComponent } from 'src/app/widgets/spinner/spinner.component';
   styleUrls: ['./verify-admin.component.sass']
 })
 export class VerifyAdminComponent implements OnInit {
+
+  REVIEW_REQUEST_URL = "https://us-central1-junior-design-plantlanta.cloudfunctions.net/reviewAdminRequest";
 
   @ViewChild('spinner', {static: false}) spin: SpinnerComponent;
 
@@ -22,13 +26,11 @@ export class VerifyAdminComponent implements OnInit {
   requestInfo: VerifyAdminRequestInfo;
 
   getAdminRequestFunction;
-  reviewRequestFunction;
 
-  constructor(private route: ActivatedRoute, private cloud: AngularFireFunctions) { }
+  constructor(private route: ActivatedRoute, private http: HttpClient, private cloud: AngularFireFunctions) { }
 
   ngOnInit() {
     this.requestId = this.route.snapshot.paramMap.get("requestId");
-    this.reviewRequestFunction = this.cloud.httpsCallable("reviewAdminRequest");
     this.getAdminRequestFunction = this.cloud.httpsCallable("getAdminRequest");
     this.getAdminRequestFunction({
       requestId: this.requestId
@@ -44,37 +46,35 @@ export class VerifyAdminComponent implements OnInit {
 
   approveRequest() {
     this.spin.show();
-    this.reviewRequestFunction({
+    const review = {
       requestId: this.requestId,
       approved: true
-    }).toPromise().then(resp => {
-      if (resp.status == 200) {
-        this.spin.hide();
-        this.submitted = true;
-        this.message = "Request approved. The user has been notified by email.\n You can now close this page."
-      } else {
-        this.spin.hide();
-        this.submitted = true;
-        this.message = resp.message + "\n Please reload and try again."
-      }
+    };
+    this.http.post(this.REVIEW_REQUEST_URL, review).pipe(first()).toPromise().then((resp: any) => {
+      this.spin.hide();
+      this.submitted = true;
+      this.message = "Request approved. The user has been notified by email.\n You can now close this page."
+    }).catch(error => {
+      this.spin.hide();
+      this.submitted = true;
+      this.message = error.error.message + "\n Please reload and try again."
     });
   }
 
   denyRequest() {
     this.spin.show();
-    this.reviewRequestFunction({
+    const review = {
       requestId: this.requestId,
       approved: false
-    }).toPromise().then(resp => {
-      if (resp.status == 200) {
-        this.spin.hide();
-        this.submitted = true;
-        this.message = "Request denied. The user has been notified by email.\n You can now close this page."
-      } else {
-        this.spin.hide();
-        this.submitted = true;
-        this.message = resp.message + "\n Please reload and try again."
-      }
+    };
+    this.http.post(this.REVIEW_REQUEST_URL, review).pipe(first()).toPromise().then((resp: any) => {
+      this.spin.hide();
+      this.submitted = true;
+      this.message = "Request approved. The user has been notified by email.\n You can now close this page."
+    }).catch(error => {
+      this.spin.hide();
+      this.submitted = true;
+      this.message = error.error.message + "\n Please reload and try again."
     });
   }
 

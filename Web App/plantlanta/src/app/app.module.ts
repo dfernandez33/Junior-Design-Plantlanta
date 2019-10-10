@@ -26,6 +26,8 @@ import { MenuComponent } from './components/menu/menu.component';
 import { EventcardComponent } from './widgets/eventcard/eventcard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CreateEventComponent } from './components/create-event/create-event.component';
+import { RegisterOrganizationFormComponent } from './widgets/register-organization-form/register-organization-form.component';
+import { RequestAdminFormComponent } from './widgets/request-admin-form/request-admin-form.component';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBmvdgLNheowskj5H1WDtVnnRUYxIUfix8",
@@ -50,6 +52,8 @@ const firebaseConfig = {
     MenuComponent,
     EventcardComponent,
     CreateEventComponent,
+    RegisterOrganizationFormComponent,
+    RequestAdminFormComponent,
   ],
   imports: [
     BrowserModule,

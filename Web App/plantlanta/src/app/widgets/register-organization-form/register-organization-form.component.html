@@ -1,0 +1,47 @@
+<div class="title">Register an Organization</div>
+<div class="subtitle">In order to create events</div>
+<form action="" class="box" [formGroup]="requestForm">
+  <div class="field">
+    <label class="label">Name</label>
+    <div class="control">
+      <input class="input" type="text" placeholder="Organization Name" formControlName="firstName" required/>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Mission</label>
+    <div class="control">
+      <textarea class="textarea" placeholder="Your organizaiton's mission..." formControlName="message" required></textarea>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Contact Email</label>
+    <div class="control has-icons-left">
+      <input class="input" type="email" placeholder="Email" formControlName="email" required/>
+      <span class="icon is-small is-left">
+        <i class="fa fa-envelope"></i>
+      </span>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">501C3 Upload</label>
+    <div class="control has-icons-left">
+      <input class="input" type="file" formControlName="email" required/>
+      <span class="icon is-small is-left">
+        <i class="fa fa-file"></i>
+      </span>
+    </div>
+  </div>
+  <div *ngIf="!validForm">
+    {{errMessage}}
+  </div>
+  <div *ngIf="requestSent">
+    Your request has been sent. You will get an email notification when it is reviewed.
+  </div>
+  <div class="field">
+    <p class="control has-text-centered">
+      <a class="button is-primary" (click)="requestAccount()">
+        Register Organization
+      </a>
+    </p>
+  </div>
+</form>

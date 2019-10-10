@@ -71,8 +71,8 @@ exports.getAdminRequest = functions.https.onCall((data, context) => {
     return getAdminRequest.handler(data, context, firestore);
 })
 
-exports.reviewAdminRequest = functions.https.onCall((data, context) => {
-    return reviewAdminRequest.handler(data, context, firestore);
+exports.reviewAdminRequest = functions.https.onRequest((req, res) => {
+    return reviewAdminRequest.handler(req, res, firestore);
 })
 
 exports.deleteUser = functions.auth.user().onDelete((user) => {

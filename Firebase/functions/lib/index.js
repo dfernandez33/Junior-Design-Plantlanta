@@ -5,7 +5,6 @@ const admin = require("firebase-admin");
 //ONLY INITIALIZE APP HERE!!!
 admin.initializeApp();
 const firestore = admin.firestore();
-
 // User/Admin Interactions
 const registerUser = require("./User_Interactions/registerUser");
 const registerAdmin = require("./User_Interactions/Admin/registerAdmin");
@@ -21,7 +20,6 @@ const removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent")
 const getAllEvents = require("./Event_Interactions/getAllEvents");
 const getEvent = require("./Event_Interactions/getEvent");
 const confirmEvent = require("./Event_Interactions/confirmEvent");
-
 /*========================================================================
 Event Interactions
 ==========================================================================*/
@@ -55,18 +53,16 @@ exports.registerAdmin = functions.https.onCall((data, context) => {
 exports.isUserAdmin = functions.https.onCall((data, context) => {
     return isUserAdmin.handler(data, context, firestore);
 });
-
 exports.requestAdminAccount = functions.https.onRequest((req, res) => {
     return requestAdminAccount.handler(req, res, firestore);
 });
 exports.getAdminRequest = functions.https.onCall((data, context) => {
     return getAdminRequest.handler(data, context, firestore);
 });
-exports.reviewAdminRequest = functions.https.onCall((data, context) => {
-    return reviewAdminRequest.handler(data, context, firestore);
+exports.reviewAdminRequest = functions.https.onRequest((req, res) => {
+    return reviewAdminRequest.handler(req, res, firestore);
 });
 exports.deleteUser = functions.auth.user().onDelete((user) => {
     return deleteUser.handler(user, firestore);
 });
-
 //# sourceMappingURL=index.js.map
