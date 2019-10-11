@@ -21,6 +21,7 @@ const getAllEvents = require("./Event_Interactions/getAllEvents");
 const getEvent = require("./Event_Interactions/getEvent");
 const confirmEvent = require("./Event_Interactions/confirmEvent");
 const editEvent = require("./Event_Interactions/editEvent");
+const deleteEvent = require("./Event_Interactions/deleteEvent");
 /*========================================================================
 Event Interactions
 ==========================================================================*/
@@ -44,6 +45,9 @@ exports.createEvent = functions.https.onCall((data, context) => {
 });
 exports.editEvent = functions.https.onCall((data, context) => {
     return editEvent.handler(data, context, firestore);
+});
+exports.deleteEvent = functions.firestore.document("Events/{eventId}").onDelete((data, context) => {
+    return deleteEvent.handler(data, context, firestore);
 });
 /*========================================================================
 User/Admin Interactions

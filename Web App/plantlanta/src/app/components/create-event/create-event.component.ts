@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '../../../../node_modules/@angular/forms';
 import { AngularFireFunctions } from '../../../../node_modules/@angular/fire/functions';
-import { SpinnerComponent } from '../../widgets/spinner/spinner.component';
-import { ActivatedRoute } from '../../../../node_modules/@angular/router';
+import { ActivatedRoute, Router } from '../../../../node_modules/@angular/router';
+import { AngularFirestore } from '../../../../node_modules/@angular/fire/firestore';
 
 @Component({
   selector: 'app-create-event',
@@ -43,7 +43,7 @@ export class CreateEventComponent implements OnInit {
     eventReward: new FormControl(0)
   });
 
-  constructor(private cloud: AngularFireFunctions, private route: ActivatedRoute) {}
+  constructor(private cloud: AngularFireFunctions, private route: ActivatedRoute, private firestore: AngularFirestore, private router: Router) {}
 
   ngOnInit() {
     this.eventId = this.route.snapshot.paramMap.get("eventId");
@@ -126,18 +126,15 @@ export class CreateEventComponent implements OnInit {
   deleteEvent() {
     this.confirmDeleteModal = false;
     this.message = "Deleting Event...";
-    this.loading = true;
-    this.deleteEventFunction({eventId: this.eventId}).toPromise().then(resp => {
-      if (resp.status) {
-        this.successDeleteModal = true;
-        this.loading = false;
-        this.successDeleteModalMessage = "Event Successfully Deleted"
-      } else {
-        this.successDeleteModal = true;
-        this.loading = false;
-        this.successDeleteModalMessage = resp.message;
-      }
-    }).catch(e => {
+    this.loading = true;  
+    this.firestore.collection("Events").doc(this.eventId).delete().then(() => {
+      this.successDeleteModal = true;
+      this.loading = false;
+      this.successDeleteModalMessage = "Event Successfully Deleted. You will be redirected to the event dashboard.";
+      setTimeout(() => {
+        this.router.navigate(["/event_dashboard"])
+      }, 2000);
+    }).catch(() => {
       this.successDeleteModal = true;
       this.loading = false;
       this.successDeleteModalMessage = "There was an error deleteing this event. Please try again."

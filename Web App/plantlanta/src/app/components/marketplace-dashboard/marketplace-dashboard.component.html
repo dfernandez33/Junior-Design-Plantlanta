@@ -2,8 +2,8 @@
     <div class="hero-body">
         <div class="container">
             <div class="columns is-vcentered">
-                <div class="title column is-one-fourth">Upcoming Events</div>
-                <div class="column is-three-fifths">
+                <div class="title is-3 column">Marketplace Inventory</div>
+                <div class="column is-8">
                     <div class="field">
                         <p class="control has-icons-right">
                             <input class="input" type="text" placeholder="Search Events...">
@@ -21,15 +21,10 @@
                     </a>
                 </div>
             </div>
-            <div *ngIf="!loaded" class="content has-text-centered">
+            <!-- <div *ngIf="!loaded" class="content has-text-centered">
                 <div class="lds-ripple"><div></div><div></div><div></div></div>
                 <p>{{message}}</p>
-            </div>
-            <div *ngIf="loaded">
-                <div *ngFor="let event of events">
-                    <app-eventcard [event]="event"></app-eventcard>
-                </div>
-            </div>
+            </div> -->
         </div>
     </div>
-</section>                                                                                         
+</section>  

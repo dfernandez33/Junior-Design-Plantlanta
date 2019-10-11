@@ -44,47 +44,47 @@ exports.getEvent = functions.https.onCall((data, context) => {
 
 exports.getAllEvents = functions.https.onCall((data, context) => {
     return getAllEvents.handler(data, context, firestore);
-})
+});
 
 exports.createEvent = functions.https.onCall((data, context) => {
     return createEvent.handler(data, context, firestore);
-})
+});
 
 exports.editEvent = functions.https.onCall((data, context) => {
     return editEvent.handler(data, context, firestore);
-})
+});
 
-exports.editEvent = functions.https.onCall((data, context) => {
+exports.deleteEvent = functions.firestore.document("Events/{eventId}").onDelete((data, context) => {
     return deleteEvent.handler(data, context, firestore);
-})
+});
 
 /*========================================================================
 User/Admin Interactions
 ==========================================================================*/
 exports.registerUser = functions.https.onCall((data, context) => {
     return registerUser.handler(data, context, firestore);
-})
+});
 
 exports.registerAdmin = functions.https.onCall((data, context) => {
     return registerAdmin.handler(data, context, firestore);
-})
+});
 
 exports.isUserAdmin = functions.https.onCall((data, context) => {
     return isUserAdmin.handler(data, context, firestore);
-})
+});
 
 exports.requestAdminAccount = functions.https.onRequest((req, res) => {
     return requestAdminAccount.handler(req, res, firestore);
-})
+});
 
 exports.getAdminRequest = functions.https.onCall((data, context) => {
     return getAdminRequest.handler(data, context, firestore);
-})
+});
 
 exports.reviewAdminRequest = functions.https.onCall((data, context) => {
     return reviewAdminRequest.handler(data, context, firestore);
-})
+});
 
 exports.deleteUser = functions.auth.user().onDelete((user) => {
     return deleteUser.handler(user, firestore);
-})
+});

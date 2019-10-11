@@ -15,7 +15,8 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireFunctionsModule } from '@angular/fire/functions';
-import { HomeComponent } from './components/home/home.component';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { EventDashboardComponent } from './components/event-dashboard/event-dashboard.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { SpinnerComponent } from './widgets/spinner/spinner.component';
@@ -26,6 +27,7 @@ import { MenuComponent } from './components/menu/menu.component';
 import { EventcardComponent } from './widgets/eventcard/eventcard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CreateEventComponent } from './components/create-event/create-event.component';
+import { MarketplaceDashboardComponent } from './components/marketplace-dashboard/marketplace-dashboard.component';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBmvdgLNheowskj5H1WDtVnnRUYxIUfix8",
@@ -42,7 +44,7 @@ const firebaseConfig = {
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent,
+    EventDashboardComponent,
     VerifyEmailComponent,
     SpinnerComponent,
     VerifyAdminComponent,
@@ -50,6 +52,7 @@ const firebaseConfig = {
     MenuComponent,
     EventcardComponent,
     CreateEventComponent,
+    MarketplaceDashboardComponent,
   ],
   imports: [
     BrowserModule,
@@ -58,6 +61,7 @@ const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
     AngularFireFunctionsModule,
+    AngularFirestoreModule,
     NgxSpinnerModule,
     HttpClientModule,
     QRCodeModule,

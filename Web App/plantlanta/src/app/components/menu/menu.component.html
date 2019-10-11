@@ -11,13 +11,12 @@
         </a>
     </div>
     
-    <div id="navbarBasicExample" class="navbar-menu">
+    <div class="navbar-menu">
         <div class="navbar-start">
-            <a class="navbar-item" routerLink="/dashboard">
+            <a class="navbar-item" routerLink="/event_dashboard">
                 Event Dashboard
             </a>
-            <!-- TODO: Change routerLink to navigate to market place dashboard -->
-            <a class="navbar-item" routerLink="">
+            <a class="navbar-item" routerLink="/marketplace_dashboard">
                 Market Place Dashboard
             </a>
         </div>
@@ -25,7 +24,7 @@
         <div class="navbar-end">
             <div class="navbar-item">
                 <div class="buttons">
-                    <a class="button is-light" (click)="logout()">
+                    <a *ngIf="showLogout" class="button is-light" (click)="logout()">
                         <span class="icon">
                             <i class="fa fa-sign-out"></i>
                         </span>
