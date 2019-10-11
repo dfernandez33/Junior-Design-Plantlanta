@@ -1,19 +1,19 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '../../../../node_modules/@angular/router';
-import { VerifyAdminRequestInfo } from '../../interfaces/verify-admin-request-info';
-import { AngularFireFunctions } from '../../../../node_modules/@angular/fire/functions';
-import { SpinnerComponent } from 'src/app/widgets/spinner/spinner.component';
-import { HttpClient } from '../../../../node_modules/@angular/common/http';
 import { first } from '../../../../node_modules/rxjs/operators';
+import { ActivatedRoute } from '../../../../node_modules/@angular/router';
+import { HttpClient } from '../../../../node_modules/@angular/common/http';
+import { AngularFireFunctions } from '../../../../node_modules/@angular/fire/functions';
+import { SpinnerComponent } from '../../widgets/spinner/spinner.component';
+import { VerifyOrganizationRequestInfo } from '../../interfaces/verify-organization-request-info';
 
 @Component({
-  selector: 'app-verify-admin',
-  templateUrl: './verify-admin.component.html',
-  styleUrls: ['./verify-admin.component.sass']
+  selector: 'app-verify-organization',
+  templateUrl: './verify-organization.component.html',
+  styleUrls: ['./verify-organization.component.sass']
 })
-export class VerifyAdminComponent implements OnInit {
+export class VerifyOrganizationComponent implements OnInit {
 
-  REVIEW_REQUEST_URL = "https://us-central1-junior-design-plantlanta.cloudfunctions.net/reviewAdminRequest";
+  REVIEW_REQUEST_URL = "https://us-central1-junior-design-plantlanta.cloudfunctions.net/reviewOrganizationRequest";
 
   @ViewChild('spinner', {static: false}) spin: SpinnerComponent;
 
@@ -25,7 +25,7 @@ export class VerifyAdminComponent implements OnInit {
   message = "";
 
   requestId: string;
-  requestInfo: VerifyAdminRequestInfo;
+  requestInfo: VerifyOrganizationRequestInfo;
 
   getAdminRequestFunction;
 
@@ -33,7 +33,7 @@ export class VerifyAdminComponent implements OnInit {
 
   ngOnInit() {
     this.requestId = this.route.snapshot.paramMap.get("requestId");
-    this.getAdminRequestFunction = this.cloud.httpsCallable("getAdminRequest");
+    this.getAdminRequestFunction = this.cloud.httpsCallable("getOrganizationRequest");
     this.getAdminRequestFunction({
       requestId: this.requestId
     }).toPromise().then(data => {
@@ -56,7 +56,7 @@ export class VerifyAdminComponent implements OnInit {
     this.http.post(this.REVIEW_REQUEST_URL, review).pipe(first()).toPromise().then((resp: any) => {
       this.spin.hide();
       this.submitted = true;
-      this.message = "Request approved. The user has been notified by email.\n You can now close this page."
+      this.message = "Request approved. An email has been sent to the organization's contact email.\n You can now close this page."
     }).catch(error => {
       this.spin.hide();
       this.submitted = true;
@@ -73,12 +73,12 @@ export class VerifyAdminComponent implements OnInit {
     this.http.post(this.REVIEW_REQUEST_URL, review).pipe(first()).toPromise().then((resp: any) => {
       this.spin.hide();
       this.submitted = true;
-      this.message = "Request denied. The user has been notified by email.\n You can now close this page."
+      this.message = "Request denied. An email has been sent to the organization's contact email.\n You can now close this page."
     }).catch(error => {
       this.spin.hide();
       this.submitted = true;
       this.message = error.error.message + "\n Please reload and try again."
     });
   }
-  
+
 }

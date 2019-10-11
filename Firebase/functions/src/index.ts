@@ -1,7 +1,9 @@
 import * as functions from 'firebase-functions';
 import admin = require("firebase-admin");
 //ONLY INITIALIZE APP HERE!!!
-admin.initializeApp();
+admin.initializeApp({
+    storageBucket: "junior-design-plantlanta.appspot.com"
+});
 const firestore = admin.firestore();
 
 // User/Admin Interactions
@@ -13,7 +15,7 @@ import getAdminRequest = require("./User_Interactions/Admin/getAdminRequest");
 import reviewAdminRequest = require("./User_Interactions/Admin/reviewAdminRequest")
 import deleteUser = require("./User_Interactions/deleteUser");
 
-// Event interactions
+// Event Interactions
 import createEvent = require("./Event_Interactions/createEvent");
 import signupForEvent = require("./Event_Interactions/signupForEvent");
 import removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent");
@@ -22,6 +24,26 @@ import getEvent = require("./Event_Interactions/getEvent")
 import confirmEvent = require("./Event_Interactions/confirmEvent");
 import editEvent = require("./Event_Interactions/editEvent");
 import deleteEvent = require("./Event_Interactions/deleteEvent");
+
+// Organization Interactions
+import requestOrganization = require("./Organization_Interactions/requestOrganization");
+import getOrganizationRequest = require("./Organization_Interactions/getOrganizationRequest");
+import reviewOrganizationRequest = require("./Organization_Interactions/reviewOrganizationRequest");
+
+/*========================================================================
+Organization Interactions
+==========================================================================*/
+exports.requestOrganization = functions.https.onRequest((req, res) => {
+    return requestOrganization.handler(req, res, firestore);
+});
+
+exports.getOrganizationRequest = functions.https.onCall((data, context) => {
+    return getOrganizationRequest.handler(data, context, firestore);
+});
+
+exports.reviewOrganizationRequest = functions.https.onRequest((req, res) => {
+    return reviewOrganizationRequest.handler(req, res, firestore);
+})
 
 /*========================================================================
 Event Interactions
@@ -81,9 +103,9 @@ exports.getAdminRequest = functions.https.onCall((data, context) => {
     return getAdminRequest.handler(data, context, firestore);
 });
 
-exports.reviewAdminRequest = functions.https.onCall((data, context) => {
-    return reviewAdminRequest.handler(data, context, firestore);
-});
+exports.reviewAdminRequest = functions.https.onRequest((req, res) => {
+    return reviewAdminRequest.handler(req, res, firestore);
+})
 
 exports.deleteUser = functions.auth.user().onDelete((user) => {
     return deleteUser.handler(user, firestore);

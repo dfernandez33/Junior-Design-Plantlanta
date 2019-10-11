@@ -17,6 +17,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireFunctionsModule } from '@angular/fire/functions';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { EventDashboardComponent } from './components/event-dashboard/event-dashboard.component';
+import { AngularFireStorageModule } from '@angular/fire/storage';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { SpinnerComponent } from './widgets/spinner/spinner.component';
@@ -28,6 +29,9 @@ import { EventcardComponent } from './widgets/eventcard/eventcard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CreateEventComponent } from './components/create-event/create-event.component';
 import { MarketplaceDashboardComponent } from './components/marketplace-dashboard/marketplace-dashboard.component';
+import { RegisterOrganizationFormComponent } from './widgets/register-organization-form/register-organization-form.component';
+import { RequestAdminFormComponent } from './widgets/request-admin-form/request-admin-form.component';
+import { VerifyOrganizationComponent } from './components/verify-organization/verify-organization.component';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBmvdgLNheowskj5H1WDtVnnRUYxIUfix8",
@@ -53,6 +57,9 @@ const firebaseConfig = {
     EventcardComponent,
     CreateEventComponent,
     MarketplaceDashboardComponent,
+    RegisterOrganizationFormComponent,
+    RequestAdminFormComponent,
+    VerifyOrganizationComponent,
   ],
   imports: [
     BrowserModule,
@@ -62,6 +69,7 @@ const firebaseConfig = {
     AngularFireAuthModule,
     AngularFireFunctionsModule,
     AngularFirestoreModule,
+    AngularFireStorageModule,
     NgxSpinnerModule,
     HttpClientModule,
     QRCodeModule,
