@@ -5,4 +5,5 @@ export interface Event {
     date;
     startTime: string;
     endTime: string;
+    reward: number;
 }
