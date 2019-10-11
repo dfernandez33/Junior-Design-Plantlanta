@@ -12,7 +12,8 @@ export const handler = async function(req: any, res: any, firestore: FirebaseFir
     return cors(req, res, async () => {
         const requestId = req.body.requestId;
         const approved = req.body.approved;
-        const request = await firestore.collection("AdminRequests").doc(requestId).get();
+        const request = await firestore.collection("OrganizationRequests").doc(requestId).get();
+
         if (request.data() == undefined) {
             res.status(400).send({
                 status: 400,
@@ -21,18 +22,16 @@ export const handler = async function(req: any, res: any, firestore: FirebaseFir
         }
     
         const requestInfo = request.data();
+        const decision = approved ? "approved" : "denied";
+        const message = approved ? "You can now create admin accounts under your organization's name in order to create events." : "";
         const mssg = {
-            to: requestInfo.email,
+            to: requestInfo.contactEmail,
             from: "plantlanta.bitbybit@gmail.com",
-            templateId: approved ? "d-089265f85a214588a45f0d31088b991c" : "d-d0cc1b31435f4fc482409c9a115f2199",
-            dynamic_template_data: approved ? {
-                registration_link: "http://localhost:4200/register/" + requestId,
+            templateId: "d-3d07db11bea149019af091711e1cdd05",
+            dynamic_template_data: {
                 name: requestInfo.name,
-                organizationName: requestInfo.organizationName
-            }
-            : {
-                name: requestInfo.name,
-                organizationName: requestInfo.organizationName
+                decision: decision,
+                message: message
             }
         }
         try {
@@ -43,10 +42,17 @@ export const handler = async function(req: any, res: any, firestore: FirebaseFir
                 message: e.message
             })
         }
-    
-        if (!approved) {
-           await firestore.collection("AdminRequests").doc(requestId).delete();
+
+        if (approved) {
+            await firestore.collection("Organizations").add({
+                name: requestInfo.name,
+                mission: requestInfo.mission,
+                contactEmail: requestInfo.contactEmail,
+                doc501C3URL: requestInfo.doc501C3URL
+            })
         }
+
+        await firestore.collection("OrganizationRequests").doc(requestId).delete();
     
         res.status(200).send({
             status: 200,

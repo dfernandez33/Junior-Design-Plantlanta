@@ -15,6 +15,7 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireFunctionsModule } from '@angular/fire/functions';
+import { AngularFireStorageModule } from '@angular/fire/storage';
 import { HomeComponent } from './components/home/home.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { NgxSpinnerModule } from "ngx-spinner";
@@ -26,6 +27,9 @@ import { MenuComponent } from './components/menu/menu.component';
 import { EventcardComponent } from './widgets/eventcard/eventcard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CreateEventComponent } from './components/create-event/create-event.component';
+import { RegisterOrganizationFormComponent } from './widgets/register-organization-form/register-organization-form.component';
+import { RequestAdminFormComponent } from './widgets/request-admin-form/request-admin-form.component';
+import { VerifyOrganizationComponent } from './components/verify-organization/verify-organization.component';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBmvdgLNheowskj5H1WDtVnnRUYxIUfix8",
@@ -50,6 +54,9 @@ const firebaseConfig = {
     MenuComponent,
     EventcardComponent,
     CreateEventComponent,
+    RegisterOrganizationFormComponent,
+    RequestAdminFormComponent,
+    VerifyOrganizationComponent,
   ],
   imports: [
     BrowserModule,
@@ -58,6 +65,7 @@ const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
     AngularFireFunctionsModule,
+    AngularFireStorageModule,
     NgxSpinnerModule,
     HttpClientModule,
     QRCodeModule,

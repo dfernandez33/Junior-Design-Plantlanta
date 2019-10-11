@@ -16,6 +16,8 @@ export class RegisterComponent implements OnInit {
   errMessage = "";
   badRequestId = false;
 
+  loading = true;
+
   requestId;
 
   @ViewChild('spinner', {static: false}) spin: SpinnerComponent;
@@ -37,6 +39,7 @@ export class RegisterComponent implements OnInit {
     this.requestId = this.route.snapshot.paramMap.get("requestId");
     const getAdminRequest = this.cloud.httpsCallable("getAdminRequest");
     getAdminRequest({ requestId: this.requestId}).toPromise().then(resp => {
+      this.loading = false;
       if (resp == undefined) {
         this.badRequestId = true;
         this.errMessage = "This request has either been reviewed already, or the link provided is invalid."
