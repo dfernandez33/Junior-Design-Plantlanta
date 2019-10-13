@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:junior_design_plantlanta/model/event_model.dart';
 import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:junior_design_plantlanta/screens/marketplace.dart';
 import 'package:junior_design_plantlanta/serializers/StatusResponse.dart';
 import 'package:junior_design_plantlanta/widgets/progress_dialog.dart';
 
@@ -43,7 +44,7 @@ class _MainScreenState extends State<MainScreen> {
         onPageChanged: onPageChanged,
         children: <Widget>[
           Home(1),
-          Home(2),
+          Marketplace(),
           Home(3),
           Home(4),
           Home(5),
@@ -67,7 +68,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
             IconButton(
               icon: Icon(
-                Icons.label,
+                Icons.shop,
                 size: 24.0,
               ),
               color: _page == 1
@@ -276,25 +277,6 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       this._page = page;
     });
-  }
-
-
-  String _getTime(DateTime date) {
-    if (date.hour >= 12) {
-      return date.hour.toString() +
-          ":" +
-          (date.minute <= 9
-              ? "0" + date.minute.toString()
-              : date.minute.toString()) +
-          " PM";
-    } else {
-      return date.hour.toString() +
-          ":" +
-          (date.minute <= 9
-              ? "0" + date.minute.toString()
-              : date.minute.toString()) +
-          " AM";
-    }
   }
 
   Future<void> _logOut() async {
