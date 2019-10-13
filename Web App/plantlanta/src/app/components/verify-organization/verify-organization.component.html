@@ -1,0 +1,53 @@
+<section class="hero is-primary is-fullheight">
+    <div class="hero-body">
+      <div class="container is-centered">
+        <div class="columns is-centered">
+          <div class="column is-5-tablet is-4-desktop is-4-widescreen">
+            <p class="title">
+                Organization Request
+            </p>
+            <div *ngIf="!loaded" class="content has-text-centered">
+              <div class="lds-ripple"><div></div><div></div><div></div></div>
+              <p>Loading Request Info...</p>
+            </div>
+            <div *ngIf="!badRequestId && !submitted && loaded" class="box is-centered">
+              <label class="label">Name:</label>
+              <p>{{requestInfo?.name}}</p>
+              <br>
+              <label class="label">Contact Email:</label>
+              <p>{{requestInfo?.contactEmail}}</p>
+              <br>
+              <label class="label">Mission:</label>
+              <p>{{requestInfo?.mission}}</p>
+              <br>
+              <label class="label">Organization's 501C3:</label>
+              <a href={{requestInfo?.doc501C3URL}} target="_blank" class="button is-light">
+                <span>View Document</span>
+              </a>
+              <br>
+              <br>
+              <div class="columns">
+                <div class="column">
+                  <button class="button is-success is-fullwidth" (click)="approveRequest()">
+                    Approve
+                  </button>
+                </div>
+                <div class="column">
+                  <button class="button is-danger is-fullwidth" (click)="denyRequest()">
+                    Deny
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="submitted || badRequestId" class="box is-centered">
+              <p class="has-text-centered">
+                {{message}}
+              </p>
+            </div>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </section>
+  <app-spinner #spinner message="Submitting review..."></app-spinner>
+  

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NavbarService } from '../../services/navbar.service';
-import { AngularFireAuth } from '../../../../node_modules/@angular/fire/auth';
-import { Router } from '../../../../node_modules/@angular/router';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
@@ -10,9 +9,18 @@ import { Router } from '../../../../node_modules/@angular/router';
 })
 export class MenuComponent implements OnInit {
 
-  constructor(public navbar: NavbarService, private afAuth: AngularFireAuth, private router: Router) { }
+  showLogout = false;
+
+  constructor(private afAuth: AngularFireAuth, private router: Router) { }
 
   ngOnInit() {
+    this.afAuth.auth.onAuthStateChanged(user => {
+      if (user) {
+        this.showLogout = true;
+      } else {
+        this.showLogout = false;
+      }
+    });
   }
 
   async logout() {

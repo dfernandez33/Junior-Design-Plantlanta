@@ -1,12 +1,24 @@
 <div class="box">
-    <div class="content is-large">
-        <p><strong>{{event.name}}</strong></p>
+    <div class="columns">
+        <div class="column">
+            <div class="content is-large">
+                <p><strong>{{event.name}}</strong></p>
+            </div>
+        </div>
+        <div class="column has-text-right">
+            <a class="button is-medium is-white" (click)="editEvent()">
+                <span class="icon is-medium">
+                    <i class="fa fa-edit fa-lg"></i>
+                </span>
+            </a>
+        </div>
     </div>
     <div class="columns">
         <div class="column">
             <p><strong>Location: </strong>{{event.location}}</p>
             <p><strong>Description: </strong>{{event.description}}</p>
             <p><strong>Date: </strong>{{event.date._seconds * 1000 | date}}</p>
+            <p><strong>Reward: </strong>{{event.reward}} seeds</p>
             <p><strong>Start Time: </strong>{{event.startTime}}</p>
             <p><strong>End Time: </strong>{{event.endTime}}</p>
             <p><strong>Event Code</strong></p>
@@ -73,7 +85,7 @@
         </div>
     </div>
     <div class="content">
-        <div class="has-text-right">Created on: {{event.createdOn._seconds * 1000 | date}}</div>
-        <div class="has-text-right">Created by: {{event.createdBy}}</div>
+        <div class="has-text-left">Created on: {{event.createdOn._seconds * 1000 | date}}</div>
+        <div class="has-text-left">Created by: {{event.createdBy}}</div>
     </div>
 </div>
