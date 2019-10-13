@@ -115,7 +115,12 @@ class _RegistrationState extends State<Registration> {
     return new Scaffold(
       key: _scaffoldKey,
       appBar: new AppBar(
-        title: new Text("Plantlanta"),
+        title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 50.0, left: 0.0),
+            child: new Text("Registration")
+          )
+        ]),
       ),
       body: new SafeArea(
           top: false,
