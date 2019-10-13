@@ -21,27 +21,41 @@ export const handler = async function(data: purchaseRequest, context: functions.
     const itemData = item.data();
     const userRef = firestore.collection("Users").doc(UUID);
     const transactionRef = firestore.collection("Transactions").doc();
+
+    const user = await userRef.get();
+    const userPoints = user.data().points;
+
+    if(userPoints >= itemData.price) {
+
+        batch.create(transactionRef, 
+            {
+                amount: -itemData.price,
+                timestamp: new Date(),
+                description: "Purchased " + itemData.name,
+                uuid: UUID
+            }
+        );
+    
+        batch.update(itemRef, 
+            {
+                inventory: admin.firestore.FieldValue.increment(-1),
+            }
+        );
+    
+        batch.update(userRef,
+            {
+                points: admin.firestore.FieldValue.increment(-itemData.price),
+            }
+        );
         
-    batch.create(transactionRef, 
-        {
-            amount: -itemData.price,
-            timestamp: new Date(),
-            description: "Purchased " + itemData.name,
-            uuid: UUID
-        }
-    );
+   } else {
+        
+    return {
+        status: ResponseCode.FAILURE,
+        message: "User does not have enough points for selected item."
+    };
 
-    batch.update(itemRef, 
-        {
-            inventory: admin.firestore.FieldValue.increment(-1),
-        }
-    );
-
-    batch.update(userRef,
-        {
-            points: admin.firestore.FieldValue.increment(-itemData.price),
-        }
-    );
+   }
 
     return batch.commit().then(() => {
         return {

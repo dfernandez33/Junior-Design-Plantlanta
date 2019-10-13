@@ -13,13 +13,17 @@ import getAdminRequest = require("./User_Interactions/Admin/getAdminRequest");
 import reviewAdminRequest = require("./User_Interactions/Admin/reviewAdminRequest")
 import deleteUser = require("./User_Interactions/deleteUser");
 
-// Event interactions
+// Event Interactions
 import createEvent = require("./Event_Interactions/createEvent");
 import signupForEvent = require("./Event_Interactions/signupForEvent");
 import removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent");
 import getAllEvents = require("./Event_Interactions/getAllEvents");
 import getEvent = require("./Event_Interactions/getEvent")
 import confirmEvent = require("./Event_Interactions/confirmEvent");
+
+// Marketplace Interactions
+import purchaseItem = require("./Item_Interactions/purchaseItem");
+
 
 /*========================================================================
 Event Interactions
@@ -78,3 +82,10 @@ exports.reviewAdminRequest = functions.https.onCall((data, context) => {
 exports.deleteUser = functions.auth.user().onDelete((user) => {
     return deleteUser.handler(user, firestore);
 })
+
+/*========================================================================
+Marketplace Interactions
+==========================================================================*/
+exports.purchaseItem = functions.https.onCall((data, context) => {
+    return purchaseItem.handler(data, context, firestore);
+});
