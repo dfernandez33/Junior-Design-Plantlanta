@@ -2,6 +2,10 @@ import * as functions from 'firebase-functions';
 import * as admin from "firebase-admin";
 import {ResponseCode} from "../Enums/responseCode";
 
+const SENDGRID_API_KEY = functions.config().sendgrid.key;
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(SENDGRID_API_KEY);
+
 export const handler = async function(data: purchaseRequest, context: functions.https.CallableContext, firestore: FirebaseFirestore.Firestore) {
     const itemID = data.ItemID;
     let UUID;
@@ -23,9 +27,23 @@ export const handler = async function(data: purchaseRequest, context: functions.
     const transactionRef = firestore.collection("Transactions").doc();
 
     const user = await userRef.get();
-    const userPoints = user.data().points;
+    const userData = user.data();
 
-    if(userPoints >= itemData.price) {
+    const code = itemData.codes.pop()
+
+    const mssg = { //buid message for email
+        to: userData.email,
+        from: "plantlanta.bitbybit@gmail.com",
+        templateId: "d-7dc8e8fded7f48d2b9a48883c8df2be0",
+        dynamic_template_data: {
+            itemName: itemData.name,
+            name: userData.name,
+            manufacturerName: itemData.manufacturerName,
+            code: code
+        }
+    }
+
+    if (userData.points >= itemData.price) {
 
         batch.create(transactionRef, 
             {
@@ -39,6 +57,7 @@ export const handler = async function(data: purchaseRequest, context: functions.
         batch.update(itemRef, 
             {
                 quantity: admin.firestore.FieldValue.increment(-1),
+                codes: admin.firestore.FieldValue.arrayRemove(code)
             }
         );
     
@@ -57,15 +76,28 @@ export const handler = async function(data: purchaseRequest, context: functions.
 
    }
 
-    return batch.commit().then(() => {
-        return {
-            status: ResponseCode.SUCCESS,
-            message: "Success updating user and event info"
-        };
-    }).catch(() => {
+   try { // send email to organization contact
+    await sgMail.send(mssg);
+
+        return batch.commit().then(() => {
+            return {
+                status: ResponseCode.SUCCESS,
+                message: "Success updating item and user info."
+            };
+        }).catch(() => {
+            return {
+                status: ResponseCode.FAILURE,
+                message: "Error updating item and user info. "
+            };
+        });
+        
+    } catch (e) {
+
         return {
             status: ResponseCode.FAILURE,
-            message: "Error updating user and event info"
+            message: e.message
         };
-    });
+
+    }
+
 }
