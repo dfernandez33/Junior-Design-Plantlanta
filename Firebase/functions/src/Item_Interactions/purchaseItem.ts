@@ -38,7 +38,7 @@ export const handler = async function(data: purchaseRequest, context: functions.
     
         batch.update(itemRef, 
             {
-                inventory: admin.firestore.FieldValue.increment(-1),
+                quantity: admin.firestore.FieldValue.increment(-1),
             }
         );
     
