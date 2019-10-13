@@ -1,64 +1,50 @@
-<p>create-item works!</p>
 <section class="hero is-primary is-fullheight">
     <div class="hero-body">
       <div class="container">
-        <div *ngIf="!isEdit" class="title">Create New Event</div>
-        <div *ngIf="isEdit" class="title">Edit Event</div>
+        <div *ngIf="!isEdit" class="title">Create New Item</div>
+        <div *ngIf="isEdit" class="title">Edit Item</div>
         <div  *ngIf="loading" class="content has-text-centered">
             <div class="lds-ripple"><div></div><div></div><div></div></div>
             <p>{{message}}</p>
         </div>
-        <form *ngIf="!badRequestId && !loading" action="" class="box" [formGroup]="eventForm">
+        <form *ngIf="!badRequestId && !loading" action="" class="box" [formGroup]="itemForm">
           <div class="field">
-            <label class="label">Event name</label>
+            <label class="label">Item name</label>
             <div class="control">
-              <input class="input" type="text" placeholder="Event name" formControlName="eventName" required/>
+              <input class="input" type="text" placeholder="Item name" formControlName="itemName" required/>
             </div>
           </div>
           <div class="field">
-            <label class="label">Event location</label>
+            <label class="label">Item description</label>
             <div class="control">
-              <input class="input" type="text" placeholder="Event location" formControlName="eventLocation" required/>
+              <input class="textarea" placeholder="Item description" formControlName="itemDescription" required/>
             </div>
           </div>
           <div class="columns row-one">
             <div class="column">
               <div class="field">
-                <label class="label">Event date</label>
+                <label class="label">Item price</label>
                 <div class="control">
-                    <input class="small-input input" matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="eventDate">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
+                  <input class="input" type="number" placeholder=0 formControlName="itemPrice" required/>
                 </div>
               </div>
             </div>
             <div class="column">
               <div class="field">
-                <label class="label">Start time</label>
+                <label class="label">Item quantity</label>
                 <div class="control">
-                        <ngx-timepicker-field formControlName="eventStart"></ngx-timepicker-field>
+                  <input class="input" type="number" placeholder=1 formControlName="itemQuantity" required/>
                 </div>
               </div>
             </div>
-            <div class="column">
-                <div class="field">
-                  <label class="label">End time</label>
-                  <div class="control">
-                        <ngx-timepicker-field formControlName="eventEnd"></ngx-timepicker-field>
-                  </div>
-                </div>
-            </div>
           </div>
           <div class="field">
-              <label class="label">Reward</label>
-              <div class="control">
-                  <input class="input" type="number" placeholder=0 formControlName="eventReward" required/>
-              </div>
-          </div>
-          <div class="field">
-            <label class="label">Event description</label>
-            <div class="control">
-                <textarea class="textarea" placeholder="Event description" formControlName="eventDescription" required></textarea>
+            <label class="label">Item Image Upload</label>
+            <div class="control has-icons-left">
+              <input class="input" type="file" required (change)="onFileChange($item, this)"/>
+              <span class="icon is-small is-left">
+                <i class="fa fa-file"></i>
+              </span>
             </div>
           </div>
           <div *ngIf="!validForm">
@@ -67,14 +53,14 @@
           <div *ngIf="!isEdit" class="field">
             <p class="control">
               <a class="button is-primary" (click)="registerEvent()">
-                Create Event
+                Create Item
               </a>
             </p>
           </div>
           <div *ngIf="isEdit" class="field is-grouped">
             <p class="control">
                 <a class="button is-primary" (click)="editEvent()">
-                  <span>Edit Event</span>
+                  <span>Edit Item</span>
                   <span class="icon is-small">
                       <i class="fa fa-edit"></i>
                   </span>
@@ -82,7 +68,7 @@
             </p>
             <p class="control">
                 <a class="button is-danger" (click)="toggleConfirmDeleteModal()">
-                    <span>Delete Event</span>
+                    <span>Delete Item</span>
                     <span class="icon is-small">
                         <i class="fa fa-trash"></i>
                     </span>
@@ -94,14 +80,14 @@
     </div>
   </section>
   
-  <div *ngIf="eventCreated">
+  <div *ngIf="itemCreated">
     <div class="modal is-active">
-        <a (click)="closeEventCreatedModal()">
+        <a (click)="closeItemCreatedModal()">
             <div class="modal-background"></div>
         </a>
         <div class="modal-content">
             <div class="box">
-                <p class="has-text-centered">Event Created Successfully</p>
+                <p class="has-text-centered">Item Created Successfully</p>
             </div>
         </div>
     </div>
@@ -127,10 +113,10 @@
         </a>
         <div class="modal-content">
             <div class="box">
-                <p class="has-text-centered">Are you sure you want to delete this event?</p><br>
+                <p class="has-text-centered">Are you sure you want to delete this item?</p><br>
                 <div class="content has-text-centered">
-                  <a class="button is-danger" (click)="deleteEvent()">
-                      <span>Delete Event</span>
+                  <a class="button is-danger" (click)="deleteItem()">
+                      <span>Delete Item</span>
                       <span class="icon is-small">
                           <i class="fa fa-trash"></i>
                       </span>
