@@ -1,4 +1,4 @@
-<section class="hero is-primary is-fullheight is-bold">
+<section class="hero is-primary is-fullheight">
   <div class="hero-body">
     <div class="container is-centered">
       <div class="columns is-centered">
@@ -6,7 +6,11 @@
           <p class="title">
               Admin Account Request
           </p>
-          <div *ngIf="!badRequestId && !submitted" class="box is-centered">
+          <div *ngIf="!loaded" class="content has-text-centered">
+            <div class="lds-ripple"><div></div><div></div><div></div></div>
+            <p>Loading Request Info...</p>
+          </div>
+          <div *ngIf="!badRequestId && !submitted && loaded" class="box is-centered">
             <label class="label">Name:</label>
             <p>{{requestInfo?.name}}</p>
             <br>

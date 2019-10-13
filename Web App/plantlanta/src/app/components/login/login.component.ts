@@ -29,7 +29,9 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.isUserAdminFunctions = this.cloud.httpsCallable("isUserAdmin");
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.route.queryParams.subscribe(params => {
+      this.returnUrl = params['returnUrl'] != null ? this.route.snapshot.queryParams['returnUrl'] : '/';
+    });
   }
 
   async login() {

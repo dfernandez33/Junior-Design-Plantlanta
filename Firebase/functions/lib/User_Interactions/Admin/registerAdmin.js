@@ -12,12 +12,15 @@ exports.handler = async function (data, context, firestore) {
             message: "No UUID received from context."
         };
     }
-    await firestore.collection("AdminRequests").doc(data.requestId).delete();
+    const requestRef = await firestore.collection("AdminRequests").doc(data.requestId);
+    const request = await requestRef.get();
     const userRef = firestore.collection("Admins").doc(UUID);
     try {
         await userRef.set({
             name: data.name,
+            organizationId: request.data().organizationId
         });
+        await requestRef.delete();
         return {
             status: responseCode_1.ResponseCode.SUCCESS,
             message: "Admin record created successfully"
