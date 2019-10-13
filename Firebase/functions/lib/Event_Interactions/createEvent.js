@@ -13,7 +13,7 @@ exports.handler = async function (data, context, firestore) {
         };
     }
     try {
-        console.log(data);
+        const adminData = await firestore.collection("Admins").doc(UUID).get();
         const eventsRef = await firestore.collection("Events");
         const newEventRef = await eventsRef.add({});
         await newEventRef.set({
@@ -24,10 +24,12 @@ exports.handler = async function (data, context, firestore) {
             endTime: data.endTime,
             description: data.description,
             eventId: newEventRef.id,
+            reward: data.reward,
             createdBy: UUID,
             createdOn: new Date(),
             participants: [],
-            confirmed_participants: []
+            confirmed_participants: [],
+            organizationId: adminData.data().organizationId
         });
         return {
             status: responseCode_1.ResponseCode.SUCCESS,
