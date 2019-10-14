@@ -38,7 +38,7 @@ export const handler = async function(data: purchaseRequest, context: functions.
         dynamic_template_data: {
             itemName: itemData.name,
             name: userData.name,
-            manufacturerName: itemData.manufacturerName,
+            manufacturerName: itemData.brand,
             code: code
         }
     }
