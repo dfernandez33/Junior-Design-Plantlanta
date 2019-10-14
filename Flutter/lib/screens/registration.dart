@@ -7,6 +7,7 @@ import 'package:junior_design_plantlanta/screens/preferences1_screen.dart';
 class Registration extends StatefulWidget {
   Registration({Key key, this.title}) : super(key: key);
   final String title;
+
   @override
   _RegistrationState createState() => new _RegistrationState();
 }
@@ -17,7 +18,8 @@ class _RegistrationState extends State<Registration> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   var passKey = GlobalKey<FormFieldState>();
   final TextEditingController _controller = new TextEditingController();
-  final _UsNumberTextInputFormatter _phoneNumberFormatter = new _UsNumberTextInputFormatter();
+  final _UsNumberTextInputFormatter _phoneNumberFormatter =
+      new _UsNumberTextInputFormatter();
 
   String name1 = '';
   String dob1 = '';
@@ -29,7 +31,9 @@ class _RegistrationState extends State<Registration> {
   Future _chooseDate(BuildContext context, String initialDateString) async {
     var now = new DateTime.now();
     var initialDate = convertToDate(initialDateString) ?? now;
-    initialDate = (initialDate.year >= 1900 && initialDate.isBefore(now) ? initialDate : now);
+    initialDate = (initialDate.year >= 1900 && initialDate.isBefore(now)
+        ? initialDate
+        : now);
 
     var result = await showDatePicker(
         context: context,
@@ -45,8 +49,7 @@ class _RegistrationState extends State<Registration> {
   }
 
   DateTime convertToDate(String input) {
-    try
-    {
+    try {
       var parsedDate = new DateFormat.yMd().parseStrict(input);
       return parsedDate;
     } catch (e) {
@@ -66,7 +69,8 @@ class _RegistrationState extends State<Registration> {
   }
 
   bool isValidEmail(String input) {
-    final RegExp regex = new RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
+    final RegExp regex = new RegExp(
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
     return regex.hasMatch(input);
   }
 
@@ -93,8 +97,8 @@ class _RegistrationState extends State<Registration> {
           ..address = address1
           ..email = email1;
 
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Preferences1(newUser)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => Preferences1(newUser)));
       } catch (e) {
         print(e.message);
       }
@@ -102,8 +106,8 @@ class _RegistrationState extends State<Registration> {
   }
 
   void showMessage(String message, [MaterialColor color = Colors.red]) {
-    _scaffoldKey.currentState
-        .showSnackBar(new SnackBar(backgroundColor: color, content: new Text(message)));
+    _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(backgroundColor: color, content: new Text(message)));
   }
 
   @override
@@ -111,7 +115,12 @@ class _RegistrationState extends State<Registration> {
     return new Scaffold(
       key: _scaffoldKey,
       appBar: new AppBar(
-        title: new Text("Plantlanta"),
+        title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 50.0, left: 0.0),
+            child: new Text("Registration")
+          )
+        ]),
       ),
       body: new SafeArea(
           top: false,
@@ -122,7 +131,7 @@ class _RegistrationState extends State<Registration> {
               child: new ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 children: <Widget>[
-                  new Padding(padding: const EdgeInsets.only(top:15)),
+                  new Padding(padding: const EdgeInsets.only(top: 15)),
                   new TextFormField(
                     decoration: const InputDecoration(
                       icon: const Icon(Icons.person),
@@ -130,23 +139,25 @@ class _RegistrationState extends State<Registration> {
                       labelText: 'Name',
                     ),
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                    validator: (name) => name.isEmpty ? 'Name is required' : null,
+                    validator: (name) =>
+                        name.isEmpty ? 'Name is required' : null,
                     onSaved: (name) => name1 = name,
                   ),
+                  const SizedBox(height: 24.0),
                   new Row(children: <Widget>[
                     new Expanded(
                         child: new TextFormField(
-                          decoration: new InputDecoration(
-                            icon: const Icon(Icons.calendar_today),
-                            hintText: 'Enter your date of birth',
-                            labelText: 'Date of birth',
-                          ),
-                          controller: _controller,
-                          keyboardType: TextInputType.datetime,
-                          validator: (dob) =>
+                      decoration: new InputDecoration(
+                        icon: const Icon(Icons.calendar_today),
+                        hintText: 'Enter your date of birth',
+                        labelText: 'Date of birth',
+                      ),
+                      controller: _controller,
+                      keyboardType: TextInputType.datetime,
+                      validator: (dob) =>
                           isValidDob(dob) ? null : 'Not a valid date',
-                          onSaved: (dob) => dob1 = dob,
-                        )),
+                      onSaved: (dob) => dob1 = dob,
+                    )),
                     new IconButton(
                       icon: new Icon(Icons.more_horiz),
                       tooltip: 'Choose date',
@@ -155,6 +166,7 @@ class _RegistrationState extends State<Registration> {
                       }),
                     )
                   ]),
+                  const SizedBox(height: 24.0),
                   new TextFormField(
                     decoration: const InputDecoration(
                       icon: const Icon(Icons.phone),
@@ -173,6 +185,7 @@ class _RegistrationState extends State<Registration> {
                     //onSaved: (val) => newContact.rebuild((b) => b.phone = val),
                     onSaved: (phone) => phone1 = phone,
                   ),
+                  const SizedBox(height: 24.0),
                   new TextFormField(
                     decoration: const InputDecoration(
                       icon: const Icon(Icons.home),
@@ -180,9 +193,11 @@ class _RegistrationState extends State<Registration> {
                       labelText: 'Address',
                     ),
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                    validator: (address) => address.isEmpty ? 'Address is required' : null,
+                    validator: (address) =>
+                        address.isEmpty ? 'Address is required' : null,
                     onSaved: (address) => address1 = address,
                   ),
+                  const SizedBox(height: 24.0),
                   new TextFormField(
                     decoration: const InputDecoration(
                       icon: const Icon(Icons.email),
@@ -195,6 +210,7 @@ class _RegistrationState extends State<Registration> {
                         : 'Please enter a valid email address',
                     onSaved: (email) => email1 = email,
                   ),
+                  const SizedBox(height: 24.0),
                   new TextFormField(
                     decoration: const InputDecoration(
                       icon: const Icon(Icons.lock_open),
@@ -202,11 +218,14 @@ class _RegistrationState extends State<Registration> {
                       labelText: 'Password',
                     ),
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                    validator: (password) => password.length < 6 ? 'Password must be at least 6 characters' : null,
+                    validator: (password) => password.length < 6
+                        ? 'Password must be at least 6 characters'
+                        : null,
                     onSaved: (password) => password1 = password,
                     obscureText: true,
                     key: passKey,
                   ),
+                  const SizedBox(height: 24.0),
                   new TextFormField(
                     decoration: const InputDecoration(
                       icon: const Icon(Icons.lock_outline),
@@ -214,17 +233,39 @@ class _RegistrationState extends State<Registration> {
                       labelText: 'Confirm your password',
                     ),
                     inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-                    validator: (confirmation) => (confirmation == passKey.currentState.value.toString()) ? null : 'Passwords dont match',
+                    validator: (confirmation) =>
+                        (confirmation == passKey.currentState.value.toString())
+                            ? null
+                            : 'Passwords dont match',
                     obscureText: true,
                   ),
-                  new Container(
-                      padding: const EdgeInsets.only(left: 0, top: 40.0),
-                      child: new RaisedButton(
-                        child: const Text('Submit'),
-                        onPressed: (){
-                          _submitForm();
-                        },
-                      )),
+                  const SizedBox(height: 24.0),
+                  new Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                            child: Padding(
+                          padding: const EdgeInsets.only(
+                              right: 0.0, left: 0.0, top: 10.0),
+                          child: FlatButton(
+                            onPressed: _submitForm,
+                            child: Container(
+                                alignment: Alignment.center,
+                                height: 60.0,
+                                decoration: new BoxDecoration(
+                                  color: Color(0xFF25A325),
+                                  borderRadius: new BorderRadius.circular(10.0),
+                                ),
+                                child: Text(
+                                  "Register",
+                                  style: new TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                )),
+                          ),
+                        )),
+                      ])
                 ],
               ))),
     );
@@ -234,32 +275,28 @@ class _RegistrationState extends State<Registration> {
 class _UsNumberTextInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue,
-      TextEditingValue newValue,
-      ) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     final int newTextLength = newValue.text.length;
     int selectionIndex = newValue.selection.end;
     int usedSubstringIndex = 0;
     final StringBuffer newText = StringBuffer();
     if (newTextLength >= 1) {
       newText.write('(');
-      if (newValue.selection.end >= 1)
-        selectionIndex++;
+      if (newValue.selection.end >= 1) selectionIndex++;
     }
     if (newTextLength >= 4) {
       newText.write(newValue.text.substring(0, usedSubstringIndex = 3) + ') ');
-      if (newValue.selection.end >= 3)
-        selectionIndex += 2;
+      if (newValue.selection.end >= 3) selectionIndex += 2;
     }
     if (newTextLength >= 7) {
       newText.write(newValue.text.substring(3, usedSubstringIndex = 6) + '-');
-      if (newValue.selection.end >= 6)
-        selectionIndex++;
+      if (newValue.selection.end >= 6) selectionIndex++;
     }
     if (newTextLength >= 11) {
       newText.write(newValue.text.substring(6, usedSubstringIndex = 10) + ' ');
-      if (newValue.selection.end >= 10)
-        selectionIndex++;
+      if (newValue.selection.end >= 10) selectionIndex++;
     }
     // Dump the rest.
     if (newTextLength >= usedSubstringIndex)
