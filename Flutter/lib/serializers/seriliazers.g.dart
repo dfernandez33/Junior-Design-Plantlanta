@@ -9,6 +9,7 @@ part of serializers;
 Serializers _$serializers = (new Serializers().toBuilder()
       ..add(Datetime.serializer)
       ..add(EventModel.serializer)
+      ..add(ItemModel.serializer)
       ..add(UserPreferenceModel.serializer)
       ..add(UserRegistrationModel.serializer)
       ..addBuilderFactory(

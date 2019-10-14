@@ -1,16 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:junior_design_plantlanta/model/item_model.dart';
+import 'package:junior_design_plantlanta/widgets/item_card.dart';
 
 class Marketplace extends StatefulWidget {
-  List<Item> items = [
-    Item("https://www.beatsbydre.com/content/dam/beats/web/pdp/beats-solo2/hero_mobile/S2_BLACK_INTRO_MOBILE_retina_V2.png", 100),
-    Item("https://www.beatsbydre.com/content/dam/beats/web/pdp/beats-solo2/hero_mobile/S2_BLACK_INTRO_MOBILE_retina_V2.png", 100),
-    Item("https://www.beatsbydre.com/content/dam/beats/web/pdp/beats-solo2/hero_mobile/S2_BLACK_INTRO_MOBILE_retina_V2.png", 100),
-    Item("https://www.beatsbydre.com/content/dam/beats/web/pdp/beats-solo2/hero_mobile/S2_BLACK_INTRO_MOBILE_retina_V2.png", 100),
-    Item("https://www.beatsbydre.com/content/dam/beats/web/pdp/beats-solo2/hero_mobile/S2_BLACK_INTRO_MOBILE_retina_V2.png", 100)
-  ];
+  FirebaseUser currentUser;
+
+  Marketplace() {
+    getCurrentUser();
+  }
+
   @override
  _MarketplaceState createState() => _MarketplaceState();
+
+  void getCurrentUser() async {
+    this.currentUser = await FirebaseAuth.instance.currentUser();
+  }
 }
 
 class _MarketplaceState extends State<Marketplace> {
@@ -26,31 +32,54 @@ class _MarketplaceState extends State<Marketplace> {
     "https://media.onthemarket.com/properties/6191869/797156548/composite.jpg",
     "https://media.onthemarket.com/properties/6191840/797152761/composite.jpg",
   ];
+  
+  List<ItemModel> items;
+  
+  _MarketplaceState() {
+    items = List();
+    _getItems();
+  }
+  
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StaggeredGridView.countBuilder(
-        crossAxisCount: 4,
-        itemCount: 10,
-        itemBuilder: (BuildContext context, int index) => Card(
-          child: Column(
-            children: <Widget>[
-              Image.network(images[index]),
-              Text("Some text"),
-            ],
-          ),
+    if (items.isEmpty) {
+      return Scaffold(
+        body: Center(
+            child: CircularProgressIndicator(
+              value: null,
+              valueColor:
+              AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+            )),
+      );
+    } else {
+      return Scaffold(
+          body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: StaggeredGridView.countBuilder(
+                  crossAxisCount: 4,
+                  itemCount: this.items.length,
+                  itemBuilder: (BuildContext context, int index) => ItemCard(this.items[index]),
+                  staggeredTileBuilder: (int index) => StaggeredTile.fit(2),
+                  mainAxisSpacing: 4.0,
+                  crossAxisSpacing: 4.0,
         ),
-        staggeredTileBuilder: (int index) =>
-        new StaggeredTile.fit(2),
-        mainAxisSpacing: 4.0,
-        crossAxisSpacing: 4.0,
-      ),
-    );
+      )
+      );
+    }
   }
-}
+  
+  void _getItems() {
+    images.forEach((img) {
+      var model = ItemModelBuilder()
+        ..imageSrc = img
+        ..name = "Beats by Dr Dre"
+        ..price = 200
+        ..itemId = "111"
+        ..description = "this is dope"
+        ..quantity = 12;
+      items.add(model.build());
+    });
+  }
 
-class Item {
-  String src;
-  int price;
-  Item(this.src, this.price);
+
 }
