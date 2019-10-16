@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:junior_design_plantlanta/model/item_model.dart';
 import 'package:junior_design_plantlanta/widgets/item_card.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Marketplace extends StatefulWidget {
   FirebaseUser currentUser;
@@ -59,25 +61,32 @@ class _MarketplaceState extends State<Marketplace> {
                   crossAxisCount: 4,
                   itemCount: this.items.length,
                   itemBuilder: (BuildContext context, int index) => ItemCard(this.items[index]),
-                  staggeredTileBuilder: (int index) => StaggeredTile.fit(2),
+                  staggeredTileBuilder: (int index) {
+                    if (false) {
+                      return StaggeredTile.fit(4);
+                    } else {
+                      return StaggeredTile.fit(2);
+                    }
+                  },
                   mainAxisSpacing: 4.0,
                   crossAxisSpacing: 4.0,
-        ),
-      )
+          ),
+        )
       );
     }
   }
   
-  void _getItems() {
-    images.forEach((img) {
-      var model = ItemModelBuilder()
-        ..imageSrc = img
-        ..name = "Beats by Dr Dre"
-        ..price = 200
-        ..itemId = "111"
-        ..description = "this is dope"
-        ..quantity = 12;
-      items.add(model.build());
+  void _buildItemsModel() {
+    _getItems();
+  }
+
+  Future<dynamic> _getItems() async {
+    return Firestore.instance.collection("Items").getDocuments().asStream().listen((data) {
+      var items = data.documents;
+      items.forEach((item) {
+        this.items.add(ItemModel.fromJson(item.data));
+        setState(() {});
+      });
     });
   }
 

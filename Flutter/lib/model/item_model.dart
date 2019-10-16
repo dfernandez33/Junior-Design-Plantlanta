@@ -15,9 +15,10 @@ abstract class ItemModel implements Built<ItemModel, ItemModelBuilder> {
 
   @BuiltValueField(wireName: 'name')
   String get name;
-  @BuiltValueField(wireName: 'imageSrc')
+  @BuiltValueField(wireName: 'image')
   String get imageSrc;
   @BuiltValueField(wireName: 'itemID')
+  @nullable
   String get itemId;
   @BuiltValueField(wireName: 'price')
   int get price;
