@@ -21,7 +21,7 @@
                     </a>
                 </div>
             </div>
-            <div *ngIf="items?.length > 0">
+            <div *ngIf="items?.length > 0" class="scroll-container">
                 <div *ngFor="let item of items; let i = index;">
                     <div *ngIf="i % 3 == 0" class="columns">
                         <app-marketplace-item class="column is-one-third" [item]="item"></app-marketplace-item>

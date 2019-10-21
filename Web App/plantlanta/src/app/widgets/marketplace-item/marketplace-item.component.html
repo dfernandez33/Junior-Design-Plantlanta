@@ -1,18 +1,16 @@
 <div class="card rounded">
-    <div class="columns">
-        <header class="card-header column">
-            <p class="card-header-title">
-                {{item?.name}}
-            </p>
-        </header>
-        <div class="column has-text-right">
+    <header class="card-header">
+        <p class="card-header-title">
+            {{item?.name}}
+        </p>
+        <div class="has-text-right">
             <a class="button is-medium is-white" (click)="editEvent()">
                 <span class="icon is-medium">
                     <i class="fa fa-edit fa-lg"></i>
                 </span>
             </a>
         </div>
-    </div>
+    </header>
     <div class="card-image">
         <figure class="image is-4by3">
         <img src={{item?.image}} alt="Placeholder image">
