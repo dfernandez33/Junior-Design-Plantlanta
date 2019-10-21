@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '../../../../node_modules/@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { VerifyAdminRequestInfo } from '../../interfaces/verify-admin-request-info';
-import { AngularFireFunctions } from '../../../../node_modules/@angular/fire/functions';
-import { SpinnerComponent } from 'src/app/widgets/spinner/spinner.component';
-import { HttpClient } from '../../../../node_modules/@angular/common/http';
-import { first } from '../../../../node_modules/rxjs/operators';
+import { AngularFireFunctions } from '@angular/fire/functions';
+import { SpinnerComponent } from '../../widgets/spinner/spinner.component';
+import { HttpClient } from '@angular/common/http';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-verify-admin',

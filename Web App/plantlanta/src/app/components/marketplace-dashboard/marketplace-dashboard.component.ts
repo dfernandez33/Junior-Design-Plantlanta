@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { MarketplaceItem } from '../../interfaces/marketplace-item';
+import { MarketplaceService } from '../../services/Marketplace/marketplace.service';
 
 @Component({
   selector: 'app-marketplace-dashboard',
@@ -7,9 +10,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MarketplaceDashboardComponent implements OnInit {
 
-  constructor() { }
+  items: MarketplaceItem[];
+  loading = true;
+
+  constructor(private marketpalceService: MarketplaceService) { }
 
   ngOnInit() {
+    this.marketpalceService.getItems().subscribe(items => {
+      this.loading = false;
+      this.items = items;
+    });
   }
 
 }

@@ -18,6 +18,7 @@ exports.handler = async function (req, res, firestore) {
         }
         // get reference to organization which user is trying to register as.
         const orgQuerySnapshot = await firestore.collection("Organizations").where("name", "==", data.organizationName).get();
+        console.log(orgQuerySnapshot);
         if (orgQuerySnapshot.empty) {
             res.status(400).send({
                 status: 400,
