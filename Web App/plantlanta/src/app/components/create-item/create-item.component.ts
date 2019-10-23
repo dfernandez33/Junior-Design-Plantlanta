@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '../../../../node_modules/@angular/router
 import { AngularFireStorage } from '../../../../node_modules/@angular/fire/storage';
 import { AngularFirestore } from '../../../../node_modules/@angular/fire/firestore';
 import { HttpClient } from '../../../../node_modules/@angular/common/http';
+import { first, tap, finalize } from '../../../../node_modules/rxjs/operators';
 
 
 @Component({
@@ -32,24 +33,23 @@ export class CreateItemComponent implements OnInit {
   errMessage = '';
 
   confirmDeleteModal = false;
-
   successDeleteModal = false;
   successDeleteModalMessage = "";
-
   editModal = false;
   editModalMessage = "";
 
   file: File;
 
   itemForm = new FormGroup({
-    itemImage: new FormControl(''),
     itemName: new FormControl(''),
-    eventDescription: new FormControl(''),
+    itemDescription: new FormControl(''),
     itemPrice: new FormControl(0),
-    itemQuantity: new FormControl(0)
+    itemQuantity: new FormControl(0),
+    itemImage: new FormControl(''),
+    itemCode: new FormControl('')
   });
 
-  constructor(private storage: AngularFireStorage, private cloud: AngularFireFunctions, private route: ActivatedRoute, private firestore: AngularFirestore, private router: Router) {}
+  constructor(private storage: AngularFireStorage, private cloud: AngularFireFunctions, private route: ActivatedRoute, private firestore: AngularFirestore, private router: Router, private http: HttpClient) {}
 
   ngOnInit() {
     this.itemId = this.route.snapshot.paramMap.get("itemId");
@@ -62,11 +62,12 @@ export class CreateItemComponent implements OnInit {
       this.getItemFunction = this.cloud.httpsCallable("getItem");
       this.getItemFunction({EventID: this.itemId}).toPromise().then(item => {
         this.itemForm.setValue({
-          itemImage: item.message.image,
           itemName: item.message.name,
           itemDescription: item.message.description,
           itemPrice: item.message.price,
-          itemQuantity: item.message.quantity
+          itemQuantity: item.message.quantity,
+          itemImage: item.message.image,
+          itemCode: item.message.code
         });
         this.loading = false;
       });
@@ -75,15 +76,16 @@ export class CreateItemComponent implements OnInit {
     }
   }
 
-  // onFileChange(item) {
-  //   if(item.target.files && item.target.files.length && event.target.files[0].type == "application/pdf") {
-  //     this.file = event.target.files[0];
-  //   } else {
-  //     event.srcElement.value = null;
-  //     this.validForm = false;
-  //     this.errMessage = "Only PDF files are allowed."
-  //   }
-  // }
+  onFileChange(item) {
+    console.log(item);
+    if(item.target.files && item.target.files.length && item.target.files[0].type == "image/png") {
+      this.file = item.target.files[0];
+    } else {
+      item.srcElement.value = null;
+      this.validForm = false;
+      this.errMessage = "Only PNG images are allowed."
+    }
+  }
 
   async registerItem() {
     this.message = "Creating item..."
@@ -92,11 +94,12 @@ export class CreateItemComponent implements OnInit {
       let formValues = this.itemForm.value;
       try {
         let resp = await this.createItemFunction({
-          image: formValues["itemImage"],
           name: formValues["itemName"],
           description: formValues["itemDescription"],
           price: formValues["itemPrice"],
-          quantity: formValues["itemQuantity"]
+          quantity: formValues["itemQuantity"],
+          image: formValues["itemImage"],
+          code: formValues["itemCode"]
         }).toPromise();
         if (!resp.status) {
           this.loading = false;
@@ -113,12 +116,13 @@ export class CreateItemComponent implements OnInit {
         this.message = e.message;
       }
     } else if (this.itemForm.invalid) {
+      this.loading = false;
       this.validForm = false;
       this.message = "All fields are required to create an item. Please fill them out.";
     }
   }
 
-  closeEventCreatedModal() {
+  closeItemCreatedModal() {
     this.itemCreated = false;
   }
 
@@ -134,7 +138,7 @@ export class CreateItemComponent implements OnInit {
     this.confirmDeleteModal = !this.confirmDeleteModal;
   }
 
-  deleteEvent() {
+  deleteItem() {
     this.confirmDeleteModal = false;
     this.message = "Deleting item...";
     this.loading = true;  
@@ -143,7 +147,7 @@ export class CreateItemComponent implements OnInit {
       this.loading = false;
       this.successDeleteModalMessage = "Item successfully deleted. You will be redirected to the marketplace.";
       setTimeout(() => {
-        this.router.navigate(["/event_dashboard"])
+        this.router.navigate(["/marketplace_dashboard"])
       }, 2000);
     }).catch(() => {
       this.successDeleteModal = true;
@@ -152,17 +156,18 @@ export class CreateItemComponent implements OnInit {
     });
   }
 
-  editEvent() {
+  editItem() {
     this.message = "Updating item information...";
     this.loading = true;
     let formValues = this.itemForm.value;
     this.editItemFunction({
       eventId: this.itemId,
-      image: formValues["itemImage"],
       name: formValues["itemName"],
       description: formValues["itemDescription"],
       price: formValues["itemPrice"],
-      quantity: formValues["itemQuantity"]
+      quantity: formValues["itemQuantity"],
+      image: formValues["itemImage"],
+      code: formValues["itemCode"]
     }).toPromise().then(resp => {
       if (resp.status) {
         this.editModal = true;
