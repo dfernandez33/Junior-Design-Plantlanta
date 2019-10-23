@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '../../../../node_modules/@angular/forms';
+import { FormGroup, FormControl, FormControlName } from '../../../../node_modules/@angular/forms';
 import { AngularFireFunctions } from '../../../../node_modules/@angular/fire/functions';
 import { ActivatedRoute, Router } from '../../../../node_modules/@angular/router';
 import { AngularFireStorage } from '../../../../node_modules/@angular/fire/storage';
@@ -42,11 +42,12 @@ export class CreateItemComponent implements OnInit {
 
   itemForm = new FormGroup({
     itemName: new FormControl(''),
+    itemBrand: new FormControl(''),
     itemDescription: new FormControl(''),
     itemPrice: new FormControl(0),
     itemQuantity: new FormControl(0),
     itemImage: new FormControl(''),
-    itemCode: new FormControl('')
+    itemCodes: new FormControl('')
   });
 
   constructor(private storage: AngularFireStorage, private cloud: AngularFireFunctions, private route: ActivatedRoute, private firestore: AngularFirestore, private router: Router, private http: HttpClient) {}
@@ -63,11 +64,12 @@ export class CreateItemComponent implements OnInit {
       this.getItemFunction({EventID: this.itemId}).toPromise().then(item => {
         this.itemForm.setValue({
           itemName: item.message.name,
+          itemBrand: item.message.brand,
           itemDescription: item.message.description,
           itemPrice: item.message.price,
           itemQuantity: item.message.quantity,
           itemImage: item.message.image,
-          itemCode: item.message.code
+          itemCodes: item.message.codes
         });
         this.loading = false;
       });
@@ -87,34 +89,47 @@ export class CreateItemComponent implements OnInit {
     }
   }
 
-  async registerItem() {
+  registerItem() {
     this.message = "Creating item..."
     this.loading = true;
     if (this.itemForm.valid) {
       let formValues = this.itemForm.value;
-      try {
-        let resp = await this.createItemFunction({
-          name: formValues["itemName"],
-          description: formValues["itemDescription"],
-          price: formValues["itemPrice"],
-          quantity: formValues["itemQuantity"],
-          image: formValues["itemImage"],
-          code: formValues["itemCode"]
-        }).toPromise();
-        if (!resp.status) {
-          this.loading = false;
+      const path = "Item_Images/" + formValues["itemName"]
+      let upload = this.storage.upload(path, this.file);
+      this.submitting = true;
+      let percentChange = upload.percentageChanges().subscribe(percent => this.message = "Uploading Item... " + Math.round(percent) + "%");
+      upload.then(async snapshot => {
+        percentChange.unsubscribe();
+        try {
+          let resp = await this.createItemFunction({
+            name: formValues["itemName"],
+            brand: formValues["itemBrand"],
+            description: formValues["itemDescription"],
+            price: formValues["itemPrice"],
+            quantity: formValues["itemQuantity"],
+            image: await snapshot.ref.getDownloadURL(),
+            codes: formValues["itemCodes"].split(/\r|\n/)
+          }).toPromise();
+          if (!resp.status) {
+            this.loading = false;
+            this.validForm = false;
+            this.message = resp.message;
+          } else {
+            this.loading = false;
+            this.itemCreated = true;
+            this.itemForm.reset();
+          }
+        } catch(e) {
           this.validForm = false;
-          this.message = resp.message;
-        } else {
-          this.loading = false;
-          this.itemCreated = true;
-          this.itemForm.reset();
+          this.errMessage = e.error.message;
+          this.submitting = false;
+          this.storage.ref(path).delete();
         }
-      } catch(e) {
-        this.loading = false;
+      }).catch(error => {
         this.validForm = false;
-        this.message = e.message;
-      }
+        this.errMessage = error.message,
+        this.submitting = false;
+      })
     } else if (this.itemForm.invalid) {
       this.loading = false;
       this.validForm = false;
@@ -161,13 +176,13 @@ export class CreateItemComponent implements OnInit {
     this.loading = true;
     let formValues = this.itemForm.value;
     this.editItemFunction({
-      eventId: this.itemId,
+      itemId: this.itemId,
       name: formValues["itemName"],
+      brand: formValues["itemBrand"],
       description: formValues["itemDescription"],
       price: formValues["itemPrice"],
       quantity: formValues["itemQuantity"],
-      image: formValues["itemImage"],
-      code: formValues["itemCode"]
+      codes: formValues["itemCodes"]
     }).toPromise().then(resp => {
       if (resp.status) {
         this.editModal = true;

@@ -15,6 +15,10 @@ import getAdminRequest = require("./User_Interactions/Admin/getAdminRequest");
 import reviewAdminRequest = require("./User_Interactions/Admin/reviewAdminRequest")
 import deleteUser = require("./User_Interactions/deleteUser");
 
+// Marketplace Interactions
+import createItem = require("./Marketplace_Interactions/createItem");
+import editItem = require("./Marketplace_Interactions/editItem");
+
 // Event Interactions
 import createEvent = require("./Event_Interactions/createEvent");
 import signupForEvent = require("./Event_Interactions/signupForEvent");
@@ -78,6 +82,18 @@ exports.editEvent = functions.https.onCall((data, context) => {
 
 exports.deleteEvent = functions.firestore.document("Events/{eventId}").onDelete((data, context) => {
     return deleteEvent.handler(data, context, firestore);
+});
+
+/*========================================================================
+Marketplace Interactions
+==========================================================================*/
+
+exports.createItem = functions.https.onCall((data, context) => {
+    return createItem.handler(data, context, firestore);
+});
+
+exports.editItem = functions.https.onCall((data, context) => {
+    return editItem.handler(data, context, firestore);
 });
 
 /*========================================================================

@@ -15,6 +15,12 @@
             </div>
           </div>
           <div class="field">
+            <label class="label">Item brand</label>
+            <div class="control">
+              <input class="input" type="text" placeholder="Item brand" formControlName="itemBrand" required/>
+            </div>
+          </div>
+          <div class="field">
             <label class="label">Item description</label>
             <div class="control">
               <input class="input" type ="text" placeholder="Item description" formControlName="itemDescription" required/>
@@ -50,7 +56,7 @@
           <div class="field">
             <label class="label">Item codes</label>
             <div class="control">
-              <textarea class="textarea" placeholder="Enter each item code in a new line" formControlName="itemCode" required></textarea>
+              <textarea class="textarea" placeholder="Enter each item code in a new line" formControlName="itemCodes" required></textarea>
             </div>
           </div>
           <div *ngIf="!validForm">

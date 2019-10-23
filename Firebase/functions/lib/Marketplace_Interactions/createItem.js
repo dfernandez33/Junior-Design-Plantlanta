@@ -1,9 +1,7 @@
-import * as functions from 'firebase-functions';
-
-import { Item } from "../Interface/Marketplace_Interactions_Interface/item";
-import { ResponseCode } from '../Enums/responseCode';
-
-export const handler = async function(data: Item, context: functions.https.CallableContext, firestore: FirebaseFirestore.Firestore){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const responseCode_1 = require("../Enums/responseCode");
+exports.handler = async function (data, context, firestore) {
     // let UUID;
     // if (context.auth !== undefined) {
     //     UUID = context.auth.uid
@@ -24,16 +22,19 @@ export const handler = async function(data: Item, context: functions.https.Calla
             quantity: data.quantity,
             image: data.image,
             codes: data.codes,
+            ItemId: newItemRef.id,
+            createdOn: new Date(),
         });
         return {
-            status: ResponseCode.SUCCESS,
+            status: responseCode_1.ResponseCode.SUCCESS,
             message: "Item created successfully"
-        }
-    } catch(e) {
-        return {
-            status: ResponseCode.FAILURE,
-            message: e.message
-        }
+        };
     }
-
-}
+    catch (e) {
+        return {
+            status: responseCode_1.ResponseCode.FAILURE,
+            message: e.message
+        };
+    }
+};
+//# sourceMappingURL=createItem.js.map
