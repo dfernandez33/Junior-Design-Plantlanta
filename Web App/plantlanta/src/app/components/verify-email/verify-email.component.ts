@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
-import { Router } from '../../../../node_modules/@angular/router';
+import { AuthService } from '../../services/Auth/auth.service';
+import { Router } from '@angular/router';
 import { SpinnerComponent } from '../../widgets/spinner/spinner.component';
 
 

@@ -23,7 +23,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { SpinnerComponent } from './widgets/spinner/spinner.component';
 import { VerifyAdminComponent } from './components/verify-admin/verify-admin.component';
 import { RequestAdminComponent } from './components/request-admin/request-admin.component';
-import { HttpClientModule } from '../../node_modules/@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { MenuComponent } from './components/menu/menu.component';
 import { EventcardComponent } from './widgets/eventcard/eventcard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -33,6 +33,7 @@ import { RegisterOrganizationFormComponent } from './widgets/register-organizati
 import { RequestAdminFormComponent } from './widgets/request-admin-form/request-admin-form.component';
 import { VerifyOrganizationComponent } from './components/verify-organization/verify-organization.component';
 import { CreateItemComponent } from './components/create-item/create-item.component';
+import { MarketplaceItemComponent } from './widgets/marketplace-item/marketplace-item.component';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBmvdgLNheowskj5H1WDtVnnRUYxIUfix8",
@@ -62,6 +63,7 @@ const firebaseConfig = {
     RequestAdminFormComponent,
     VerifyOrganizationComponent,
     CreateItemComponent,
+    MarketplaceItemComponent,
   ],
   imports: [
     BrowserModule,

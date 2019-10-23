@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '../../../../node_modules/@angular/forms';
-import { AngularFireFunctions } from '../../../../node_modules/@angular/fire/functions';
-import { ActivatedRoute, Router } from '../../../../node_modules/@angular/router';
-import { AngularFirestore } from '../../../../node_modules/@angular/fire/firestore';
+import { FormGroup, FormControl } from '@angular/forms';
+import { AngularFireFunctions } from '@angular/fire/functions';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-create-event',

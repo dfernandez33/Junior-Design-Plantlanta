@@ -25,7 +25,7 @@
                 <div class="lds-ripple"><div></div><div></div><div></div></div>
                 <p>{{message}}</p>
             </div>
-            <div *ngIf="loaded">
+            <div *ngIf="loaded" class="scroll-container">
                 <div *ngFor="let event of events">
                     <app-eventcard [event]="event"></app-eventcard>
                 </div>

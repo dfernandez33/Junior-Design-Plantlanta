@@ -42,6 +42,8 @@ exports.getOrganizationRequest = functions.https.onCall((data, context) => {
 exports.reviewOrganizationRequest = functions.https.onRequest((req, res) => {
     return reviewOrganizationRequest.handler(req, res, firestore);
 });
+// Marketplace Interactions
+const purchaseItem = require("./Item_Interactions/purchaseItem");
 /*========================================================================
 Event Interactions
 ==========================================================================*/
@@ -98,5 +100,11 @@ exports.reviewAdminRequest = functions.https.onRequest((req, res) => {
 });
 exports.deleteUser = functions.auth.user().onDelete((user) => {
     return deleteUser.handler(user, firestore);
+});
+/*========================================================================
+Marketplace Interactions
+==========================================================================*/
+exports.purchaseItem = functions.https.onCall((data, context) => {
+    return purchaseItem.handler(data, context, firestore);
 });
 //# sourceMappingURL=index.js.map

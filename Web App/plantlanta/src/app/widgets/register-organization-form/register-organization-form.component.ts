@@ -1,8 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormControl } from '../../../../node_modules/@angular/forms';
-import { HttpClient } from '../../../../node_modules/@angular/common/http';
-import { first, tap, finalize } from '../../../../node_modules/rxjs/operators';
-import { AngularFireStorage } from '../../../../node_modules/@angular/fire/storage';
+import { FormGroup, FormControl } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { first, tap, finalize } from 'rxjs/operators';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-register-organization-form',

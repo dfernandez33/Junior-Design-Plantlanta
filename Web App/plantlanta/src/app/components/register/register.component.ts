@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl } from '../../../../node_modules/@angular/forms';
-import { Router, ActivatedRoute } from '../../../../node_modules/@angular/router';
-import { AngularFireAuth } from '../../../../node_modules/@angular/fire/auth';
-import { AngularFireFunctions } from '../../../../node_modules/@angular/fire/functions';
+import { FormGroup, FormControl } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireFunctions } from '@angular/fire/functions';
 import { SpinnerComponent } from '../../widgets/spinner/spinner.component';
 
 @Component({

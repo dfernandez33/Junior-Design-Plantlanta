@@ -21,10 +21,21 @@
                     </a>
                 </div>
             </div>
-            <!-- <div *ngIf="!loaded" class="content has-text-centered">
-                <div class="lds-ripple"><div></div><div></div><div></div></div>
-                <p>{{message}}</p>
-            </div> -->
+            <div *ngIf="items?.length > 0" class="scroll-container">
+                <div *ngFor="let item of items; let i = index;">
+                    <div *ngIf="i % 3 == 0" class="columns">
+                        <app-marketplace-item class="column is-one-third" [item]="item"></app-marketplace-item>
+                        <app-marketplace-item *ngIf="i + 1 < items.length" class="column is-one-third" [item]="items[i+1]"></app-marketplace-item>
+                        <app-marketplace-item *ngIf="i + 2 < items.length" class="column is-one-third" [item]="items[i+2]"></app-marketplace-item>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="loading">
+                <div class="content has-text-centered">
+                    <div class="lds-ripple"><div></div><div></div><div></div></div>
+                    <p>Loading Items...</p>
+                </div>            
+            </div>
         </div>
     </div>
 </section>  
