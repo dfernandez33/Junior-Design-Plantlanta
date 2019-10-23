@@ -17,7 +17,7 @@
         <div class="column">
             <p><strong>Location: </strong>{{event.location}}</p>
             <p><strong>Description: </strong>{{event.description}}</p>
-            <p><strong>Date: </strong>{{event.date._seconds * 1000 | date}}</p>
+            <p><strong>Date: </strong>{{event.date.seconds * 1000 | date}}</p>
             <p><strong>Reward: </strong>{{event.reward}} seeds</p>
             <p><strong>Start Time: </strong>{{event.startTime}}</p>
             <p><strong>End Time: </strong>{{event.endTime}}</p>
@@ -85,7 +85,7 @@
         </div>
     </div>
     <div class="content">
-        <div class="has-text-left">Created on: {{event.createdOn._seconds * 1000 | date}}</div>
+        <div class="has-text-left">Created on: {{event.createdOn.seconds * 1000 | date}}</div>
         <div class="has-text-left">Created by: {{event.createdBy}}</div>
     </div>
 </div>

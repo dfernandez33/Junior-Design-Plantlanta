@@ -19,7 +19,7 @@ const routes: Routes = [
   { path: 'verify_email', component: VerifyEmailComponent },
   { path: 'verify_admin/:requestId', component: VerifyAdminComponent },
   { path: 'request_admin', component: RequestAdminComponent },
-  { path: 'create_event', component: CreateEventComponent },
+  { path: 'create_event', component: CreateEventComponent, canActivate:[AuthGuard] },
   { path: 'create_event/:eventId', component: CreateEventComponent },
   { path: 'marketplace_dashboard', component: MarketplaceDashboardComponent, canActivate:[AuthGuard]},
   { path: 'verify_organization/:requestId', component: VerifyOrganizationComponent}
