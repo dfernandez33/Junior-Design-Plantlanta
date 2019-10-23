@@ -15,6 +15,21 @@ class ItemCard extends StatefulWidget {
 }
 
 class _ItemCardState extends State<ItemCard> {
+
+  Widget _buildPopUpContent() {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Container(
+            child: Center(
+              child: Image.network(widget._model.imageSrc),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -26,7 +41,7 @@ class _ItemCardState extends State<ItemCard> {
               return ProgressDialog(() {},
                 Text("kike"),
                 "Buy Now",
-                "Buy Now",
+                widget._model.name,
                 true
               );
             });
