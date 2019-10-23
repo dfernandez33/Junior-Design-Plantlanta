@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '../../../../node_modules/@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { Router, ActivatedRoute } from '../../../../node_modules/@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { SpinnerComponent } from '../../widgets/spinner/spinner.component';
-import { AngularFireFunctions } from '../../../../node_modules/@angular/fire/functions';
-import * as firebase from '../../../../node_modules/firebase';
+import { AngularFireFunctions } from '@angular/fire/functions';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +29,9 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.isUserAdminFunctions = this.cloud.httpsCallable("isUserAdmin");
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.route.queryParams.subscribe(params => {
+      this.returnUrl = params['returnUrl'] != null ? this.route.snapshot.queryParams['returnUrl'] : '/';
+    });
   }
 
   async login() {

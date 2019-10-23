@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { NavbarService } from './navbar.service';
+import { MarketplaceService } from './marketplace.service';
 
-describe('NavbarService', () => {
+describe('MarketplaceService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: NavbarService = TestBed.get(NavbarService);
+    const service: MarketplaceService = TestBed.get(MarketplaceService);
     expect(service).toBeTruthy();
   });
 });

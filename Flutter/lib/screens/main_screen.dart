@@ -9,7 +9,6 @@ import 'package:junior_design_plantlanta/screens/marketplace.dart';
 import 'package:junior_design_plantlanta/serializers/StatusResponse.dart';
 import 'package:junior_design_plantlanta/widgets/progress_dialog.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:junior_design_plantlanta/screens/login.dart';
 
 
@@ -68,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
             IconButton(
               icon: Icon(
-                Icons.shop,
+                Icons.shopping_cart,
                 size: 24.0,
               ),
               color: _page == 1
@@ -286,6 +285,7 @@ class _MainScreenState extends State<MainScreen> {
       await FirebaseAuth.instance.signOut();
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => LoginPage()));
+      Navigator.of(context).pop();
     } catch (e) {
       print(e.message);
     }

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Event } from '../../interfaces/event';
-import { DeviceDetectorService } from '../../../../node_modules/ngx-device-detector';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-eventcard',
@@ -16,7 +17,7 @@ export class EventcardComponent implements OnInit {
 
   displayColumns: string[] = ['#', 'name'];
 
-  constructor(private deviceService: DeviceDetectorService) { }
+  constructor(private deviceService: DeviceDetectorService, private router: Router) { }
 
   ngOnInit() {
     if (this.deviceService.isMobile()) {
@@ -60,6 +61,10 @@ export class EventcardComponent implements OnInit {
       var dataView = new DataView(arrayBuffer);
       var blob = new Blob([dataView], { type: mimeString });
       return blob;
+  }
+
+  editEvent() {
+    this.router.navigate(["/create_event/" + this.event.eventId])
   }
 
 }

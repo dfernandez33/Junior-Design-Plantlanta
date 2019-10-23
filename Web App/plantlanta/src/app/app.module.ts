@@ -15,21 +15,24 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireFunctionsModule } from '@angular/fire/functions';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { EventDashboardComponent } from './components/event-dashboard/event-dashboard.component';
 import { AngularFireStorageModule } from '@angular/fire/storage';
-import { HomeComponent } from './components/home/home.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { SpinnerComponent } from './widgets/spinner/spinner.component';
 import { VerifyAdminComponent } from './components/verify-admin/verify-admin.component';
 import { RequestAdminComponent } from './components/request-admin/request-admin.component';
-import { HttpClientModule } from '../../node_modules/@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { MenuComponent } from './components/menu/menu.component';
 import { EventcardComponent } from './widgets/eventcard/eventcard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CreateEventComponent } from './components/create-event/create-event.component';
+import { MarketplaceDashboardComponent } from './components/marketplace-dashboard/marketplace-dashboard.component';
 import { RegisterOrganizationFormComponent } from './widgets/register-organization-form/register-organization-form.component';
 import { RequestAdminFormComponent } from './widgets/request-admin-form/request-admin-form.component';
 import { VerifyOrganizationComponent } from './components/verify-organization/verify-organization.component';
+import { MarketplaceItemComponent } from './widgets/marketplace-item/marketplace-item.component';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBmvdgLNheowskj5H1WDtVnnRUYxIUfix8",
@@ -46,7 +49,7 @@ const firebaseConfig = {
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent,
+    EventDashboardComponent,
     VerifyEmailComponent,
     SpinnerComponent,
     VerifyAdminComponent,
@@ -54,9 +57,11 @@ const firebaseConfig = {
     MenuComponent,
     EventcardComponent,
     CreateEventComponent,
+    MarketplaceDashboardComponent,
     RegisterOrganizationFormComponent,
     RequestAdminFormComponent,
     VerifyOrganizationComponent,
+    MarketplaceItemComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,6 +70,7 @@ const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
     AngularFireFunctionsModule,
+    AngularFirestoreModule,
     AngularFireStorageModule,
     NgxSpinnerModule,
     HttpClientModule,

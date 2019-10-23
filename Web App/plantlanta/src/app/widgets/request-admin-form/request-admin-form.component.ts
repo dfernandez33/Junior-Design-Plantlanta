@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { SpinnerComponent } from 'src/app/widgets/spinner/spinner.component';
-import { FormGroup, FormControl } from '../../../../node_modules/@angular/forms';
-import { HttpClient } from '../../../../node_modules/@angular/common/http';
-import { first } from '../../../../node_modules/rxjs/operators';
+import { SpinnerComponent } from '../spinner/spinner.component';
+import { FormGroup, FormControl } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-request-admin-form',

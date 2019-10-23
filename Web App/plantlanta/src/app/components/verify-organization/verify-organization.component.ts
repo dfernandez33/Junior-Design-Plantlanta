@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { first } from '../../../../node_modules/rxjs/operators';
-import { ActivatedRoute } from '../../../../node_modules/@angular/router';
-import { HttpClient } from '../../../../node_modules/@angular/common/http';
-import { AngularFireFunctions } from '../../../../node_modules/@angular/fire/functions';
+import { first } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { AngularFireFunctions } from '@angular/fire/functions';
 import { SpinnerComponent } from '../../widgets/spinner/spinner.component';
 import { VerifyOrganizationRequestInfo } from '../../interfaces/verify-organization-request-info';
 

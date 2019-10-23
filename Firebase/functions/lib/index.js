@@ -22,6 +22,8 @@ const removeUserFromEvents = require("./Event_Interactions/removeUserFromEvent")
 const getAllEvents = require("./Event_Interactions/getAllEvents");
 const getEvent = require("./Event_Interactions/getEvent");
 const confirmEvent = require("./Event_Interactions/confirmEvent");
+const editEvent = require("./Event_Interactions/editEvent");
+const deleteEvent = require("./Event_Interactions/deleteEvent");
 // Organization Interactions
 const requestOrganization = require("./Organization_Interactions/requestOrganization");
 const getOrganizationRequest = require("./Organization_Interactions/getOrganizationRequest");
@@ -38,6 +40,8 @@ exports.getOrganizationRequest = functions.https.onCall((data, context) => {
 exports.reviewOrganizationRequest = functions.https.onRequest((req, res) => {
     return reviewOrganizationRequest.handler(req, res, firestore);
 });
+// Marketplace Interactions
+const purchaseItem = require("./Item_Interactions/purchaseItem");
 /*========================================================================
 Event Interactions
 ==========================================================================*/
@@ -58,6 +62,12 @@ exports.getAllEvents = functions.https.onCall((data, context) => {
 });
 exports.createEvent = functions.https.onCall((data, context) => {
     return createEvent.handler(data, context, firestore);
+});
+exports.editEvent = functions.https.onCall((data, context) => {
+    return editEvent.handler(data, context, firestore);
+});
+exports.deleteEvent = functions.firestore.document("Events/{eventId}").onDelete((data, context) => {
+    return deleteEvent.handler(data, context, firestore);
 });
 /*========================================================================
 User/Admin Interactions
@@ -82,5 +92,11 @@ exports.reviewAdminRequest = functions.https.onRequest((req, res) => {
 });
 exports.deleteUser = functions.auth.user().onDelete((user) => {
     return deleteUser.handler(user, firestore);
+});
+/*========================================================================
+Marketplace Interactions
+==========================================================================*/
+exports.purchaseItem = functions.https.onCall((data, context) => {
+    return purchaseItem.handler(data, context, firestore);
 });
 //# sourceMappingURL=index.js.map

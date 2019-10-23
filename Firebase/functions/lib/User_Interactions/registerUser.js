@@ -18,7 +18,11 @@ exports.handler = function (data, context, firestore) {
         dob: new Date(Date.parse(data.dob)),
         phone: data.phone,
         address: data.address,
-        preferences: data.preferences
+        preferences: data.preferences,
+        events: [],
+        confirmed_events: [],
+        points: 0,
+        transaction_history: []
     }).then(() => {
         return {
             status: responseCode_1.ResponseCode.SUCCESS,

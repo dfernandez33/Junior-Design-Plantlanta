@@ -1,0 +1,35 @@
+<section class="hero is-fullheight-with-navbar is-primary">
+    <div class="hero-body">
+        <div class="container">
+            <div class="columns is-vcentered">
+                <div class="title is-3 column">Upcoming Events</div>
+                <div class="column is-8">
+                    <div class="field">
+                        <p class="control has-icons-right">
+                            <input class="input" type="text" placeholder="Search Events...">
+                            <span class="icon is-small is-right">
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="column has-text-right">
+                    <a class="button is-medium is-primary" routerLink="/create_event">
+                        <span class="icon is-medium">
+                            <i class="fa fa-plus-circle fa-2x"></i>
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <div *ngIf="!loaded" class="content has-text-centered">
+                <div class="lds-ripple"><div></div><div></div><div></div></div>
+                <p>{{message}}</p>
+            </div>
+            <div *ngIf="loaded" class="scroll-container">
+                <div *ngFor="let event of events">
+                    <app-eventcard [event]="event"></app-eventcard>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>                                                                                         

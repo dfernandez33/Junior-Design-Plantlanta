@@ -35,9 +35,12 @@ class VerifyEmail extends StatelessWidget {
       children: <Widget>[
         Text(
           "Please verify your email!",
-          style: TextStyle(fontSize: 20),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
+        const SizedBox(height: 24.0),
+        const SizedBox(height: 24.0),
+
         ProgressButton(_sendVerificationEmail, Color(0xFF25A325), Colors.grey,
             "Send Verification Email")
       ],
