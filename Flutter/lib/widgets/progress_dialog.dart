@@ -63,7 +63,6 @@ class _ProgressDialogState extends State<ProgressDialog> {
         onPressed: () => _resolveCallback(),
       );
 
-
     return AlertDialog(
       title: new Text(widget.title),
       content: widget.content,

@@ -15,15 +15,42 @@ class ItemCard extends StatefulWidget {
 }
 
 class _ItemCardState extends State<ItemCard> {
-
   Widget _buildPopUpContent() {
     return Container(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Container(
             child: Center(
               child: Image.network(widget._model.imageSrc),
             ),
+          ),
+          Container(
+              margin: EdgeInsets.only(top: 10, bottom: 10),
+              child: Text(
+                widget._model.description,
+              )),
+          Container(
+            child: Padding(
+                padding:
+                    const EdgeInsets.only(left: 2.0, right: 2.0, bottom: 2.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      widget._model.price.toString(),
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 20.0
+                      ),
+                    ),
+                    Icon(
+                      Icons.spa,
+                      size: 20.0,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ],
+                )),
           )
         ],
       ),
@@ -38,12 +65,8 @@ class _ItemCardState extends State<ItemCard> {
             context: context,
             builder: (BuildContext context) {
               // return object of type Dialog
-              return ProgressDialog(() {},
-                Text("kike"),
-                "Buy Now",
-                widget._model.name,
-                true
-              );
+              return ProgressDialog(() {}, _buildPopUpContent(), "Buy Now",
+                  widget._model.name, true);
             });
       },
       child: Card(
