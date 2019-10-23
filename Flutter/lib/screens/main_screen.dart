@@ -175,7 +175,8 @@ class _MainScreenState extends State<MainScreen> {
                   confirmAttendance,
                   _buildContentPopUpConfirmation(event),
                   "Confirm",
-                  "Confirm attendance for ${event.name}?");
+                  "Confirm attendance for ${event.name}?",
+                  false);
             },
           );
         } else {
@@ -187,7 +188,8 @@ class _MainScreenState extends State<MainScreen> {
                   Text(
                       "Please sign up for the event before confirming your attendence."),
                   "Close",
-                  "Looks like you aren't signed up!");
+                  "Looks like you aren't signed up!",
+                  false);
             },
           );
         }

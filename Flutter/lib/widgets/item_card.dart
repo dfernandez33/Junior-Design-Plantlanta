@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:junior_design_plantlanta/model/item_model.dart';
+import 'package:junior_design_plantlanta/widgets/progress_dialog.dart';
 
 class ItemCard extends StatefulWidget {
   ItemModel _model;
   bool showDetails = false;
+
   ItemCard(this._model);
 
   bool get isSelected => this.isSelected;
@@ -16,7 +18,19 @@ class _ItemCardState extends State<ItemCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => _cardSelected(),
+      onTap: () {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              // return object of type Dialog
+              return ProgressDialog(() {},
+                Text("kike"),
+                "Buy Now",
+                "Buy Now",
+                true
+              );
+            });
+      },
       child: Card(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(15.0))),
@@ -64,11 +78,5 @@ class _ItemCardState extends State<ItemCard> {
         ),
       ),
     );
-  }
-  void _cardSelected() {
-//    setState(() {
-//      this.widget._model.rebuild((b) => b
-//        ..isSelected = true) ;
-//    });
   }
 }

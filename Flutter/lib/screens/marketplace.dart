@@ -62,11 +62,7 @@ class _MarketplaceState extends State<Marketplace> {
                   itemCount: this.items.length,
                   itemBuilder: (BuildContext context, int index) => ItemCard(this.items[index]),
                   staggeredTileBuilder: (int index) {
-                    if (false) {
-                      return StaggeredTile.fit(4);
-                    } else {
-                      return StaggeredTile.fit(2);
-                    }
+                    return StaggeredTile.fit(2);
                   },
                   mainAxisSpacing: 4.0,
                   crossAxisSpacing: 4.0,
@@ -75,7 +71,7 @@ class _MarketplaceState extends State<Marketplace> {
       );
     }
   }
-  
+
   void _buildItemsModel() {
     _getItems();
   }

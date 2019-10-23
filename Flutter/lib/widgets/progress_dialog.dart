@@ -8,8 +8,9 @@ class ProgressDialog extends StatefulWidget {
   final Widget content;
   final String buttonText;
   final String title;
+  final bool isMarketplace;
 
-  ProgressDialog(this.callback, this.content, this.buttonText, this.title);
+  ProgressDialog(this.callback, this.content, this.buttonText, this.title, this.isMarketplace);
 
   @override
   State<StatefulWidget> createState() => _ProgressDialogState();
@@ -51,6 +52,18 @@ class _ProgressDialogState extends State<ProgressDialog> {
   }
 
   Widget _buildInformationView() {
+    Widget button = FlatButton(
+        child: new Text(
+          widget.buttonText,
+          style: new TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
+              color: Color(0xFF25A325)),
+        ),
+        onPressed: () => _resolveCallback(),
+      );
+
+
     return AlertDialog(
       title: new Text(widget.title),
       content: widget.content,
@@ -58,16 +71,7 @@ class _ProgressDialogState extends State<ProgressDialog> {
           borderRadius: BorderRadius.all(Radius.circular(20.0))),
       actions: <Widget>[
         // usually buttons at the bottom of the dialog
-        new FlatButton(
-          child: new Text(
-            widget.buttonText,
-            style: new TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20.0,
-                color: Color(0xFF25A325)),
-          ),
-          onPressed: () => _resolveCallback(),
-        ),
+          button,
       ],
     );
   }
