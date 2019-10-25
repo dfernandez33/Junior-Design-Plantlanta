@@ -5,5 +5,5 @@ export interface Item {
     price: number;
     quantity: number;
     image;
-    codes: Array<string>;
+    codes: string[];
 }
