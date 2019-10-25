@@ -96,14 +96,14 @@ class _MainScreenState extends State<MainScreen> {
             ),
             IconButton(
               icon: Icon(
-                Icons.add,
+                Icons.center_focus_strong,
                 size: 24.0,
-                color: Theme.of(context).primaryColor,
+                color: Colors.black54,
               ),
               color: _page == 2
                   ? Theme.of(context).primaryColor
                   : Theme.of(context).textTheme.caption.color,
-              onPressed: () => navigationTapped(2),
+              onPressed: scan,
             ),
             IconButton(
               icon: Icon(
@@ -130,18 +130,6 @@ class _MainScreenState extends State<MainScreen> {
         ),
         color: Theme.of(context).backgroundColor,
         shape: CircularNotchedRectangle(),
-      ),
-      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        elevation: 10.0,
-
-        backgroundColor: Theme.of(context).primaryColor,
-        child: Icon(
-          Icons.center_focus_weak,
-          color: Theme.of(context).backgroundColor,
-        ),
-        onPressed: scan,
       ),
     );
   }
