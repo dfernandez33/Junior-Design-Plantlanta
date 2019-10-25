@@ -33,17 +33,9 @@ import { MarketplaceDashboardComponent } from './components/marketplace-dashboar
 import { RegisterOrganizationFormComponent } from './widgets/register-organization-form/register-organization-form.component';
 import { RequestAdminFormComponent } from './widgets/request-admin-form/request-admin-form.component';
 import { VerifyOrganizationComponent } from './components/verify-organization/verify-organization.component';
+import { CreateItemComponent } from './components/create-item/create-item.component';
 import { MarketplaceItemComponent } from './widgets/marketplace-item/marketplace-item.component';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBmvdgLNheowskj5H1WDtVnnRUYxIUfix8",
-  authDomain: "junior-design-plantlanta.firebaseapp.com",
-  databaseURL: "https://junior-design-plantlanta.firebaseio.com",
-  projectId: "junior-design-plantlanta",
-  storageBucket: "junior-design-plantlanta.appspot.com",
-  messagingSenderId: "243735414460",
-  appId: "1:243735414460:web:7b69ee11245f75a27072b9"
-};
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -62,13 +54,14 @@ const firebaseConfig = {
     RegisterOrganizationFormComponent,
     RequestAdminFormComponent,
     VerifyOrganizationComponent,
+    CreateItemComponent,
     MarketplaceItemComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFireFunctionsModule,
     AngularFirestoreModule,

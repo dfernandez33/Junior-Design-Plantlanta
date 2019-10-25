@@ -4,6 +4,8 @@ import { AngularFireFunctions } from '@angular/fire/functions';
 import { Event } from '../../interfaces/event';
 import * as algoliasearch from 'algoliasearch';
 import { environment } from '../../../environments/environment';
+import { EventService } from '../../services/Event/event.service';
+
 
 @Component({
   selector: 'app-event-dashboard',
@@ -18,22 +20,22 @@ export class EventDashboardComponent implements OnInit {
   events: Event[];
   filteredEvents: Event[] = [];
   getEventsFunctions;
+
   loaded = false;
   message = ""
 
-  constructor(private cloud: AngularFireFunctions) { }
+  constructor(private eventService: EventService) { }
 
   ngOnInit() {
     this.searchClient = algoliasearch(environment.algolia.app, environment.algolia.search_key);
     this.index = this.searchClient.initIndex('Events');
-    this.getEventsFunctions = this.cloud.httpsCallable("getAllEvents");
     this.message = "Loading Events..."
-    this.getEventsFunctions().toPromise().then((data) => {
-      //TODO: figure out way to change participants from userIds to actual names
-      this.events = data.events;
-      this.filteredEvents = this.events;
+    this.eventService.getEvents().subscribe(events => {
       this.loaded = true;
-    });
+      this.events = events;
+      this.filteredEvents = this.events;
+    })
+
   }
 
   updateQuery(query) {

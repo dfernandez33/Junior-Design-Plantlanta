@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:junior_design_plantlanta/model/event_model.dart';
 import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:junior_design_plantlanta/screens/marketplace.dart';
 import 'package:junior_design_plantlanta/serializers/StatusResponse.dart';
 import 'package:junior_design_plantlanta/widgets/progress_dialog.dart';
 
@@ -42,7 +43,7 @@ class _MainScreenState extends State<MainScreen> {
         onPageChanged: onPageChanged,
         children: <Widget>[
           Home(1),
-          Home(2),
+          Marketplace(),
           Home(3),
           Home(4),
           Home(5),
@@ -173,7 +174,8 @@ class _MainScreenState extends State<MainScreen> {
                   confirmAttendance,
                   _buildContentPopUpConfirmation(event),
                   "Confirm",
-                  "Confirm attendance for ${event.name}?");
+                  "Confirm attendance for ${event.name}?",
+                  false);
             },
           );
         } else {
@@ -185,7 +187,8 @@ class _MainScreenState extends State<MainScreen> {
                   Text(
                       "Please sign up for the event before confirming your attendence."),
                   "Close",
-                  "Looks like you aren't signed up!");
+                  "Looks like you aren't signed up!",
+                  false);
             },
           );
         }

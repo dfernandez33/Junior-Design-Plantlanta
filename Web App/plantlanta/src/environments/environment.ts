@@ -7,7 +7,16 @@ export const environment = {
   algolia: {
     app: "58MJGHZ8V2",
     search_key: "0595481e64c945c5ffe5c687face8ef7"
-  }
+  },
+  firebase: {
+    apiKey: "AIzaSyBmvdgLNheowskj5H1WDtVnnRUYxIUfix8",
+    authDomain: "junior-design-plantlanta.firebaseapp.com",
+    databaseURL: "https://junior-design-plantlanta.firebaseio.com",
+    projectId: "junior-design-plantlanta",
+    storageBucket: "junior-design-plantlanta.appspot.com",
+    messagingSenderId: "243735414460",
+    appId: "1:243735414460:web:7b69ee11245f75a27072b9"
+  },
 };
 /*
  * For easier debugging in development mode, you can import the following file
