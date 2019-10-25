@@ -53,6 +53,7 @@ exports.handler = async function (data, context, firestore) {
         });
         batch.update(userRef, {
             points: admin.firestore.FieldValue.increment(-itemData.price),
+            transaction_history: admin.firestore.FieldValue.arrayUnion(transactionRef.id),
         });
     }
     else {
@@ -61,7 +62,7 @@ exports.handler = async function (data, context, firestore) {
             message: "User does not have enough points for selected item."
         };
     }
-    try { // send email to organization contact
+    try {
         await sgMail.send(mssg);
         return batch.commit().then(() => {
             return {
