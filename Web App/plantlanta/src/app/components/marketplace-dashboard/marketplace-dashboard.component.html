@@ -30,6 +30,9 @@
                     </div>
                 </div>
             </div>
+            <div *ngIf="filteredItems?.length == 0 && !loading">
+                <p class="has-text-centered">No results match your search</p>
+            </div>
             <div *ngIf="loading">
                 <div class="content has-text-centered">
                     <div class="lds-ripple"><div></div><div></div><div></div></div>
