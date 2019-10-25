@@ -1,4 +1,4 @@
-<section class="hero is-primary is-fullheight">
+<section class="hero is-primary is-fullheight-with-navbar has-navbar">
   <div class="hero-body">
     <div class="container">
       <div *ngIf="!isEdit" class="title">Create New Event</div>
@@ -61,7 +61,7 @@
           </div>
         </div>
         <div *ngIf="!validForm">
-          {{errMessage}}
+          {{message}}
         </div>
         <div *ngIf="!isEdit" class="field">
           <p class="control">

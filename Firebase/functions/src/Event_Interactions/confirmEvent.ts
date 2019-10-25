@@ -41,6 +41,7 @@ export const handler = async function(data: signupRequest, context: functions.ht
         {
             confirmed_events: admin.firestore.FieldValue.arrayUnion(eventID),
             points: admin.firestore.FieldValue.increment(eventData.reward),
+            transaction_history: admin.firestore.FieldValue.arrayUnion(transactionRef.id),
         }
     );
 

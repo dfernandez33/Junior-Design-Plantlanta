@@ -7,6 +7,7 @@ import 'package:junior_design_plantlanta/model/event_model.dart';
 class Home extends StatefulWidget {
   // TODO: Remove param after final implementation.
   int _number;
+  String queryText;
 
   Home(this._number);
 
@@ -36,6 +37,20 @@ class _HomeState extends State<Home> {
       );
     } else {
       return Scaffold(
+        appBar: new AppBar(
+            backgroundColor: Theme.of(context).backgroundColor,
+            elevation: 2.0,
+            title: Column(children: [
+              TextField(
+                cursorColor: Theme.of(context).primaryColor,
+                decoration: InputDecoration(
+                    hintText: 'Enter a search term'
+                ),
+                onChanged: (text) {
+                  widget.queryText = text;
+                },
+              ),
+            ])),
         body: Container(
             margin: EdgeInsets.only(top: 12.0),
             child: ListView(children: availableEvents)),

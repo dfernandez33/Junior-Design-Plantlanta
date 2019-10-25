@@ -27,6 +27,8 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/angular-instantsearch/bundles/instantsearch.min.css",
+              "node_modules/angular-instantsearch/bundles/instantsearch-theme-algolia.min.css",
               "src/custom-theme.scss",
               "./node_modules/font-awesome/css/font-awesome.css",
               "src/styles.sass"

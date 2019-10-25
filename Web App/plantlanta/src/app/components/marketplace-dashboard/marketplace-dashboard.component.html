@@ -6,7 +6,7 @@
                 <div class="column is-8">
                     <div class="field">
                         <p class="control has-icons-right">
-                            <input class="input" type="text" placeholder="Search Events...">
+                            <input class="input" type="text" placeholder="Search items by name or brand..." (keyup)="updateQuery($event)">
                             <span class="icon is-small is-right">
                                 <i class="fa fa-search"></i>
                             </span>
@@ -14,21 +14,24 @@
                     </div>
                 </div>
                 <div class="column has-text-right">
-                    <a class="button is-medium is-primary" routerLink="/create_event  ">
+                    <a class="button is-medium is-primary" routerLink="/create_item">
                         <span class="icon is-medium">
                             <i class="fa fa-plus-circle fa-2x"></i>
                         </span>
                     </a>
                 </div>
             </div>
-            <div *ngIf="items?.length > 0" class="scroll-container">
-                <div *ngFor="let item of items; let i = index;">
+            <div *ngIf="filteredItems?.length > 0" class="scroll-container">
+                <div *ngFor="let item of filteredItems; let i = index;">
                     <div *ngIf="i % 3 == 0" class="columns">
                         <app-marketplace-item class="column is-one-third" [item]="item"></app-marketplace-item>
-                        <app-marketplace-item *ngIf="i + 1 < items.length" class="column is-one-third" [item]="items[i+1]"></app-marketplace-item>
-                        <app-marketplace-item *ngIf="i + 2 < items.length" class="column is-one-third" [item]="items[i+2]"></app-marketplace-item>
+                        <app-marketplace-item *ngIf="i + 1 < filteredItems.length" class="column is-one-third" [item]="filteredItems[i+1]"></app-marketplace-item>
+                        <app-marketplace-item *ngIf="i + 2 < filteredItems.length" class="column is-one-third" [item]="filteredItems[i+2]"></app-marketplace-item>
                     </div>
                 </div>
+            </div>
+            <div *ngIf="filteredItems?.length == 0 && !loading">
+                <p class="has-text-centered">No results match your search</p>
             </div>
             <div *ngIf="loading">
                 <div class="content has-text-centered">
