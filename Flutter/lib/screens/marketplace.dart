@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:junior_design_plantlanta/model/item_model.dart';
@@ -91,11 +90,7 @@ class _MarketplaceState extends State<Marketplace> {
           ));
     }
   }
-
-  void _buildItemsModel() {
-    _getItems();
-  }
-
+  
   Future<dynamic> _getItems() async {
     return Firestore.instance
         .collection("Items")
