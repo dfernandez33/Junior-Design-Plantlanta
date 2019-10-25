@@ -4,15 +4,6 @@ import { Item } from "../Interface/Marketplace_Interactions_Interface/item";
 import { ResponseCode } from '../Enums/responseCode';
 
 export const handler = async function(data: Item, context: functions.https.CallableContext, firestore: FirebaseFirestore.Firestore){
-    // let UUID;
-    // if (context.auth !== undefined) {
-    //     UUID = context.auth.uid
-    // } else {
-    //     return {
-    //         status: ResponseCode.FAILURE,
-    //         message: "No UUID received from context."
-    //     };
-    // }
     try {
         const itemRef = await firestore.collection("Items");
         const newItemRef = await itemRef.add({});

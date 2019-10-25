@@ -5,8 +5,6 @@ import { ActivatedRoute, Router } from '../../../../node_modules/@angular/router
 import { AngularFireStorage } from '../../../../node_modules/@angular/fire/storage';
 import { AngularFirestore } from '../../../../node_modules/@angular/fire/firestore';
 import { HttpClient } from '../../../../node_modules/@angular/common/http';
-import { first, tap, finalize } from '../../../../node_modules/rxjs/operators';
-
 
 @Component({
   selector: 'app-create-item',
@@ -79,17 +77,24 @@ export class CreateItemComponent implements OnInit {
   }
 
   onFileChange(item) {
-    console.log(item);
     if(item.target.files && item.target.files.length && item.target.files[0].type == "image/png") {
       this.file = item.target.files[0];
     } else {
-      item.srcElement.value = null;
       this.validForm = false;
       this.errMessage = "Only PNG images are allowed."
     }
   }
 
-  registerItem() {
+  checkCodesQuantity() {
+    let formValues = this.itemForm.value;
+    if(formValues["itemQuantity"] == formValues["itemCodes"].split(/\r|\n/).length) {
+      this.createItem()
+    } else {}
+      this.validForm = false;
+      this.errMessage = "Quantity must be the same to the number of codes entered.";
+    }
+
+  createItem() {
     this.message = "Creating item..."
     this.loading = true;
     if (this.itemForm.valid) {
