@@ -129,12 +129,39 @@ class _ItemCardState extends State<ItemCard> {
           .call(<String, dynamic>{"ItemID": widget._model.itemId});
 
       StatusResponse resp = new StatusResponse.fromJson(result.data);
-      Navigator.of(context).pop();
 
       if (resp.status == 1) {
         print('success');
+        Navigator.of(context).pop();
       } else {
-        print('error');
+        Navigator.of(context).pop();
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            // return object of type Dialog
+            return AlertDialog(
+              title: new Text("${resp.message}"),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
+              actions: <Widget>[
+                // usually buttons at the bottom of the dialog
+                new FlatButton(
+                  child: new Text(
+                    "close",
+                    style: new TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                        color: Color(0xFF25A325)),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+
       }
     } catch (e) {
       print(e.message);

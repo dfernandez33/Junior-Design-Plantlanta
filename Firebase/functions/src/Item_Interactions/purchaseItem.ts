@@ -11,8 +11,8 @@ export const handler = async function(data: purchaseRequest, context: functions.
     let UUID;
     let Email;
     if (context.auth !== undefined) {
-        UUID = context.auth.uid
-        Email = context.auth.token.email
+        UUID = context.auth.uid;
+        Email = context.auth.token.email;
     } else {
         return {
             status: ResponseCode.FAILURE,
@@ -33,7 +33,7 @@ export const handler = async function(data: purchaseRequest, context: functions.
 
     const code = itemData.codes.pop()
 
-    const mssg = { //buid message for email
+    const mssg = {
         to: Email,
         from: "plantlanta.bitbybit@gmail.com",
         templateId: "d-7dc8e8fded7f48d2b9a48883c8df2be0",
@@ -66,6 +66,7 @@ export const handler = async function(data: purchaseRequest, context: functions.
         batch.update(userRef,
             {
                 points: admin.firestore.FieldValue.increment(-itemData.price),
+                transaction_history: admin.firestore.FieldValue.arrayUnion(transactionRef.id),
             }
         );
         
@@ -78,20 +79,21 @@ export const handler = async function(data: purchaseRequest, context: functions.
 
    }
 
-   try { // send email to organization contact
+   try {
+
     await sgMail.send(mssg);
 
-        return batch.commit().then(() => {
-            return {
-                status: ResponseCode.SUCCESS,
-                message: "Success updating item and user info."
-            };
-        }).catch(() => {
-            return {
-                status: ResponseCode.FAILURE,
-                message: "Error updating item and user info. "
-            };
-        });
+    return batch.commit().then(() => {
+        return {
+            status: ResponseCode.SUCCESS,
+            message: "Success updating item and user info."
+        };
+    }).catch(() => {
+        return {
+            status: ResponseCode.FAILURE,
+            message: "Error updating item and user info. "
+        };
+    });
         
     } catch (e) {
 
