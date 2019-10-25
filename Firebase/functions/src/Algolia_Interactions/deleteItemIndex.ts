@@ -3,7 +3,5 @@ export const handler = function(snapshot, algoliaClient) {
 
     const objectId = snapshot.id;
 
-    return index.deleteObject({
-        objectID: objectId
-    });
+    return index.deleteObject(objectId);
 }
