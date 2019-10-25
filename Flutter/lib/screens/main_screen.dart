@@ -30,7 +30,7 @@ class _MainScreenState extends State<MainScreen> {
         centerTitle: true,
         elevation: 10,
         backgroundColor: Theme.of(context).primaryColor,
-        title: Text("Plantlanta"),
+        title: Text(getPageName(_page)),
         actions: <Widget>[
           IconButton(icon: Icon(Icons.exit_to_app),
             onPressed: (){ _logOut();},
@@ -124,6 +124,20 @@ class _MainScreenState extends State<MainScreen> {
         onPressed: scan,
       ),
     );
+  }
+
+  String getPageName(int page) {
+    if (page == 0) {
+      return "Events";
+    } else if (page == 1) {
+      return "Markeplace";
+    } else if (page == 3) {
+      return "Activity Feed";
+    } else if (page == 4) {
+      return "Profile";
+    } else {
+      return "Plantlanta";
+    }
   }
 
   void navigationTapped(int page) {

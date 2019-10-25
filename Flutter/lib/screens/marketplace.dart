@@ -14,7 +14,7 @@ class Marketplace extends StatefulWidget {
   }
 
   @override
- _MarketplaceState createState() => _MarketplaceState();
+  _MarketplaceState createState() => _MarketplaceState();
 
   void getCurrentUser() async {
     this.currentUser = await FirebaseAuth.instance.currentUser();
@@ -34,41 +34,61 @@ class _MarketplaceState extends State<Marketplace> {
     "https://media.onthemarket.com/properties/6191869/797156548/composite.jpg",
     "https://media.onthemarket.com/properties/6191840/797152761/composite.jpg",
   ];
-  
+
   List<ItemModel> items;
-  
+
   _MarketplaceState() {
     items = List();
     _getItems();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
       return Scaffold(
         body: Center(
             child: CircularProgressIndicator(
-              value: null,
-              valueColor:
+          value: null,
+          valueColor:
               AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-            )),
+        )),
       );
     } else {
       return Scaffold(
-          body: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: StaggeredGridView.countBuilder(
-                  crossAxisCount: 4,
-                  itemCount: this.items.length,
-                  itemBuilder: (BuildContext context, int index) => ItemCard(this.items[index]),
-                  staggeredTileBuilder: (int index) {
-                    return StaggeredTile.fit(2);
-                  },
-                  mainAxisSpacing: 4.0,
-                  crossAxisSpacing: 4.0,
+          appBar: new AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+            title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "Points: ",
+                    style: TextStyle(color: Colors.black54, fontSize: 18),
+                  ),
+                  Text(
+                  "700 ",
+                  style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 18),
+                ),
+                  Icon(
+                    Icons.spa,
+                    size: 14.0,
+                    color: Theme.of(context).primaryColor,
+                  ),]),
           ),
-        )
-      );
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: StaggeredGridView.countBuilder(
+              crossAxisCount: 4,
+              itemCount: this.items.length,
+              itemBuilder: (BuildContext context, int index) =>
+                  ItemCard(this.items[index]),
+              staggeredTileBuilder: (int index) {
+                return StaggeredTile.fit(2);
+              },
+              mainAxisSpacing: 4.0,
+              crossAxisSpacing: 4.0,
+            ),
+          ));
     }
   }
 
@@ -77,7 +97,11 @@ class _MarketplaceState extends State<Marketplace> {
   }
 
   Future<dynamic> _getItems() async {
-    return Firestore.instance.collection("Items").getDocuments().asStream().listen((data) {
+    return Firestore.instance
+        .collection("Items")
+        .getDocuments()
+        .asStream()
+        .listen((data) {
       var items = data.documents;
       items.forEach((item) {
         this.items.add(ItemModel.fromJson(item.data));
@@ -85,6 +109,4 @@ class _MarketplaceState extends State<Marketplace> {
       });
     });
   }
-
-
 }
