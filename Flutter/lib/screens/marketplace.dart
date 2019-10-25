@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:junior_design_plantlanta/model/item_model.dart';
@@ -8,13 +7,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Marketplace extends StatefulWidget {
   FirebaseUser currentUser;
+  String queryText;
 
   Marketplace() {
     getCurrentUser();
   }
 
   @override
- _MarketplaceState createState() => _MarketplaceState();
+  _MarketplaceState createState() => _MarketplaceState();
 
   void getCurrentUser() async {
     this.currentUser = await FirebaseAuth.instance.currentUser();
@@ -34,50 +34,64 @@ class _MarketplaceState extends State<Marketplace> {
     "https://media.onthemarket.com/properties/6191869/797156548/composite.jpg",
     "https://media.onthemarket.com/properties/6191840/797152761/composite.jpg",
   ];
-  
+
   List<ItemModel> items;
-  
+
   _MarketplaceState() {
     items = List();
     _getItems();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
       return Scaffold(
         body: Center(
             child: CircularProgressIndicator(
-              value: null,
-              valueColor:
+          value: null,
+          valueColor:
               AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-            )),
+        )),
       );
     } else {
       return Scaffold(
-          body: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: StaggeredGridView.countBuilder(
-                  crossAxisCount: 4,
-                  itemCount: this.items.length,
-                  itemBuilder: (BuildContext context, int index) => ItemCard(this.items[index]),
-                  staggeredTileBuilder: (int index) {
-                    return StaggeredTile.fit(2);
+          appBar: new AppBar(
+              backgroundColor: Theme.of(context).backgroundColor,
+              elevation: 2.0,
+              title: Column(children: [
+                TextField(
+                  cursorColor: Theme.of(context).primaryColor,
+                  decoration: InputDecoration(
+                      hintText: 'Enter a search term'
+                  ),
+                  onChanged: (text) {
+                    widget.queryText = text;
                   },
-                  mainAxisSpacing: 4.0,
-                  crossAxisSpacing: 4.0,
-          ),
-        )
-      );
+                ),
+              ])),
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: StaggeredGridView.countBuilder(
+              crossAxisCount: 4,
+              itemCount: this.items.length,
+              itemBuilder: (BuildContext context, int index) =>
+                  ItemCard(this.items[index]),
+              staggeredTileBuilder: (int index) {
+                return StaggeredTile.fit(2);
+              },
+              mainAxisSpacing: 4.0,
+              crossAxisSpacing: 4.0,
+            ),
+          ));
     }
   }
 
-  void _buildItemsModel() {
-    _getItems();
-  }
-
   Future<dynamic> _getItems() async {
-    return Firestore.instance.collection("Items").getDocuments().asStream().listen((data) {
+    return Firestore.instance
+        .collection("Items")
+        .getDocuments()
+        .asStream()
+        .listen((data) {
       var items = data.documents;
       items.forEach((item) {
         this.items.add(ItemModel.fromJson(item.data));
@@ -85,6 +99,4 @@ class _MarketplaceState extends State<Marketplace> {
       });
     });
   }
-
-
 }
