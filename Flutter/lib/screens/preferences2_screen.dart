@@ -177,7 +177,7 @@ class _Preferences2State extends State<Preferences2> {
         "phone" : user.phone,
         "address" : user.address,
         "preferences" : {
-          "event_type" : user.preference.eventType,
+          "event_type" : user.preference.eventType.toList(),
           "sporadic" : user.preference.sporadic,
           "proximity" : user.preference.proximity
         }

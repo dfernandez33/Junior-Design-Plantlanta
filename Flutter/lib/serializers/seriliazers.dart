@@ -9,6 +9,7 @@ import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart';
 
 import 'package:junior_design_plantlanta/model/event_model.dart';
+import 'package:junior_design_plantlanta/model/item_model.dart';
 import 'package:junior_design_plantlanta/model/registration_model.dart';
 import 'package:junior_design_plantlanta/model/user_preference.dart';
 import 'package:junior_design_plantlanta/serializers/date_time_serializer.dart';
@@ -19,7 +20,8 @@ part 'seriliazers.g.dart';
   EventModel,
   Datetime,
   UserRegistrationModel,
-  UserPreferenceModel
+  UserPreferenceModel,
+  ItemModel
 ])
 final Serializers serializers = _$serializers;
 
