@@ -9,8 +9,10 @@ sgMail.setApiKey(SENDGRID_API_KEY);
 exports.handler = async function (data, context, firestore) {
     const itemID = data.ItemID;
     let UUID;
+    let Email;
     if (context.auth !== undefined) {
         UUID = context.auth.uid;
+        Email = context.auth.token.email;
     }
     else {
         return {
@@ -28,7 +30,7 @@ exports.handler = async function (data, context, firestore) {
     const userData = user.data();
     const code = itemData.codes.pop();
     const mssg = {
-        to: userData.email,
+        to: Email,
         from: "plantlanta.bitbybit@gmail.com",
         templateId: "d-7dc8e8fded7f48d2b9a48883c8df2be0",
         dynamic_template_data: {
