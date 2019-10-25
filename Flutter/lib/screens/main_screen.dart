@@ -7,12 +7,18 @@ import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:junior_design_plantlanta/screens/marketplace.dart';
 import 'package:junior_design_plantlanta/serializers/StatusResponse.dart';
+import 'package:junior_design_plantlanta/services/user_service.dart';
 import 'package:junior_design_plantlanta/widgets/progress_dialog.dart';
 
 import 'package:junior_design_plantlanta/screens/login.dart';
 
 
 class MainScreen extends StatefulWidget {
+  UserService _userService;
+  MainScreen() {
+    this._userService = UserService();
+  }
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -43,7 +49,7 @@ class _MainScreenState extends State<MainScreen> {
         onPageChanged: onPageChanged,
         children: <Widget>[
           Home(1),
-          Marketplace(),
+          Marketplace(widget._userService),
           Home(3),
           Home(4),
           Home(5),

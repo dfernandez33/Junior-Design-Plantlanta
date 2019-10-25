@@ -28,14 +28,15 @@ class _LoginPageState extends State<LoginPage> {
               width: double.infinity,
               child: new Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   new Padding(
                     padding: const EdgeInsets.only(
-                        right: 0.0, left: 0.0, bottom: 10.0),
+                        right: 0.0, left: 0.0, bottom: 0.0),
                     child: Image.asset(
                       'assets/logo.png',
                       fit: BoxFit.contain,
-                      height: 250,
+                      width: 300,
                     ),
                   ),
                   Padding(
