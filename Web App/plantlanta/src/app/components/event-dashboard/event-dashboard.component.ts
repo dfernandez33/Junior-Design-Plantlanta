@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { AngularFireFunctions } from '@angular/fire/functions';
 import { Event } from '../../interfaces/event';
+import { EventService } from '../../services/Event/event.service';
 
 @Component({
   selector: 'app-event-dashboard',
@@ -12,20 +13,18 @@ import { Event } from '../../interfaces/event';
 export class EventDashboardComponent implements OnInit {
 
   events: Event[];
-  getEventsFunctions;
   loaded = false;
   message = ""
 
-  constructor(private cloud: AngularFireFunctions) { }
+  constructor(private eventService: EventService) { }
 
   ngOnInit() {
-    this.getEventsFunctions = this.cloud.httpsCallable("getAllEvents");
     this.message = "Loading Events..."
-    this.getEventsFunctions().toPromise().then((data) => {
-      //TODO: figure out way to change participants from userIds to actual names
-      this.events = data.events;
+    this.eventService.getEvents().subscribe(events => {
       this.loaded = true;
-    });
+      this.events = events;
+    })
+
   }
 
 }
