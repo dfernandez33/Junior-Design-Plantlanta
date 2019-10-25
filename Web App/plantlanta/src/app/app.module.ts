@@ -32,6 +32,7 @@ import { MarketplaceDashboardComponent } from './components/marketplace-dashboar
 import { RegisterOrganizationFormComponent } from './widgets/register-organization-form/register-organization-form.component';
 import { RequestAdminFormComponent } from './widgets/request-admin-form/request-admin-form.component';
 import { VerifyOrganizationComponent } from './components/verify-organization/verify-organization.component';
+import { CreateItemComponent } from './components/create-item/create-item.component';
 import { MarketplaceItemComponent } from './widgets/marketplace-item/marketplace-item.component';
 import { environment } from '../environments/environment';
 
@@ -52,6 +53,7 @@ import { environment } from '../environments/environment';
     RegisterOrganizationFormComponent,
     RequestAdminFormComponent,
     VerifyOrganizationComponent,
+    CreateItemComponent,
     MarketplaceItemComponent,
   ],
   imports: [
