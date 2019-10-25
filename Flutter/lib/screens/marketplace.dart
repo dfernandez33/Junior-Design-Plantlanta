@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Marketplace extends StatefulWidget {
   FirebaseUser currentUser;
+  String queryText;
 
   Marketplace() {
     getCurrentUser();
@@ -55,25 +56,19 @@ class _MarketplaceState extends State<Marketplace> {
     } else {
       return Scaffold(
           appBar: new AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-            title: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "Points: ",
-                    style: TextStyle(color: Colors.black54, fontSize: 18),
+              backgroundColor: Theme.of(context).backgroundColor,
+              elevation: 2.0,
+              title: Column(children: [
+                TextField(
+                  cursorColor: Theme.of(context).primaryColor,
+                  decoration: InputDecoration(
+                      hintText: 'Enter a search term'
                   ),
-                  Text(
-                  "700 ",
-                  style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 18),
+                  onChanged: (text) {
+                    widget.queryText = text;
+                  },
                 ),
-                  Icon(
-                    Icons.spa,
-                    size: 14.0,
-                    color: Theme.of(context).primaryColor,
-                  ),]),
-          ),
+              ])),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: StaggeredGridView.countBuilder(
@@ -90,7 +85,7 @@ class _MarketplaceState extends State<Marketplace> {
           ));
     }
   }
-  
+
   Future<dynamic> _getItems() async {
     return Firestore.instance
         .collection("Items")
