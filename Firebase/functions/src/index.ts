@@ -39,6 +39,9 @@ import reviewOrganizationRequest = require("./Organization_Interactions/reviewOr
 import addEventToIndex = require("./Algolia_Interactions/addEventToIndex");
 import updateEventIndex = require("./Algolia_Interactions/updateEventIndex");
 import deleteEventIndex = require("./Algolia_Interactions/deleteEventIndex");
+import addItemToIndex = require("./Algolia_Interactions/addItemToIndex");
+import updateItemIndex = require("./Algolia_Interactions/updateItemIndex");
+import deleteItemIndex = require("./Algolia_Interactions/deleteItemIndex");
 
 /*========================================================================
 Organization Interactions
@@ -145,4 +148,16 @@ exports.updateEventIndex = functions.firestore.document("Events/{eventId}").onUp
 
 exports.deleteEventIndex = functions.firestore.document("Events/{eventId}").onDelete((snapshot) => {
     return deleteEventIndex.handler(snapshot, algoliaClient);
+});
+
+exports.addItemToIndex = functions.firestore.document("Items/{itemdId}").onCreate((snapshot) => {
+    return addItemToIndex.handler(snapshot, algoliaClient);
+});
+
+exports.updateItemIndex = functions.firestore.document("Items/{ItemId}").onUpdate((snapshot) => {
+    return updateItemIndex.handler(snapshot, algoliaClient);
+});
+
+exports.deleteItemIndex = functions.firestore.document("Items/{ItemId}").onDelete((snapshot) => {
+    return deleteItemIndex.handler(snapshot, algoliaClient);
 });

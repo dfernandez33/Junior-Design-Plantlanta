@@ -34,6 +34,9 @@ const reviewOrganizationRequest = require("./Organization_Interactions/reviewOrg
 const addEventToIndex = require("./Algolia_Interactions/addEventToIndex");
 const updateEventIndex = require("./Algolia_Interactions/updateEventIndex");
 const deleteEventIndex = require("./Algolia_Interactions/deleteEventIndex");
+const addItemToIndex = require("./Algolia_Interactions/addItemToIndex");
+const updateItemIndex = require("./Algolia_Interactions/updateItemIndex");
+const deleteItemIndex = require("./Algolia_Interactions/deleteItemIndex");
 /*========================================================================
 Organization Interactions
 ==========================================================================*/
@@ -116,5 +119,14 @@ exports.updateEventIndex = functions.firestore.document("Events/{eventId}").onUp
 });
 exports.deleteEventIndex = functions.firestore.document("Events/{eventId}").onDelete((snapshot) => {
     return deleteEventIndex.handler(snapshot, algoliaClient);
+});
+exports.addItemToIndex = functions.firestore.document("Items/{itemdId}").onCreate((snapshot) => {
+    return addItemToIndex.handler(snapshot, algoliaClient);
+});
+exports.updateItemIndex = functions.firestore.document("Items/{ItemId}").onUpdate((snapshot) => {
+    return updateItemIndex.handler(snapshot, algoliaClient);
+});
+exports.deleteItemIndex = functions.firestore.document("Items/{ItemId}").onDelete((snapshot) => {
+    return deleteItemIndex.handler(snapshot, algoliaClient);
 });
 //# sourceMappingURL=index.js.map
