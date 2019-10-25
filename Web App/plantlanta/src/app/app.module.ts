@@ -11,6 +11,7 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
 import { MatTableModule, MatNativeDateModule } from "@angular/material";
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+import { NgAisModule } from 'angular-instantsearch';
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
@@ -81,6 +82,7 @@ const firebaseConfig = {
     MatDatepickerModule,
     MatNativeDateModule,
     NgxMaterialTimepickerModule,
+    NgAisModule.forRoot()
   ],
   providers: [
     MatDatepickerModule

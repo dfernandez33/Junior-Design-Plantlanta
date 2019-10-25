@@ -1,9 +1,14 @@
 import * as functions from 'firebase-functions';
 import admin = require("firebase-admin");
+import algoliasearch = require('algoliasearch');
+
+const algoliaClient = algoliasearch(functions.config().algolia.app, functions.config().algolia.key);
+
 //ONLY INITIALIZE APP HERE!!!
 admin.initializeApp({
     storageBucket: "junior-design-plantlanta.appspot.com"
 });
+
 const firestore = admin.firestore();
 
 // User/Admin Interactions
@@ -29,6 +34,11 @@ import deleteEvent = require("./Event_Interactions/deleteEvent");
 import requestOrganization = require("./Organization_Interactions/requestOrganization");
 import getOrganizationRequest = require("./Organization_Interactions/getOrganizationRequest");
 import reviewOrganizationRequest = require("./Organization_Interactions/reviewOrganizationRequest");
+
+// Algolia Interactions (fucntions used to update Algolia index for full-text search)
+import addEventToIndex = require("./Algolia_Interactions/addEventToIndex");
+import updateEventIndex = require("./Algolia_Interactions/updateEventIndex");
+import deleteEventIndex = require("./Algolia_Interactions/deleteEventIndex");
 
 /*========================================================================
 Organization Interactions
@@ -120,4 +130,19 @@ Marketplace Interactions
 ==========================================================================*/
 exports.purchaseItem = functions.https.onCall((data, context) => {
     return purchaseItem.handler(data, context, firestore);
+});
+
+/*========================================================================
+Algolia Interactions
+==========================================================================*/
+exports.addEventToIndex = functions.firestore.document("Events/{eventId}").onCreate((snapshot) => {
+    return addEventToIndex.handler(snapshot, algoliaClient);
+});
+
+exports.updateEventIndex = functions.firestore.document("Events/{eventId}").onUpdate((snapshot) => {
+    return updateEventIndex.handler(snapshot, algoliaClient);
+});
+
+exports.deleteEventIndex = functions.firestore.document("Events/{eventId}").onDelete((snapshot) => {
+    return deleteEventIndex.handler(snapshot, algoliaClient);
 });
