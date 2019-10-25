@@ -9,8 +9,10 @@ sgMail.setApiKey(SENDGRID_API_KEY);
 export const handler = async function(data: purchaseRequest, context: functions.https.CallableContext, firestore: FirebaseFirestore.Firestore) {
     const itemID = data.ItemID;
     let UUID;
+    let Email;
     if (context.auth !== undefined) {
         UUID = context.auth.uid
+        Email = context.auth.token.email
     } else {
         return {
             status: ResponseCode.FAILURE,
@@ -32,7 +34,7 @@ export const handler = async function(data: purchaseRequest, context: functions.
     const code = itemData.codes.pop()
 
     const mssg = { //buid message for email
-        to: userData.email,
+        to: Email,
         from: "plantlanta.bitbybit@gmail.com",
         templateId: "d-7dc8e8fded7f48d2b9a48883c8df2be0",
         dynamic_template_data: {

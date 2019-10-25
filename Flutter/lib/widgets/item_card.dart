@@ -1,6 +1,8 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:junior_design_plantlanta/model/item_model.dart';
+import 'package:junior_design_plantlanta/serializers/StatusResponse.dart';
 import 'package:junior_design_plantlanta/widgets/progress_dialog.dart';
 
 class ItemCard extends StatefulWidget {
@@ -10,6 +12,7 @@ class ItemCard extends StatefulWidget {
   ItemCard(this._model);
 
   bool get isSelected => this.isSelected;
+
   @override
   _ItemCardState createState() => _ItemCardState();
 }
@@ -41,8 +44,7 @@ class _ItemCardState extends State<ItemCard> {
                       widget._model.price.toString(),
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
-                          fontSize: 20.0
-                      ),
+                          fontSize: 20.0),
                     ),
                     Icon(
                       Icons.spa,
@@ -65,8 +67,8 @@ class _ItemCardState extends State<ItemCard> {
             context: context,
             builder: (BuildContext context) {
               // return object of type Dialog
-              return ProgressDialog(() {}, _buildPopUpContent(), "Buy Now",
-                  widget._model.name, true);
+              return ProgressDialog(confirmPurchase, _buildPopUpContent(),
+                  "Buy Now", widget._model.name, true);
             });
       },
       child: Card(
@@ -116,5 +118,26 @@ class _ItemCardState extends State<ItemCard> {
         ),
       ),
     );
+  }
+
+  Future<void> confirmPurchase() async {
+    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
+      functionName: 'purchaseItem',
+    );
+    try {
+      final HttpsCallableResult result = await callable
+          .call(<String, dynamic>{"ItemID": widget._model.itemId});
+
+      StatusResponse resp = new StatusResponse.fromJson(result.data);
+      Navigator.of(context).pop();
+
+      if (resp.status == 1) {
+        print('success');
+      } else {
+        print('error');
+      }
+    } catch (e) {
+      print(e.message);
+    }
   }
 }
