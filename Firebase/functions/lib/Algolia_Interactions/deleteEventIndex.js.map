@@ -1,0 +1,1 @@
+{"version":3,"file":"deleteEventIndex.js","sourceRoot":"","sources":["../../src/Algolia_Interactions/deleteEventIndex.ts"],"names":[],"mappings":";;AAAa,QAAA,OAAO,GAAG,UAAS,QAAQ,EAAE,aAAa;IACnD,MAAM,KAAK,GAAG,aAAa,CAAC,SAAS,CAAC,QAAQ,CAAC,CAAC;IAEhD,MAAM,QAAQ,GAAG,QAAQ,CAAC,EAAE,CAAC;IAE7B,OAAO,KAAK,CAAC,YAAY,CAAC,QAAQ,CAAC,CAAC;AACxC,CAAC,CAAA"}

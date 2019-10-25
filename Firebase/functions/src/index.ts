@@ -1,9 +1,14 @@
 import * as functions from 'firebase-functions';
 import admin = require("firebase-admin");
+import algoliasearch = require('algoliasearch');
+
+const algoliaClient = algoliasearch(functions.config().algolia.app, functions.config().algolia.key);
+
 //ONLY INITIALIZE APP HERE!!!
 admin.initializeApp({
     storageBucket: "junior-design-plantlanta.appspot.com"
 });
+
 const firestore = admin.firestore();
 
 // User/Admin Interactions
@@ -14,6 +19,10 @@ import requestAdminAccount = require("./User_Interactions/Admin/requestAdminAcco
 import getAdminRequest = require("./User_Interactions/Admin/getAdminRequest");
 import reviewAdminRequest = require("./User_Interactions/Admin/reviewAdminRequest")
 import deleteUser = require("./User_Interactions/deleteUser");
+
+// Marketplace Interactions
+import createItem = require("./Marketplace_Interactions/createItem");
+import editItem = require("./Marketplace_Interactions/editItem");
 
 // Event Interactions
 import createEvent = require("./Event_Interactions/createEvent");
@@ -29,6 +38,14 @@ import deleteEvent = require("./Event_Interactions/deleteEvent");
 import requestOrganization = require("./Organization_Interactions/requestOrganization");
 import getOrganizationRequest = require("./Organization_Interactions/getOrganizationRequest");
 import reviewOrganizationRequest = require("./Organization_Interactions/reviewOrganizationRequest");
+
+// Algolia Interactions (fucntions used to update Algolia index for full-text search)
+import addEventToIndex = require("./Algolia_Interactions/addEventToIndex");
+import updateEventIndex = require("./Algolia_Interactions/updateEventIndex");
+import deleteEventIndex = require("./Algolia_Interactions/deleteEventIndex");
+import addItemToIndex = require("./Algolia_Interactions/addItemToIndex");
+import updateItemIndex = require("./Algolia_Interactions/updateItemIndex");
+import deleteItemIndex = require("./Algolia_Interactions/deleteItemIndex");
 
 /*========================================================================
 Organization Interactions
@@ -85,6 +102,18 @@ exports.deleteEvent = functions.firestore.document("Events/{eventId}").onDelete(
 });
 
 /*========================================================================
+Marketplace Interactions
+==========================================================================*/
+
+exports.createItem = functions.https.onCall((data, context) => {
+    return createItem.handler(data, context, firestore);
+});
+
+exports.editItem = functions.https.onCall((data, context) => {
+    return editItem.handler(data, context, firestore);
+});
+
+/*========================================================================
 User/Admin Interactions
 ==========================================================================*/
 exports.registerUser = functions.https.onCall((data, context) => {
@@ -120,4 +149,31 @@ Marketplace Interactions
 ==========================================================================*/
 exports.purchaseItem = functions.https.onCall((data, context) => {
     return purchaseItem.handler(data, context, firestore);
+});
+
+/*========================================================================
+Algolia Interactions
+==========================================================================*/
+exports.addEventToIndex = functions.firestore.document("Events/{eventId}").onCreate((snapshot) => {
+    return addEventToIndex.handler(snapshot, algoliaClient);
+});
+
+exports.updateEventIndex = functions.firestore.document("Events/{eventId}").onUpdate((snapshot) => {
+    return updateEventIndex.handler(snapshot, algoliaClient);
+});
+
+exports.deleteEventIndex = functions.firestore.document("Events/{eventId}").onDelete((snapshot) => {
+    return deleteEventIndex.handler(snapshot, algoliaClient);
+});
+
+exports.addItemToIndex = functions.firestore.document("Items/{itemdId}").onCreate((snapshot) => {
+    return addItemToIndex.handler(snapshot, algoliaClient);
+});
+
+exports.updateItemIndex = functions.firestore.document("Items/{ItemId}").onUpdate((snapshot) => {
+    return updateItemIndex.handler(snapshot, algoliaClient);
+});
+
+exports.deleteItemIndex = functions.firestore.document("Items/{ItemId}").onDelete((snapshot) => {
+    return deleteItemIndex.handler(snapshot, algoliaClient);
 });

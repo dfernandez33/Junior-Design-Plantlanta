@@ -10,6 +10,7 @@ import { RequestAdminComponent } from './components/request-admin/request-admin.
 import { CreateEventComponent } from './components/create-event/create-event.component';
 import { MarketplaceDashboardComponent } from './components/marketplace-dashboard/marketplace-dashboard.component';
 import { VerifyOrganizationComponent } from './components/verify-organization/verify-organization.component';
+import { CreateItemComponent } from './components/create-item/create-item.component';
 
 const routes: Routes = [
   { path:'', redirectTo: '/event_dashboard', pathMatch:'full' },
@@ -19,10 +20,12 @@ const routes: Routes = [
   { path: 'verify_email', component: VerifyEmailComponent },
   { path: 'verify_admin/:requestId', component: VerifyAdminComponent },
   { path: 'request_admin', component: RequestAdminComponent },
-  { path: 'create_event', component: CreateEventComponent },
+  { path: 'create_event', component: CreateEventComponent, canActivate:[AuthGuard] },
   { path: 'create_event/:eventId', component: CreateEventComponent },
   { path: 'marketplace_dashboard', component: MarketplaceDashboardComponent, canActivate:[AuthGuard]},
-  { path: 'verify_organization/:requestId', component: VerifyOrganizationComponent}
+  { path: 'verify_organization/:requestId', component: VerifyOrganizationComponent},
+  { path: 'create_item', component: CreateItemComponent },
+
 ];
 
 @NgModule({

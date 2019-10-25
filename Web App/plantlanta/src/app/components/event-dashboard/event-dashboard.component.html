@@ -6,7 +6,7 @@
                 <div class="column is-8">
                     <div class="field">
                         <p class="control has-icons-right">
-                            <input class="input" type="text" placeholder="Search Events...">
+                            <input class="input" type="text" placeholder="Search events by name or location..." (keyup)="updateQuery($event)">
                             <span class="icon is-small is-right">
                                 <i class="fa fa-search"></i>
                             </span>
@@ -25,10 +25,13 @@
                 <div class="lds-ripple"><div></div><div></div><div></div></div>
                 <p>{{message}}</p>
             </div>
-            <div *ngIf="loaded" class="scroll-container">
-                <div *ngFor="let event of events">
+            <div *ngIf="loaded && filteredEvents.length > 0" class="scroll-container">
+                <div *ngFor="let event of filteredEvents">
                     <app-eventcard [event]="event"></app-eventcard>
                 </div>
+            </div>
+            <div *ngIf="filteredEvents.length == 0 && loaded" class="has-text-centered is-large">
+                No events match your search
             </div>
         </div>
     </div>

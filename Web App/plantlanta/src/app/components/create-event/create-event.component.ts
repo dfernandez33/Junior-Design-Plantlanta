@@ -103,6 +103,7 @@ export class CreateEventComponent implements OnInit {
       }
     } else if (this.eventForm.invalid) {
       this.validForm = false;
+      this.loading = false;
       this.message = "All fields are required to create an event. Please fill them out.";
     }
   }
