@@ -83,6 +83,7 @@ class _MarketplaceState extends State<Marketplace> {
       var items = data.documents;
       setState(() {
         items.forEach((item) {
+          // TODO: Pass ID.
           this.items.add(ItemModel.fromJson(item.data));
 
         });

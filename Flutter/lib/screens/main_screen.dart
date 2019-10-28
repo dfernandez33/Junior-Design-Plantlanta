@@ -45,9 +45,9 @@ class _MainScreenState extends State<MainScreen> {
     Widget points = Padding(
         padding: EdgeInsets.all(10.0)
     );
-    if (this.userData == null) {
+
       _getUserData();
-    }
+
 
     if (_page == 1 && this.userData != null) {
       points = Padding(
