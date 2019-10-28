@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:junior_design_plantlanta/model/registration_model.dart';
-import 'package:junior_design_plantlanta/screens/preferences1_screen.dart';
+import 'package:junior_design_plantlanta/screens/add_profile_picture.dart';
 
 class Registration extends StatefulWidget {
   Registration({Key key, this.title}) : super(key: key);
@@ -95,10 +95,11 @@ class _RegistrationState extends State<Registration> {
           ..name = name1
           ..phone = phone1
           ..address = address1
-          ..email = email1;
+          ..email = email1
+          ..profileUrl = 'https://firebasestorage.googleapis.com/v0/b/junior-design-plantlanta.appspot.com/o/Profile_Pictures%2Fadd_profile_picture.png?alt=media&token=896f21a6-89aa-407c-a106-f8a6824d3407';
 
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => Preferences1(newUser)));
+            MaterialPageRoute(builder: (context) => ProfilePic(newUser)));
       } catch (e) {
         print(e.message);
       }

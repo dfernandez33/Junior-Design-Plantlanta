@@ -78,7 +78,7 @@ class _MarketplaceState extends State<Marketplace> {
               crossAxisCount: 4,
               itemCount: this.items.length,
               itemBuilder: (BuildContext context, int index) =>
-                  ItemCard(this.items[index]),
+                  ItemCard(this.items[index], widget.userData),
               staggeredTileBuilder: (int index) {
                 return StaggeredTile.fit(2);
               },
