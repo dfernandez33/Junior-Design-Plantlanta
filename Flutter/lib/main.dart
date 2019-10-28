@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
         stream: FirebaseAuth.instance.onAuthStateChanged,
         builder: (BuildContext context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            //TODO: Send user to splash page
             return LoginPage();
           } else {
             if (snapshot.hasData) {

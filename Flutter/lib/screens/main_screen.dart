@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:junior_design_plantlanta/model/event_model.dart';
+import 'package:junior_design_plantlanta/model/user.dart';
 import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:junior_design_plantlanta/screens/marketplace.dart';
@@ -14,12 +15,13 @@ import 'package:junior_design_plantlanta/screens/login.dart';
 
 class MainScreen extends StatefulWidget {
   UserService _userService;
-  MainScreen() {
-    this._userService = UserService();
-  }
+  UserModel userModel;
 
   @override
-  _MainScreenState createState() => _MainScreenState();
+  _MainScreenState createState() {
+    this._userService = UserService();
+    return _MainScreenState();
+  }
 }
 
 class _MainScreenState extends State<MainScreen> {
@@ -27,9 +29,45 @@ class _MainScreenState extends State<MainScreen> {
   int _page = 0;
   String barcode = "";
   bool isConfirmedClicked = false;
+  UserModel userData;
+  Future<dynamic> userStream;
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
 
   @override
   Widget build(BuildContext context) {
+    Widget points = Padding(
+        padding: EdgeInsets.all(10.0)
+    );
+    if (this.userData == null) {
+      _getUserData();
+    }
+
+    if (_page == 1 && this.userData != null) {
+      points = Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              this.userData.points.toString() + " ",
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+            Icon(
+              Icons.spa,
+              size: 14.0,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -43,23 +81,7 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(getPageName(_page)),
         actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "700 ",
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
-                Icon(
-                  Icons.spa,
-                  size: 14.0,
-                  color: Colors.white,
-                ),
-              ],
-            ),
-          )
+          points
         ],
       ),
       body: PageView(
@@ -68,7 +90,7 @@ class _MainScreenState extends State<MainScreen> {
         onPageChanged: onPageChanged,
         children: <Widget>[
           Home(1),
-          Marketplace(widget._userService),
+          Marketplace(this.userData),
           Home(3),
           Home(4),
           Home(5),
@@ -166,15 +188,19 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  Future<dynamic> _getUserData() async {
+    return widget._userService.getUserAuth().listen((user) {
+      if (user != null) {
+        setState(() {
+          this.userData = UserModel.fromJson(user.data);
+        });
+      }
+    });
+  }
+
   void navigationTapped(int page) {
     onPageChanged(page);
     _pageController.jumpToPage(page);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
   }
 
   @override

@@ -15,22 +15,10 @@ class Marketplace extends StatefulWidget {
   String queryText;
 
 
-  Marketplace(this.userService) {
-    this.userService.getUserAuth().listen((user) {
-      if (user != null) {
-        this.userData = UserModel.fromJson(user.data);
-      }
-    });
-  }
+  Marketplace(this.userData);
 
   @override
   _MarketplaceState createState() => _MarketplaceState();
-
-  void getCurrentUser() async {
-    this.currentUser = await FirebaseAuth.instance.currentUser();
-    var user = await Firestore.instance.collection("Users").document(this.currentUser.uid).get();
-    this.userData = UserModel.fromJson(user.data);
-  }
 
 }
 
@@ -38,6 +26,8 @@ class _MarketplaceState extends State<Marketplace> {
 
   Future<dynamic> itemStream;
   List<ItemModel> items;
+  Future<dynamic> userStream;
+  UserModel userData;
   
   _MarketplaceState() {
     items = List();
@@ -78,7 +68,7 @@ class _MarketplaceState extends State<Marketplace> {
               crossAxisCount: 4,
               itemCount: this.items.length,
               itemBuilder: (BuildContext context, int index) =>
-                  ItemCard(this.items[index]),
+                  ItemCard(this.items[index], this.widget.userData),
               staggeredTileBuilder: (int index) {
                 return StaggeredTile.fit(2);
               },
