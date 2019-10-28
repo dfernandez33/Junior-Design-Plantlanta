@@ -8,10 +8,7 @@ import 'package:junior_design_plantlanta/widgets/item_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Marketplace extends StatefulWidget {
-  FirebaseUser currentUser;
-  Future<dynamic> userStream;
   UserModel userData;
-  UserService userService;
   String queryText;
 
 
@@ -26,8 +23,6 @@ class _MarketplaceState extends State<Marketplace> {
 
   Future<dynamic> itemStream;
   List<ItemModel> items;
-  Future<dynamic> userStream;
-  UserModel userData;
   
   _MarketplaceState() {
     items = List();
