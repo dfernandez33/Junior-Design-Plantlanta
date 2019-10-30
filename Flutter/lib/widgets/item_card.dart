@@ -70,8 +70,13 @@ class _ItemCardState extends State<ItemCard> {
             context: context,
             builder: (BuildContext context) {
               // return object of type Dialog
-              return ProgressDialog(confirmPurchase, _buildPopUpContent(),
-                  "Buy Now", widget._model.name, true);
+              if (widget.userData.points >= widget._model.price) {
+                return ProgressDialog(confirmPurchase, _buildPopUpContent(),
+                    "Buy Now", widget._model.name, true);
+              } else {
+                return ProgressDialog(() {}, _buildPopUpContent(),
+                    "Buy Now", widget._model.name, true);
+              }
             });
       },
       child: Card(
