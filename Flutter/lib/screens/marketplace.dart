@@ -19,6 +19,7 @@ class Marketplace extends StatefulWidget {
 
 }
 
+// TODO: Improve Progress Dialog to respond to error/success.
 class _MarketplaceState extends State<Marketplace> {
 
   Future<dynamic> itemStream;
