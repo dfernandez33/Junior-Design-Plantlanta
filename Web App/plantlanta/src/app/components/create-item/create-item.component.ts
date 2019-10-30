@@ -13,6 +13,8 @@ import { HttpClient } from '../../../../node_modules/@angular/common/http';
 })
 export class CreateItemComponent implements OnInit {
 
+  item;
+
   validForm = true;
   message = "";
   itemCreated = false;
@@ -48,7 +50,8 @@ export class CreateItemComponent implements OnInit {
     itemCodes: new FormControl('')
   });
 
-  constructor(private storage: AngularFireStorage, private cloud: AngularFireFunctions, private route: ActivatedRoute, private firestore: AngularFirestore, private router: Router, private http: HttpClient) {}
+  constructor(private storage: AngularFireStorage, private cloud: AngularFireFunctions, private route: ActivatedRoute,
+     private firestore: AngularFirestore, private router: Router, private http: HttpClient) {}
 
   ngOnInit() {
     this.itemId = this.route.snapshot.paramMap.get("itemId");
@@ -60,6 +63,13 @@ export class CreateItemComponent implements OnInit {
       this.isEdit = true;
       this.getItemFunction = this.cloud.httpsCallable("getItem");
       this.getItemFunction({EventID: this.itemId}).toPromise().then(item => {
+        this.item = item.message;
+        let finalCodes = "";
+        for (let i = 0;i < item.message.codes.length-1;i++) {
+          finalCodes += item.message.codes[i] + "\n";
+        }
+        finalCodes += item.message.codes[item.message.codes.length-1];
+        item.message.codes = finalCodes;
         this.itemForm.setValue({
           itemName: item.message.name,
           itemBrand: item.message.brand,
@@ -91,8 +101,21 @@ export class CreateItemComponent implements OnInit {
       this.createItem()
     } else {}
       this.validForm = false;
-      this.errMessage = "Quantity must be the same to the number of codes entered.";
+      this.errMessage = "Item quantity must be the same to number of codes entered.";
     }
+
+    checkEdit() {
+      let formValues = this.itemForm.value;
+      console.log(formValues["itemImage"]);
+      console.log(this.item.image)
+      if(formValues["itemQuantity"] == formValues["itemCodes"].split(/\r|\n/).length) {
+        this.editItem()
+      } else {
+        this.validForm = false;
+        this.errMessage = "Item quantity must be the same to number of codes entered.";
+      }
+    }
+
 
   createItem() {
     this.message = "Creating item..."
@@ -158,37 +181,34 @@ export class CreateItemComponent implements OnInit {
     this.confirmDeleteModal = !this.confirmDeleteModal;
   }
 
-  deleteItem() {
-    this.confirmDeleteModal = false;
-    this.message = "Deleting item...";
-    this.loading = true;  
-    this.firestore.collection("Items").doc(this.itemId).delete().then(() => {
-      this.successDeleteModal = true;
-      this.loading = false;
-      this.successDeleteModalMessage = "Item successfully deleted. You will be redirected to the marketplace.";
-      setTimeout(() => {
-        this.router.navigate(["/marketplace_dashboard"])
-      }, 2000);
-    }).catch(() => {
-      this.successDeleteModal = true;
-      this.loading = false;
-      this.successDeleteModalMessage = "There was an error deleting this item. Please try again."
-    });
-  }
-
   editItem() {
     this.message = "Updating item information...";
     this.loading = true;
     let formValues = this.itemForm.value;
-    this.editItemFunction({
-      itemId: this.itemId,
-      name: formValues["itemName"],
-      brand: formValues["itemBrand"],
-      description: formValues["itemDescription"],
-      price: formValues["itemPrice"],
-      quantity: formValues["itemQuantity"],
-      codes: formValues["itemCodes"]
-    }).toPromise().then(resp => {
+    const path = "Item_Images/" + formValues["itemName"];
+    let updateInfo = {
+        itemId: this.itemId,
+        name: formValues["itemName"],
+        brand: formValues["itemBrand"],
+        description: formValues["itemDescription"],
+        price: formValues["itemPrice"],
+        quantity: formValues["itemQuantity"],
+        image: "",
+        codes: formValues["itemCodes"].split(/\r|\n/)
+    }
+    if (document.getElementById("fileInput").files.length == 0) {
+      updateInfo.image = this.item.image;
+      console.log(this.item);
+    } else {
+      let upload = this.storage.upload(path, this.file);
+      this.submitting = true;
+      console.log(this.file)
+      upload.then(async snapshot => {
+        updateInfo.image = await snapshot.ref.getDownloadURL()
+      })
+      console.log(updateInfo);
+    }
+    this.editItemFunction(updateInfo).toPromise().then(resp => {
       if (resp.status) {
         this.editModal = true;
         this.loading = false;
@@ -196,6 +216,7 @@ export class CreateItemComponent implements OnInit {
       } else {
         this.editModal = true;
         this.loading = false;
+        console.log(resp);
         this.editModalMessage = resp.message;
       }
     }).catch(e => {
@@ -205,4 +226,25 @@ export class CreateItemComponent implements OnInit {
     });
   }
 
+  deleteItem() {
+    let formValues = this.itemForm.value;
+    this.confirmDeleteModal = false;
+    this.message = "Deleting item...";
+    this.loading = true;
+    const path = "Item_Images/" + formValues["itemName"];
+    this.firestore.collection("Items").doc(this.itemId).delete().then(() => {
+      this.storage.ref(path).delete().toPromise().then(() => {
+        this.successDeleteModal = true;
+        this.loading = false;
+        this.successDeleteModalMessage = "Item successfully deleted. You will be redirected to the marketplace.";
+        setTimeout(() => {
+          this.router.navigate(["/marketplace_dashboard"])
+        }, 2000);
+      });
+    }).catch(() => {
+      this.successDeleteModal = true;
+      this.loading = false;
+      this.successDeleteModalMessage = "There was an error deleting this item. Please try again."
+    });
+  }
 }

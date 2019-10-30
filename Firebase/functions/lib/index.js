@@ -19,6 +19,9 @@ const reviewAdminRequest = require("./User_Interactions/Admin/reviewAdminRequest
 const deleteUser = require("./User_Interactions/deleteUser");
 // Marketplace Interactions
 const createItem = require("./Marketplace_Interactions/createItem");
+const editItem = require("./Marketplace_Interactions/editItem");
+const getItem = require("./Marketplace_Interactions/getItem");
+const deleteItem = require("./Marketplace_Interactions/deleteItem");
 // Event Interactions
 const createEvent = require("./Event_Interactions/createEvent");
 const signupForEvent = require("./Event_Interactions/signupForEvent");
@@ -85,6 +88,15 @@ Marketplace Interactions
 ==========================================================================*/
 exports.createItem = functions.https.onCall((data, context) => {
     return createItem.handler(data, context, firestore);
+});
+exports.editItem = functions.https.onCall((data, context) => {
+    return editItem.handler(data, context, firestore);
+});
+exports.getItem = functions.https.onCall((data, context) => {
+    return getItem.handler(data, context, firestore);
+});
+exports.deleteItem = functions.firestore.document("Items/{itemId}").onDelete((data, context) => {
+    return deleteItem.handler(data, context, firestore);
 });
 /*========================================================================
 User/Admin Interactions

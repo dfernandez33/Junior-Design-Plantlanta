@@ -25,6 +25,7 @@ const routes: Routes = [
   { path: 'marketplace_dashboard', component: MarketplaceDashboardComponent, canActivate:[AuthGuard]},
   { path: 'verify_organization/:requestId', component: VerifyOrganizationComponent},
   { path: 'create_item', component: CreateItemComponent },
+  { path: 'create_item/:itemId', component: CreateItemComponent },
 
 ];
 
