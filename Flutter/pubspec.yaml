@@ -38,6 +38,8 @@ dependencies:
   circular_profile_avatar: ^1.0.2
   image_picker: ^0.6.1+8
   firebase_storage: ^3.0.6
+  image_cropper: ^1.1.0
+
 
 
 
@@ -68,6 +70,7 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
     - assets/logo.png
+    - assets/add_profile_picture.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

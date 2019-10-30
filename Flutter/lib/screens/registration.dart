@@ -266,7 +266,8 @@ class _RegistrationState extends State<Registration> {
                                 )),
                           ),
                         )),
-                      ])
+                      ]),
+                  const SizedBox(height: 24.0)
                 ],
               ))),
     );
