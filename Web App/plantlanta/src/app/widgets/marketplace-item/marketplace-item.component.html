@@ -1,10 +1,10 @@
 <div class="card rounded">
     <header class="card-header">
         <p class="card-header-title">
-            {{item?.name}}
+            {{itemData?.name}}
         </p>
         <div class="has-text-right">
-            <a class="button is-medium is-white" (click)="editEvent()">
+            <a class="button is-medium is-white" (click)="editItem()">
                 <span class="icon is-medium">
                     <i class="fa fa-edit fa-lg"></i>
                 </span>
@@ -13,27 +13,27 @@
     </header>
     <div class="card-image">
         <figure class="image is-4by3">
-        <img src={{item?.image}} alt="Placeholder image">
+        <img src={{itemData?.image}} alt="Placeholder image">
         </figure>
     </div>
     <div class="card-content">
         <div class="columns">
             <div class="column">
                 <div class="label">Brand</div>
-                <p>{{item?.brand}}</p>
+                <p>{{itemData?.brand}}</p>
                 <div class="label">Description</div>
-                <p>{{item?.description}}</p>
+                <p>{{itemData?.description}}</p>
             </div>
             <div class="column">
                 <div class="label">Price</div>
-                <p>{{item?.price}}</p>
+                <p>{{itemData?.price}}</p>
                 <div class="label">Quantity</div>
-                <p>{{item?.quantity}}</p>
+                <p>{{itemData?.quantity}}</p>
             </div>
         </div>
         <div class="label">Available Codes</div>
         <div class="table-column">
-            <table mat-table [dataSource]="item?.codes">
+            <table mat-table [dataSource]="itemData?.codes">
                 <!-- Number Column -->
                 <ng-container matColumnDef="#">
                     <th mat-header-cell *matHeaderCellDef> # </th>

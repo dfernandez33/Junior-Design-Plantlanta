@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { MarketplaceItem } from '../../interfaces/marketplace-item';
 import { MarketplaceService } from '../../services/Marketplace/marketplace.service';
 import * as algoliasearch from 'algoliasearch';
 import { environment } from 'src/environments/environment';
@@ -15,8 +13,8 @@ export class MarketplaceDashboardComponent implements OnInit {
   searchClient;
   index;
 
-  items: MarketplaceItem[];
-  filteredItems: MarketplaceItem[] = [];
+  items: firebase.firestore.QueryDocumentSnapshot[];
+  filteredItems: firebase.firestore.QueryDocumentSnapshot[] = [];
   loading = true;
 
   constructor(private marketpalceService: MarketplaceService) { }
@@ -26,7 +24,7 @@ export class MarketplaceDashboardComponent implements OnInit {
     this.index = this.searchClient.initIndex('Items');
     this.marketpalceService.getItems().subscribe(items => {
       this.loading = false;
-      this.items = items;
+      this.items = items.docs;
       this.filteredItems = this.items;
     });
   }
@@ -35,7 +33,7 @@ export class MarketplaceDashboardComponent implements OnInit {
     this.index.search({ query: query.srcElement.value }).then(result => {
       let hits = result.hits;
       this.filteredItems = this.items.filter(item => {
-        return hits.map(hit => hit.name).includes(item.name) || hits.map(hit => hit.brand).includes(item.brand);
+        return hits.map(hit => hit.name).includes(item.data().name) || hits.map(hit => hit.brand).includes(item.data().brand);
       });
     });
   }
