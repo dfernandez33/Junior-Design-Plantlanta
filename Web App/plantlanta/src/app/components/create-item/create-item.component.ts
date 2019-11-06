@@ -106,8 +106,6 @@ export class CreateItemComponent implements OnInit {
 
     checkEdit() {
       let formValues = this.itemForm.value;
-      console.log(formValues["itemImage"]);
-      console.log(this.item.image)
       if(formValues["itemQuantity"] == formValues["itemCodes"].split(/\r|\n/).length) {
         this.editItem()
       } else {
@@ -198,16 +196,18 @@ export class CreateItemComponent implements OnInit {
     }
     if (document.getElementById("fileInput").files.length == 0) {
       updateInfo.image = this.item.image;
-      console.log(this.item);
+      this.callEditItem(updateInfo);
     } else {
       let upload = this.storage.upload(path, this.file);
       this.submitting = true;
-      console.log(this.file)
       upload.then(async snapshot => {
-        updateInfo.image = await snapshot.ref.getDownloadURL()
+        updateInfo.image = await snapshot.ref.getDownloadURL();
+        this.callEditItem(updateInfo);
       })
-      console.log(updateInfo);
     }
+  }
+
+  callEditItem(updateInfo) {
     this.editItemFunction(updateInfo).toPromise().then(resp => {
       if (resp.status) {
         this.editModal = true;
@@ -216,7 +216,6 @@ export class CreateItemComponent implements OnInit {
       } else {
         this.editModal = true;
         this.loading = false;
-        console.log(resp);
         this.editModalMessage = resp.message;
       }
     }).catch(e => {
