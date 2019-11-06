@@ -16,12 +16,19 @@ class ProgressDialog extends StatefulWidget {
   State<StatefulWidget> createState() => _ProgressDialogState();
 }
 
+enum DialogState {
+  WAITING_FOR_RESPONSE,
+  ERROR_ON_RESPONSE,
+  SUCCESS_ON_RESPONSE,
+  DISPLAY_CONTENT,
+}
+
 class _ProgressDialogState extends State<ProgressDialog> {
-  bool isButtonClicked = false;
+  DialogState dialogState;
 
   @override
   void initState() {
-    this.isButtonClicked = false;
+    this.dialogState = DialogState.DISPLAY_CONTENT;
     super.initState();
   }
 
@@ -32,7 +39,7 @@ class _ProgressDialogState extends State<ProgressDialog> {
 
   @override
   Widget build(BuildContext context) {
-    if (isButtonClicked) {
+    if (dialogState == DialogState.WAITING_FOR_RESPONSE) {
       return AlertDialog(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
@@ -46,6 +53,26 @@ class _ProgressDialogState extends State<ProgressDialog> {
               AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
         )))
       ])));
+    } else if (dialogState == DialogState.SUCCESS_ON_RESPONSE) {
+      return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          content: Container(
+              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                Container(
+                    child: Center(
+                        child: Text("SUCESS")))
+              ])));
+    } else if (dialogState == DialogState.ERROR_ON_RESPONSE) {
+      return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          content: Container(
+              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                Container(
+                    child: Center(
+                        child: Text("ERROR")))
+              ])));
     } else {
       return _buildInformationView();
     }
@@ -80,9 +107,22 @@ class _ProgressDialogState extends State<ProgressDialog> {
       Navigator.of(context).pop();
     } else {
       setState(() {
-        this.isButtonClicked = true;
+        this.dialogState = DialogState.WAITING_FOR_RESPONSE;
       });
-      widget.callback();
+      Future<int> status = widget.callback();
+      status.asStream().listen(
+          (status) {
+            if (status == 1) {
+              setState(() {
+                this.dialogState = DialogState.SUCCESS_ON_RESPONSE;
+              });
+            } else if (status == 0) {
+              setState(() {
+                this.dialogState = DialogState.ERROR_ON_RESPONSE;
+              });
+            }
+          }
+      );
     }
   }
 }
