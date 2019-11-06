@@ -3,18 +3,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:junior_design_plantlanta/model/event_model.dart';
+import 'package:junior_design_plantlanta/model/user.dart';
 import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:junior_design_plantlanta/screens/marketplace.dart';
 import 'package:junior_design_plantlanta/serializers/StatusResponse.dart';
+import 'package:junior_design_plantlanta/services/user_service.dart';
 import 'package:junior_design_plantlanta/widgets/progress_dialog.dart';
 
 import 'package:junior_design_plantlanta/screens/login.dart';
 
-
 class MainScreen extends StatefulWidget {
+  UserService _userService;
+  UserModel userModel;
+
   @override
-  _MainScreenState createState() => _MainScreenState();
+  _MainScreenState createState() {
+    this._userService = UserService();
+    return _MainScreenState();
+  }
 }
 
 class _MainScreenState extends State<MainScreen> {
@@ -22,19 +29,59 @@ class _MainScreenState extends State<MainScreen> {
   int _page = 0;
   String barcode = "";
   bool isConfirmedClicked = false;
+  UserModel userData;
+  Future<dynamic> userStream;
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
 
   @override
   Widget build(BuildContext context) {
+    Widget points = Padding(
+        padding: EdgeInsets.all(10.0)
+    );
+
+      _getUserData();
+
+
+    if (_page == 1 && this.userData != null) {
+      points = Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              this.userData.points.toString() + " ",
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+            Icon(
+              Icons.spa,
+              size: 14.0,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         elevation: 10,
+        leading: IconButton(
+          icon: Icon(Icons.exit_to_app),
+          onPressed: () {
+            _logOut();
+          },
+        ),
         backgroundColor: Theme.of(context).primaryColor,
-        title: Text("Plantlanta"),
+        title: Text(getPageName(_page)),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.exit_to_app),
-            onPressed: (){ _logOut();},
-          ),
+          points
         ],
       ),
       body: PageView(
@@ -43,7 +90,7 @@ class _MainScreenState extends State<MainScreen> {
         onPageChanged: onPageChanged,
         children: <Widget>[
           Home(1),
-          Marketplace(),
+          Marketplace(this.userData),
           Home(3),
           Home(4),
           Home(5),
@@ -77,14 +124,14 @@ class _MainScreenState extends State<MainScreen> {
             ),
             IconButton(
               icon: Icon(
-                Icons.add,
+                Icons.center_focus_strong,
                 size: 24.0,
-                color: Theme.of(context).primaryColor,
+                color: Colors.black54,
               ),
               color: _page == 2
                   ? Theme.of(context).primaryColor
                   : Theme.of(context).textTheme.caption.color,
-              onPressed: () => navigationTapped(2),
+              onPressed: scan,
             ),
             IconButton(
               icon: Icon(
@@ -112,29 +159,36 @@ class _MainScreenState extends State<MainScreen> {
         color: Theme.of(context).backgroundColor,
         shape: CircularNotchedRectangle(),
       ),
-      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        elevation: 10.0,
-        backgroundColor: Theme.of(context).primaryColor,
-        child: Icon(
-          Icons.center_focus_weak,
-          color: Theme.of(context).backgroundColor,
-        ),
-        onPressed: scan,
-      ),
     );
+  }
+
+  String getPageName(int page) {
+    if (page == 0) {
+      return "Events";
+    } else if (page == 1) {
+      return "Markeplace";
+    } else if (page == 3) {
+      return "Activity Feed";
+    } else if (page == 4) {
+      return "Profile";
+    } else {
+      return "Plantlanta";
+    }
+  }
+
+  Future<dynamic> _getUserData() async {
+    return widget._userService.getUserAuth().listen((user) {
+      if (user != null) {
+        setState(() {
+          this.userData = UserModel.fromJson(user.data);
+        });
+      }
+    });
   }
 
   void navigationTapped(int page) {
     onPageChanged(page);
     _pageController.jumpToPage(page);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
   }
 
   @override
@@ -145,16 +199,16 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> scan() async {
     try {
-        String barcode = await BarcodeScanner.scan();
-        this.barcode = barcode;
-      
+      String barcode = await BarcodeScanner.scan();
+      this.barcode = barcode;
+
       final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
         functionName: 'getEvent',
       );
 
       try {
-        final HttpsCallableResult result = await callable
-            .call(<String, dynamic>{"EventID": this.barcode});
+        final HttpsCallableResult result =
+            await callable.call(<String, dynamic>{"EventID": this.barcode});
 
         StatusResponse resp = new StatusResponse.fromJson(result.data);
 
@@ -217,24 +271,22 @@ class _MainScreenState extends State<MainScreen> {
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).primaryColor))),
-            Container(
-                child: Text(event.startTime)),
+            Container(child: Text(event.startTime)),
           ],
         ),
       ),
-          Container(
-            child: Row(
-              children: <Widget>[
-                Container(
-                    child: Text("End Time: ",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor))),
-                Container(
-                    child: Text(event.endTime)),
-              ],
-            ),
-          ),
+      Container(
+        child: Row(
+          children: <Widget>[
+            Container(
+                child: Text("End Time: ",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor))),
+            Container(child: Text(event.endTime)),
+          ],
+        ),
+      ),
       Container(
         child: Row(
           children: <Widget>[
@@ -258,8 +310,8 @@ class _MainScreenState extends State<MainScreen> {
       functionName: 'confirmEvent',
     );
     try {
-      final HttpsCallableResult result = await callable
-          .call(<String, dynamic>{"EventID": this.barcode});
+      final HttpsCallableResult result =
+          await callable.call(<String, dynamic>{"EventID": this.barcode});
 
       StatusResponse resp = new StatusResponse.fromJson(result.data);
       Navigator.of(context).pop();
@@ -291,4 +343,3 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 }
-

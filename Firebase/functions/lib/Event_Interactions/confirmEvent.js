@@ -32,6 +32,7 @@ exports.handler = async function (data, context, firestore) {
     batch.update(userRef, {
         confirmed_events: admin.firestore.FieldValue.arrayUnion(eventID),
         points: admin.firestore.FieldValue.increment(eventData.reward),
+        transaction_history: admin.firestore.FieldValue.arrayUnion(transactionRef.id),
     });
     return batch.commit().then(() => {
         return {

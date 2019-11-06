@@ -18,11 +18,12 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     this.afAuth.auth.onAuthStateChanged(user => {
       if (user) {
-        this.UserService.getAdmin(user.uid).subscribe(info => {
+        this.UserService.getAdmin(user).subscribe(info => {
           this.user = info.data();
         });
         this.showLogout = true;
       } else {
+        this.user = null;
         this.showLogout = false;
       }
     });

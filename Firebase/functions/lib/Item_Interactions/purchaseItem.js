@@ -9,8 +9,10 @@ sgMail.setApiKey(SENDGRID_API_KEY);
 exports.handler = async function (data, context, firestore) {
     const itemID = data.ItemID;
     let UUID;
+    let Email;
     if (context.auth !== undefined) {
         UUID = context.auth.uid;
+        Email = context.auth.token.email;
     }
     else {
         return {
@@ -28,7 +30,7 @@ exports.handler = async function (data, context, firestore) {
     const userData = user.data();
     const code = itemData.codes.pop();
     const mssg = {
-        to: userData.email,
+        to: Email,
         from: "plantlanta.bitbybit@gmail.com",
         templateId: "d-7dc8e8fded7f48d2b9a48883c8df2be0",
         dynamic_template_data: {
@@ -51,6 +53,7 @@ exports.handler = async function (data, context, firestore) {
         });
         batch.update(userRef, {
             points: admin.firestore.FieldValue.increment(-itemData.price),
+            transaction_history: admin.firestore.FieldValue.arrayUnion(transactionRef.id),
         });
     }
     else {
@@ -59,7 +62,7 @@ exports.handler = async function (data, context, firestore) {
             message: "User does not have enough points for selected item."
         };
     }
-    try { // send email to organization contact
+    try {
         await sgMail.send(mssg);
         return batch.commit().then(() => {
             return {
