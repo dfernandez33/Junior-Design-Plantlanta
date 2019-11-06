@@ -30,10 +30,29 @@ class ProfilePicState extends State<ProfilePic> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("Choose a Profile Picture"),
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.refresh,
+                    size: 24.0,
+                    color: Colors.white,
+                  ),
+                  onPressed: _clear,
+                ),
+              ],
+            ),
+          )
+        ],
       ),
       body: Center(
         child: ListView(
           children: <Widget>[
+            const SizedBox(height: 48.0),
             Padding(
                 padding: const EdgeInsets.all(30.0),
                 child: Container(
@@ -55,9 +74,64 @@ class ProfilePicState extends State<ProfilePic> {
                       color: Color(0xFF25A325), // border color
                       shape: BoxShape.circle,
                     ))),
-            const SizedBox(height: 16.0),
-            _getEditRow(),
-            const SizedBox(height: 28.0),
+            const SizedBox(height: 58.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Expanded(
+                    child: Padding(
+                  padding:
+                      const EdgeInsets.only(right: 0.0, left: 0.0, top: 10.0),
+                  child: FlatButton(
+                    onPressed: selectImageFromCamera,
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 60.0,
+                      decoration: new BoxDecoration(
+                        color: Colors.brown[300],
+                        borderRadius: new BorderRadius.circular(10.0),
+                      ),
+                      child: Icon(
+                        Icons.camera_alt,
+                        size: 24.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                )),
+                Expanded(
+                    child: Padding(
+                  padding:
+                      const EdgeInsets.only(right: 0.0, left: 0.0, top: 10.0),
+                  child: FlatButton(
+                    onPressed: selectImageFromLibrary,
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 60.0,
+                      decoration: new BoxDecoration(
+                        color: Colors.brown[300],
+                        borderRadius: new BorderRadius.circular(10.0),
+                      ),
+                      child: Icon(
+                        Icons.photo_library,
+                        size: 24.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                )),
+              ],
+            ),
+            const SizedBox(height: 48.0),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: new Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            SizedBox(width: 7),
             FlatButton.icon(
                 color: Colors.transparent,
                 label: Text(
@@ -69,36 +143,10 @@ class ProfilePicState extends State<ProfilePic> {
                 ),
                 icon: Icon(Icons.navigate_next, color: Color(0xFF25A325)),
                 onPressed: next),
-            const SizedBox(height: 48.0),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: new Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            SizedBox(width: 7),
-            IconButton(
-              icon: Icon(
-                Icons.camera_alt,
-                size: 24.0,
-                color: Color(0xFF25A325),
-              ),
-              onPressed: selectImageFromCamera,
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.photo_library,
-                size: 24.0,
-                color: Color(0xFF25A325),
-              ),
-              onPressed: selectImageFromLibrary,
-            ),
             SizedBox(width: 7),
           ],
         ),
-        color: Theme.of(context).backgroundColor,
+        color: Color(0xFFFAFAFA),
         shape: CircularNotchedRectangle(),
       ),
     );
@@ -111,6 +159,9 @@ class ProfilePicState extends State<ProfilePic> {
       setState(() {
         _profilePicture = image;
       });
+
+      await _cropImage();
+
     } catch (e) {
       print(e.message);
     }
@@ -127,6 +178,9 @@ class ProfilePicState extends State<ProfilePic> {
       setState(() {
         _profilePicture = image;
       });
+
+      await _cropImage();
+
     } catch (e) {
       print(e.message);
     }
@@ -204,22 +258,4 @@ class ProfilePicState extends State<ProfilePic> {
     return Image.file(_profilePicture, fit: BoxFit.fill);
   }
 
-  Widget _getEditRow() {
-    if (_profilePicture != null) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          FlatButton(
-            child: Icon(Icons.crop, color: Color(0xFF25A325)),
-            onPressed: _cropImage,
-          ),
-          FlatButton(
-            child: Icon(Icons.refresh, color: Color(0xFF25A325)),
-            onPressed: _clear,
-          )
-        ],
-      );
-    }
-    return const SizedBox(height: 16.0);
-  }
 }
