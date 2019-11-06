@@ -84,9 +84,8 @@ class _MarketplaceState extends State<Marketplace> {
       var items = data.documents;
       setState(() {
         items.forEach((item) {
-          // TODO: Pass ID
+          item.data.addEntries([MapEntry("itemID", item.reference.documentID)]);
           this.items.add(ItemModel.fromJson(item.data));
-
         });
       });
     });
