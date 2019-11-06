@@ -70,8 +70,12 @@ class _ItemCardState extends State<ItemCard> {
             context: context,
             builder: (BuildContext context) {
               // return object of type Dialog
-              return ProgressDialog(confirmPurchase, _buildPopUpContent(),
-                  "Buy Now", widget._model.name, true);
+              if (widget.userData.points >= widget._model.price) {
+                return ProgressDialog(confirmPurchase, _buildPopUpContent(),
+                    "Buy Now", widget._model.name, true);
+              } else {
+                return _notEnoughPointsDialog();
+              }
             });
       },
       child: Card(
@@ -126,7 +130,30 @@ class _ItemCardState extends State<ItemCard> {
     );
   }
 
-  Future<void> confirmPurchase() async {
+  Widget _notEnoughPointsDialog() {
+    return AlertDialog(
+      title: new Text("Not Enough Points"),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20.0))),
+      actions: <Widget>[
+        // usually buttons at the bottom of the dialog
+        new FlatButton(
+          child: new Text(
+            "Close",
+            style: new TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20.0,
+                color: Color(0xFF25A325)),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+  }
+
+  Future<int> confirmPurchase() async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
       functionName: 'purchaseItem',
     );
@@ -137,9 +164,9 @@ class _ItemCardState extends State<ItemCard> {
       StatusResponse resp = new StatusResponse.fromJson(result.data);
 
       if (resp.status == 1) {
-        print('success');
-        Navigator.of(context).pop();
+        return 1;
       } else {
+        return 0;
         Navigator.of(context).pop();
         showDialog(
           context: context,
@@ -172,5 +199,6 @@ class _ItemCardState extends State<ItemCard> {
     } catch (e) {
       print(e.message);
     }
+    return -1;
   }
 }
