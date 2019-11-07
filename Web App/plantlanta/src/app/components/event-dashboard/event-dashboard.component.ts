@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AngularFireFunctions } from '@angular/fire/functions';
 import { Event } from '../../interfaces/event';
 import * as algoliasearch from 'algoliasearch';
 import { environment } from '../../../environments/environment';
 import { EventService } from '../../services/Event/event.service';
+import { AngularFireAuth } from '../../../../node_modules/@angular/fire/auth';
+import { UserService } from '../../services/User/user.service';
 
 
 @Component({
@@ -24,17 +24,23 @@ export class EventDashboardComponent implements OnInit {
   loaded = false;
   message = ""
 
-  constructor(private eventService: EventService) { }
+  constructor(private eventService: EventService, private afAuth: AngularFireAuth, private userService: UserService) { }
 
   ngOnInit() {
     this.searchClient = algoliasearch(environment.algolia.app, environment.algolia.search_key);
     this.index = this.searchClient.initIndex('Events');
     this.message = "Loading Events..."
-    this.eventService.getEvents().subscribe(events => {
-      this.loaded = true;
-      this.events = events;
-      this.filteredEvents = this.events;
-    })
+    this.afAuth.auth.onAuthStateChanged(user => {
+      if (user) {
+        this.userService.getAdmin(user).subscribe(admin => {
+          this.eventService.getEvents(admin.data()).subscribe(events => {
+            this.loaded = true;
+            this.events = events;
+            this.filteredEvents = this.events;
+          })        
+        });
+      }
+    });
 
   }
 

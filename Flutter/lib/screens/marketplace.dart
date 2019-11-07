@@ -8,32 +8,18 @@ import 'package:junior_design_plantlanta/widgets/item_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Marketplace extends StatefulWidget {
-  FirebaseUser currentUser;
-  Future<dynamic> userStream;
   UserModel userData;
-  UserService userService;
   String queryText;
 
 
-  Marketplace(this.userService) {
-    this.userService.getUserAuth().listen((user) {
-      if (user != null) {
-        this.userData = UserModel.fromJson(user.data);
-      }
-    });
-  }
+  Marketplace(this.userData);
 
   @override
   _MarketplaceState createState() => _MarketplaceState();
 
-  void getCurrentUser() async {
-    this.currentUser = await FirebaseAuth.instance.currentUser();
-    var user = await Firestore.instance.collection("Users").document(this.currentUser.uid).get();
-    this.userData = UserModel.fromJson(user.data);
-  }
-
 }
 
+// TODO: Improve Progress Dialog to respond to error/success.
 class _MarketplaceState extends State<Marketplace> {
 
   Future<dynamic> itemStream;
@@ -79,7 +65,7 @@ class _MarketplaceState extends State<Marketplace> {
               crossAxisCount: 4,
               itemCount: this.items.length,
               itemBuilder: (BuildContext context, int index) =>
-                  ItemCard(this.items[index], widget.userData),
+                  ItemCard(this.items[index], this.widget.userData),
               staggeredTileBuilder: (int index) {
                 return StaggeredTile.fit(2);
               },
@@ -99,8 +85,8 @@ class _MarketplaceState extends State<Marketplace> {
       var items = data.documents;
       setState(() {
         items.forEach((item) {
+          item.data.addEntries([MapEntry("itemID", item.reference.documentID)]);
           this.items.add(ItemModel.fromJson(item.data));
-
         });
       });
     });
