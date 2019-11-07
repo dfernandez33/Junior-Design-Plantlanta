@@ -1,35 +1,38 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:junior_design_plantlanta/model/registration_model.dart';
-import 'package:junior_design_plantlanta/screens/preferences1_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as Path;
 import 'package:image_cropper/image_cropper.dart';
 
 class ProfilePic extends StatefulWidget {
-  UserRegistrationModelBuilder _newUser;
 
-  ProfilePic(this._newUser);
+  ProfilePic();
 
   @override
   ProfilePicState createState() => ProfilePicState();
 }
 
 class ProfilePicState extends State<ProfilePic> {
+
+  FirebaseUser _currentUser;
+
   File _profilePicture;
 
   String _profilePictureURL;
 
-  String _stateString = "Skip for now";
+  String _stateString = "Cancel";
+
+  UserUpdateInfo _info = UserUpdateInfo();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Choose a Profile Picture"),
+        title: Text("Change Your Profile Picture"),
         actions: <Widget>[
           Padding(
             padding: EdgeInsets.all(10.0),
@@ -80,46 +83,46 @@ class ProfilePicState extends State<ProfilePic> {
               children: <Widget>[
                 Expanded(
                     child: Padding(
-                  padding:
+                      padding:
                       const EdgeInsets.only(right: 0.0, left: 0.0, top: 10.0),
-                  child: FlatButton(
-                    onPressed: selectImageFromCamera,
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: 60.0,
-                      decoration: new BoxDecoration(
-                        color: Colors.brown[300],
-                        borderRadius: new BorderRadius.circular(10.0),
+                      child: FlatButton(
+                        onPressed: selectImageFromCamera,
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 60.0,
+                          decoration: new BoxDecoration(
+                            color: Colors.brown[300],
+                            borderRadius: new BorderRadius.circular(10.0),
+                          ),
+                          child: Icon(
+                            Icons.camera_alt,
+                            size: 24.0,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
-                      child: Icon(
-                        Icons.camera_alt,
-                        size: 24.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                )),
+                    )),
                 Expanded(
                     child: Padding(
-                  padding:
+                      padding:
                       const EdgeInsets.only(right: 0.0, left: 0.0, top: 10.0),
-                  child: FlatButton(
-                    onPressed: selectImageFromLibrary,
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: 60.0,
-                      decoration: new BoxDecoration(
-                        color: Colors.brown[300],
-                        borderRadius: new BorderRadius.circular(10.0),
+                      child: FlatButton(
+                        onPressed: selectImageFromLibrary,
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 60.0,
+                          decoration: new BoxDecoration(
+                            color: Colors.brown[300],
+                            borderRadius: new BorderRadius.circular(10.0),
+                          ),
+                          child: Icon(
+                            Icons.photo_library,
+                            size: 24.0,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
-                      child: Icon(
-                        Icons.photo_library,
-                        size: 24.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                )),
+                    )),
               ],
             ),
             const SizedBox(height: 48.0),
@@ -161,7 +164,6 @@ class ProfilePicState extends State<ProfilePic> {
       });
 
       await _cropImage();
-
     } catch (e) {
       print(e.message);
     }
@@ -180,7 +182,6 @@ class ProfilePicState extends State<ProfilePic> {
       });
 
       await _cropImage();
-
     } catch (e) {
       print(e.message);
     }
@@ -205,7 +206,7 @@ class ProfilePicState extends State<ProfilePic> {
   Future<void> _clear() async {
     setState(() {
       _profilePicture = null;
-      _stateString = "Skip for now";
+      _stateString = "Cancel";
     });
   }
 
@@ -215,36 +216,31 @@ class ProfilePicState extends State<ProfilePic> {
         .child('Profile_Pictures/${Path.basename(_profilePicture.path)}}');
     StorageUploadTask uploadTask = storageReference.putFile(_profilePicture);
 
-    await uploadTask.onComplete;
+    var snapshot = await uploadTask.onComplete;
 
-    print('File Uploaded');
-
-    storageReference.getDownloadURL().then((fileURL) {
-      setState(() {
-        _profilePictureURL = fileURL;
-      });
+    snapshot.ref.getDownloadURL().then((fileURL) {
+      _profilePictureURL = fileURL;
+      _info.photoUrl = _profilePictureURL;
     });
   }
 
+  Future<void> getCurrentUser() async {
+    _currentUser = await FirebaseAuth.instance.currentUser();
+  }
+
   Future<void> next() async {
-    if (_stateString == "Skip for now") {
+    if (_stateString == "Cancel") {
       try {
-        widget._newUser.profileUrl = _profilePictureURL;
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Preferences1(widget._newUser)));
+
       } catch (e) {
         print(e.message);
       }
     } else {
       try {
-        uploadFile();
-        widget._newUser.profileUrl = _profilePictureURL;
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Preferences1(widget._newUser)));
+        await getCurrentUser();
+        await uploadFile();
+        await _currentUser.updateProfile(_info);
+
       } catch (e) {
         print(e.message);
       }
@@ -253,9 +249,10 @@ class ProfilePicState extends State<ProfilePic> {
 
   Widget _getImage() {
     if (_profilePicture == null) {
-      return Image.asset('assets/add_profile_picture.png', fit: BoxFit.fill);
+      return Image.asset(
+          'assets/add_profile_picture.png', fit: BoxFit.fitHeight, color: Colors.brown[100],);
     }
-    return Image.file(_profilePicture, fit: BoxFit.fill);
+    return Image.file(_profilePicture, fit: BoxFit.fitHeight);
   }
 
 }

@@ -165,12 +165,8 @@ class _Preferences2State extends State<Preferences2> {
     final user = widget._newUser.build();
     try {
 
-      var fireBaseUser = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: user.email, password: user.password);
-
-      var info = UserUpdateInfo();
-      info.photoUrl = user.profileUrl;
-      fireBaseUser.updateProfile(info);
 
       final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
         functionName: 'registerUser',

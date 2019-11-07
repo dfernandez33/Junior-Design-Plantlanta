@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:junior_design_plantlanta/model/event_model.dart';
+import 'package:junior_design_plantlanta/screens/add_profile_picture.dart';
 import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:junior_design_plantlanta/screens/marketplace.dart';
@@ -71,7 +72,7 @@ class _MainScreenState extends State<MainScreen> {
           Marketplace(widget._userService),
           Home(3),
           Home(4),
-          Home(5),
+          ProfilePic(),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
