@@ -35,6 +35,9 @@ abstract class UserRegistrationModel implements Built<UserRegistrationModel, Use
   @BuiltValueField(wireName: 'address')
   String get address;
   @nullable
+  @BuiltValueField(wireName: 'profileUrl')
+  String get profileUrl;
+  @nullable
   @BuiltValueField(wireName: 'preference')
   UserPreferenceModel get preference;
 

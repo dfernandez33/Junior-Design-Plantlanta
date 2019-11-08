@@ -164,9 +164,10 @@ class _Preferences2State extends State<Preferences2> {
     widget._newUser.preference = widget._userPreferences;
     final user = widget._newUser.build();
     try {
-      // TODO: Fix this error 500
+
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: user.email, password: user.password);
+
       final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
         functionName: 'registerUser',
       );

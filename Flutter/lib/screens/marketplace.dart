@@ -57,7 +57,8 @@ class _MarketplaceState extends State<Marketplace> {
 
                   },
                 ),
-              ])),
+              ]),
+          ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: StaggeredGridView.countBuilder(

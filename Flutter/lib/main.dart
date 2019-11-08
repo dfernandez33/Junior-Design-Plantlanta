@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
         title: 'Plantlanta',
         theme: new ThemeData(
             primaryColor: const Color(0xFF25A325),
-            accentColor: const Color(0xFFFFDB2B),
+            accentColor: const Color(0xFFFFE35B),
             backgroundColor: const Color(0xFFFAFAFA),
             fontFamily: 'Mukta',
         ),
