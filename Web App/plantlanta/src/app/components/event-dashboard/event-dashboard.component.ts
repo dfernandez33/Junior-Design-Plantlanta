@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AngularFireFunctions } from '@angular/fire/functions';
 import { Event } from '../../interfaces/event';
 import * as algoliasearch from 'algoliasearch';
 import { environment } from '../../../environments/environment';
@@ -37,7 +39,7 @@ export class EventDashboardComponent implements OnInit {
             this.loaded = true;
             this.events = events;
             this.filteredEvents = this.events;
-          })        
+          })
         });
       }
     });

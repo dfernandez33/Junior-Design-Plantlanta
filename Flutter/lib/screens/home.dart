@@ -3,11 +3,14 @@ import 'package:cloud_functions/cloud_functions.dart';
 
 import 'package:junior_design_plantlanta/widgets/event_card.dart';
 import 'package:junior_design_plantlanta/model/event_model.dart';
+import 'package:algolia/algolia.dart';
+import 'package:junior_design_plantlanta/services/algolia_service.dart';
+
+
 
 class Home extends StatefulWidget {
   // TODO: Remove param after final implementation.
   int _number;
-  String queryText;
 
   Home(this._number);
 
@@ -18,15 +21,26 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _number;
   List<EventCard> availableEvents;
+  List rawEvents;
+  AlgoliaIndexReference algolia = AlgoliaService.algolia.instance.index('Events');
+  bool isLoading;
 
   _HomeState(this._number) {
     availableEvents = List();
+    rawEvents = List();
     _buildEventCards();
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isLoading = true;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (availableEvents.length == 0) {
+    if (isLoading) {
       return Scaffold(
         body: Center(
             child: CircularProgressIndicator(
@@ -36,6 +50,16 @@ class _HomeState extends State<Home> {
         )),
       );
     } else {
+      Widget content;
+      if (this.availableEvents.length == 0) {
+        content = Center(
+          child: Text("No Events Found"),
+        );
+      } else {
+        content = Container(
+            margin: EdgeInsets.only(top: 12.0),
+            child: ListView(children: availableEvents));
+      }
       return Scaffold(
         appBar: new AppBar(
             backgroundColor: Theme.of(context).backgroundColor,
@@ -44,27 +68,29 @@ class _HomeState extends State<Home> {
               TextField(
                 cursorColor: Theme.of(context).primaryColor,
                 decoration: InputDecoration(
-                    hintText: 'Enter a search term'
+                    hintText: 'Search events by name or location'
                 ),
                 onChanged: (text) {
-                  widget.queryText = text;
+                  _updateFilteredEvents(text);
                 },
               ),
             ])),
-        body: Container(
-            margin: EdgeInsets.only(top: 12.0),
-            child: ListView(children: availableEvents)),
+        body: content ,
       );
     }
   }
 
   void _buildEventCards() {
+    this.isLoading = true;
     List<EventCard> events = List();
     getEvents().then((response) {
       if (response != null) {
-        response["events"].forEach(
-            (event) => events.add(EventCard(EventModel.fromJson(event))));
+        response["events"].forEach((event) {
+          this.rawEvents.add(event);
+          events.add(EventCard(EventModel.fromJson(event)));
+        });
         setState(() {
+          this.isLoading = false;
           this.availableEvents = events;
         });
       }
@@ -99,5 +125,15 @@ class _HomeState extends State<Home> {
         },
       );
     }
+  }
+
+  void _updateFilteredEvents(String query) {
+    this.algolia.search(query).getObjects().then((results) {
+      List hitIDs = results.hits.map((hit) => hit.objectID).toList();
+      List updatedEvents = this.rawEvents.where((event) => hitIDs.contains(event['eventId'])).toList();
+      setState(() {
+        this.availableEvents = updatedEvents.map((event) => EventCard(EventModel.fromJson(event))).toList();
+      });
+    });
   }
 }
