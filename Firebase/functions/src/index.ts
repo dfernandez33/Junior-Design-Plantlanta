@@ -23,6 +23,9 @@ import deleteUser = require("./User_Interactions/deleteUser");
 // Marketplace Interactions
 import createItem = require("./Marketplace_Interactions/createItem");
 import editItem = require("./Marketplace_Interactions/editItem");
+import getItem = require("./Marketplace_Interactions/getItem");
+import deleteItem = require("./Marketplace_Interactions/deleteItem");
+
 
 // Event Interactions
 import createEvent = require("./Event_Interactions/createEvent");
@@ -111,6 +114,14 @@ exports.createItem = functions.https.onCall((data, context) => {
 
 exports.editItem = functions.https.onCall((data, context) => {
     return editItem.handler(data, context, firestore);
+});
+
+exports.getItem = functions.https.onCall((data, context) => {
+    return getItem.handler(data, context, firestore);
+});
+
+exports.deleteItem = functions.firestore.document("Items/{itemId}").onDelete((data, context) => {
+    return deleteItem.handler(data, context, firestore);
 });
 
 /*========================================================================
