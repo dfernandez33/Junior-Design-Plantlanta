@@ -44,7 +44,7 @@ class _MarketplaceState extends State<Marketplace> {
             title: Column(children: [
               TextField(
                 cursorColor: Theme.of(context).primaryColor,
-                decoration: InputDecoration(hintText: 'Enter a search term'),
+                decoration: InputDecoration(hintText: 'Search items by name or brand'),
                 onChanged: (text) {
                   widget.queryText = text;
                 },

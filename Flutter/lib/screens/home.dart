@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
           title: Column(children: [
             TextField(
               cursorColor: Theme.of(context).primaryColor,
-              decoration: InputDecoration(hintText: 'Enter a search term'),
+              decoration: InputDecoration(hintText: 'Search events by name or location'),
               onChanged: (text) {
                 widget.queryText = text;
               },
