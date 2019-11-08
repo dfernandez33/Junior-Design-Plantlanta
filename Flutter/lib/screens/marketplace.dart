@@ -1,3 +1,4 @@
+
 import 'package:algolia/algolia.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -14,7 +15,6 @@ class Marketplace extends StatefulWidget {
 
   @override
   _MarketplaceState createState() => _MarketplaceState();
-
 }
 
 // TODO: Improve Progress Dialog to respond to error/success.
@@ -25,7 +25,6 @@ class _MarketplaceState extends State<Marketplace> {
   List<ItemModel> items;
   List rawItems;
   AlgoliaIndexReference algolia = AlgoliaService.algolia.instance.index('Items');
-
 
   _MarketplaceState() {
     items = List();
@@ -75,21 +74,37 @@ class _MarketplaceState extends State<Marketplace> {
       }
       return Scaffold(
           appBar: new AppBar(
-              backgroundColor: Theme.of(context).backgroundColor,
-              elevation: 2.0,
-              title: Column(children: [
-                TextField(
-                  cursorColor: Theme.of(context).primaryColor,
-                  decoration: InputDecoration(
-                      hintText: 'Search items by name or brand'
-                  ),
-                  onChanged: (text) {
-                    _updateFilteredItems(text);
-                  },
+            backgroundColor: Theme.of(context).backgroundColor,
+            elevation: 2.0,
+            title: Column(children: [
+              TextField(
+                cursorColor: Theme.of(context).primaryColor,
+                decoration: InputDecoration(hintText: 'Search items by name or brand'),
+                onChanged: (text) {
+                  _updateFilteredItems(text);
+                },
+              ),
+            ]),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(20),
+              ),
+            ),
+          ),
+          body: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/background.png"),
+                  fit: BoxFit.cover,
                 ),
-              ])),
-          body: content,
-      );
+              ),
+              child: content;
+
+                  },
+                  mainAxisSpacing: 4.0,
+                  crossAxisSpacing: 4.0,
+                ),
+              )));
     }
   }
 

@@ -21,4 +21,11 @@ class UserService {
     }
     return Firestore.instance.collection("Users").document(this.uid).get().asStream();
   }
+
+  Stream getOtherUserAuth(String uid) {
+    if (uid == null) {
+      return Stream.empty();
+    }
+    return Firestore.instance.collection("Users").document(uid).get().asStream();
+  }
 }

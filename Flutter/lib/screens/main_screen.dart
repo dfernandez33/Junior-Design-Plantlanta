@@ -32,8 +32,6 @@ class _MainScreenState extends State<MainScreen> {
   UserModel userData;
   Future<dynamic> userStream;
 
-
-
   @override
   void initState() {
     super.initState();
@@ -42,12 +40,9 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget points = Padding(
-        padding: EdgeInsets.all(10.0)
-    );
+    Widget points = Padding(padding: EdgeInsets.all(10.0));
 
-      _getUserData();
-
+    _getUserData();
 
     if (_page == 1 && this.userData != null) {
       points = Padding(
@@ -80,9 +75,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(getPageName(_page)),
-        actions: <Widget>[
-          points
-        ],
+        actions: <Widget>[points],
       ),
       body: PageView(
         physics: NeverScrollableScrollPhysics(),

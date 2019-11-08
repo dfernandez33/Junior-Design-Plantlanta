@@ -62,20 +62,32 @@ class _HomeState extends State<Home> {
       }
       return Scaffold(
         appBar: new AppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
-            elevation: 2.0,
-            title: Column(children: [
-              TextField(
-                cursorColor: Theme.of(context).primaryColor,
-                decoration: InputDecoration(
-                    hintText: 'Search events by name or location'
-                ),
-                onChanged: (text) {
-                  _updateFilteredEvents(text);
-                },
+          backgroundColor: Theme.of(context).backgroundColor,
+          elevation: 2.0,
+          title: Column(children: [
+            TextField(
+              cursorColor: Theme.of(context).primaryColor,
+              decoration: InputDecoration(hintText: 'Search events by name or location'),
+              onChanged: (text) {
+                 _updateFilteredEvents(text);
+              },
+            ),
+          ]),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20),
+            ),
+          ),
+        ),
+        body: Container(
+            margin: EdgeInsets.only(top: 12.0),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/background.png"),
+                fit: BoxFit.cover,
               ),
-            ])),
-        body: content ,
+            ),
+            child: content,
       );
     }
   }
