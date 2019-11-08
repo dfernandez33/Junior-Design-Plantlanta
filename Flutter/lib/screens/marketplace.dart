@@ -9,20 +9,17 @@ class Marketplace extends StatefulWidget {
   UserModel userData;
   String queryText;
 
-
   Marketplace(this.userData);
 
   @override
   _MarketplaceState createState() => _MarketplaceState();
-
 }
 
 // TODO: Improve Progress Dialog to respond to error/success.
 class _MarketplaceState extends State<Marketplace> {
-
   Future<dynamic> itemStream;
   List<ItemModel> items;
-  
+
   _MarketplaceState() {
     items = List();
     this.itemStream = _getItems();
@@ -42,39 +39,44 @@ class _MarketplaceState extends State<Marketplace> {
     } else {
       return Scaffold(
           appBar: new AppBar(
-              backgroundColor: Theme.of(context).backgroundColor,
-              elevation: 2.0,
-              title: Column(children: [
-                TextField(
-                  cursorColor: Theme.of(context).primaryColor,
-                  decoration: InputDecoration(
-                      hintText: 'Enter a search term'
-                  ),
-                  onChanged: (text) {
-                    widget.queryText = text;
-                  },
-                ),
-              ]),
+            backgroundColor: Theme.of(context).backgroundColor,
+            elevation: 2.0,
+            title: Column(children: [
+              TextField(
+                cursorColor: Theme.of(context).primaryColor,
+                decoration: InputDecoration(hintText: 'Enter a search term'),
+                onChanged: (text) {
+                  widget.queryText = text;
+                },
+              ),
+            ]),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
                 bottom: Radius.circular(20),
               ),
             ),
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: StaggeredGridView.countBuilder(
-              crossAxisCount: 4,
-              itemCount: this.items.length,
-              itemBuilder: (BuildContext context, int index) =>
-                  ItemCard(this.items[index], this.widget.userData),
-              staggeredTileBuilder: (int index) {
-                return StaggeredTile.fit(2);
-              },
-              mainAxisSpacing: 4.0,
-              crossAxisSpacing: 4.0,
-            ),
-          ));
+          body: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/background.png"),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: StaggeredGridView.countBuilder(
+                  crossAxisCount: 4,
+                  itemCount: this.items.length,
+                  itemBuilder: (BuildContext context, int index) =>
+                      ItemCard(this.items[index], this.widget.userData),
+                  staggeredTileBuilder: (int index) {
+                    return StaggeredTile.fit(2);
+                  },
+                  mainAxisSpacing: 4.0,
+                  crossAxisSpacing: 4.0,
+                ),
+              )));
     }
   }
 

@@ -57,6 +57,12 @@ class _HomeState extends State<Home> {
         ),
         body: Container(
             margin: EdgeInsets.only(top: 12.0),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/background.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
             child: ListView(children: availableEvents)),
       );
     }
