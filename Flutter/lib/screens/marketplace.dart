@@ -1,9 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:junior_design_plantlanta/model/item_model.dart';
 import 'package:junior_design_plantlanta/model/user.dart';
-import 'package:junior_design_plantlanta/services/user_service.dart';
 import 'package:junior_design_plantlanta/widgets/item_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -54,10 +52,14 @@ class _MarketplaceState extends State<Marketplace> {
                   ),
                   onChanged: (text) {
                     widget.queryText = text;
-
                   },
                 ),
               ]),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(20),
+              ),
+            ),
           ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),

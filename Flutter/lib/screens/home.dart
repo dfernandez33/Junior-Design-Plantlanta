@@ -38,19 +38,23 @@ class _HomeState extends State<Home> {
     } else {
       return Scaffold(
         appBar: new AppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
-            elevation: 2.0,
-            title: Column(children: [
-              TextField(
-                cursorColor: Theme.of(context).primaryColor,
-                decoration: InputDecoration(
-                    hintText: 'Enter a search term'
-                ),
-                onChanged: (text) {
-                  widget.queryText = text;
-                },
-              ),
-            ])),
+          backgroundColor: Theme.of(context).backgroundColor,
+          elevation: 2.0,
+          title: Column(children: [
+            TextField(
+              cursorColor: Theme.of(context).primaryColor,
+              decoration: InputDecoration(hintText: 'Enter a search term'),
+              onChanged: (text) {
+                widget.queryText = text;
+              },
+            ),
+          ]),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20),
+            ),
+          ),
+        ),
         body: Container(
             margin: EdgeInsets.only(top: 12.0),
             child: ListView(children: availableEvents)),
