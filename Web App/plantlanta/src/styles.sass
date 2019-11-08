@@ -54,4 +54,19 @@ $navbar-item-hover-color: #000000
     height: 70vh
     overflow-y: scroll
     overflow-x: hidden
+
+.timepicker
+  .timepicker__header
+    background-color: $primary !important
+  .clock-face__clock-hand
+    background-color: $secondary !important
+    &:after
+      background-color: $secondary !important
+    &:before
+      border-color: $secondary !important
+  .clock-face__number
+    > span.active
+      background-color: $primary !important
+  button:not(.timepicker-dial__item)
+    color: $title-color !important
   
