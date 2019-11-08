@@ -40,6 +40,8 @@ dependencies:
   firebase_storage: ^3.0.6
   image_cropper: ^1.1.0
   image: ^2.1.5
+  algolia: ^0.1.7
+
 
 
 
