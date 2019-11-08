@@ -7,6 +7,7 @@ import 'package:junior_design_plantlanta/model/user.dart';
 import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:junior_design_plantlanta/screens/marketplace.dart';
+import 'package:junior_design_plantlanta/screens/profile.dart';
 import 'package:junior_design_plantlanta/serializers/StatusResponse.dart';
 import 'package:junior_design_plantlanta/services/user_service.dart';
 import 'package:junior_design_plantlanta/widgets/progress_dialog.dart';
@@ -93,7 +94,7 @@ class _MainScreenState extends State<MainScreen> {
           Marketplace(this.userData),
           Home(3),
           Home(4),
-          Home(5),
+          Profile(this.userData),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
