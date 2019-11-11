@@ -78,15 +78,19 @@ class _ProfileState extends State<Profile> {
                           widget._user.name,
                           style: TextStyle(fontWeight: FontWeight.bold),
                         )),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.only(top: 1.0),
-                      child: Text("This is a test description!"),
-                    ),
                   ],
                 ),
               ),
               buildImageViewButtonBar(),
+              Stack(
+                children: <Widget>[
+                  Container(
+                    height: MediaQuery.of(context).size.width,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  _buildTabContent(),
+                ],
+              ),
 //        buildSelection(),
             ],
           )
@@ -94,9 +98,27 @@ class _ProfileState extends State<Profile> {
     }
   }
 
+  Widget _buildTabContent() {
+    if (this._tabSelected == ProfileTab.UPCOMING_EVENTS) {
+      return Text("ProfileTab.UPCOMING_EVENTS");
+    } else if (this._tabSelected == ProfileTab.PAST_EVENTS) {
+      return Text("ProfileTab.PAST_EVENTS");
+    } else if (this._tabSelected == ProfileTab.TRANSACTIONS) {
+      return Text("ProfileTab.TRANSACTIONS");
+    } else {
+      print("ERROR UNKNOWN TAB");
+    }
+  }
+
+  Widget backgroundLayer() {
+      Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: Theme.of(context).primaryColor,
+      );
+  }
 
   Row buildImageViewButtonBar() {
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
@@ -106,31 +128,47 @@ class _ProfileState extends State<Profile> {
       ],
     );
   }
+
+
+  void _tabSelector(ProfileTab newState) {
+    setState(() {
+      this._tabSelected = newState;
+    });
+  }
+
+
   Widget _buildProperTab(IconData icon, double size, ProfileTab state) {
     if (state == this._tabSelected) {
       return Expanded(
-        child: Container(
-          decoration: new BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(16.0),
-                topRight: const Radius.circular(16.0)),
-            color: Theme.of(context).primaryColor,
-          ),
-          child: IconButton(
-            icon: Icon(icon, size: size, color: Colors.white),
+        child: GestureDetector(
+          onTap: () => _tabSelector(state),
+          child: Container(
+            decoration: new BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(16.0),
+                  topRight: const Radius.circular(16.0)),
+              color: Theme.of(context).primaryColor,
+            ),
+            child: IconButton(
+              icon: Icon(icon, size: size, color: Colors.white),
+            ),
           ),
         ),
+
       );
     } else {
       return Expanded(
-        child: Container(
-          decoration: new BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(16.0),
-                topRight: const Radius.circular(16.0)),
-          ),
-          child: IconButton(
-            icon: Icon(icon, size: size),
+        child: GestureDetector(
+          onTap: () => _tabSelector(state),
+          child: Container(
+            decoration: new BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(16.0),
+                  topRight: const Radius.circular(16.0)),
+            ),
+            child: IconButton(
+              icon: Icon(icon, size: size),
+            ),
           ),
         ),
       );
