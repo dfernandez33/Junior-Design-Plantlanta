@@ -1,6 +1,9 @@
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:junior_design_plantlanta/model/user.dart';
+import 'package:junior_design_plantlanta/screens/add_profile_picture.dart';
 
 enum ProfileTab {
   UPCOMING_EVENTS,
@@ -19,10 +22,18 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   ProfileTab _tabSelected = ProfileTab.UPCOMING_EVENTS;
+  String _imageURL;
+  FirebaseUser _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _getImage();
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (widget._user == null) {
+    if (widget._user == null || _imageURL == null) {
       return Scaffold(
         body: Center(
             child: CircularProgressIndicator(
@@ -41,10 +52,20 @@ class _ProfileState extends State<Profile> {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        CircleAvatar(
-                          radius: 40.0,
-                          backgroundColor: Colors.grey,
-                          backgroundImage: NetworkImage("https://icon-library.net/icon/default-profile-icon-24.html"),
+                        CircularProfileAvatar(_imageURL,
+                          radius: 40,
+                          backgroundColor: Colors.green,
+                          borderWidth: 3,
+                          borderColor: Color(0xFF25A325),
+                          elevation: 5.0,
+                          onTap: () async {
+                            String newUrl = await Navigator.push(
+                                context, MaterialPageRoute(builder: (context) => ProfilePic(this._currentUser)));
+                            setState(() {
+                              this._imageURL = newUrl;
+                            });
+                          },
+                          showInitialTextAbovePicture: true,
                         ),
                         Expanded(
                           flex: 1,
@@ -102,7 +123,7 @@ class _ProfileState extends State<Profile> {
       children: <Widget>[
         _buildProperTab(Icons.schedule, 26, ProfileTab.UPCOMING_EVENTS),
         _buildProperTab(Icons.restore, 28, ProfileTab.PAST_EVENTS),
-        _buildProperTab(Icons.payment, 28, ProfileTab.TRANSACTIONS),
+        _buildProperTab(Icons.timeline, 28, ProfileTab.TRANSACTIONS),
       ],
     );
   }
@@ -136,8 +157,13 @@ class _ProfileState extends State<Profile> {
       );
     }
   }
-  Widget _getImage() {
-    return Image.asset(
-      'assets/add_profile_picture.png', fit: BoxFit.fitHeight, color: Colors.grey[400],);
+
+  Future<void> _getImage() async {
+    var user = await FirebaseAuth.instance.currentUser();
+    setState(() {
+      this._imageURL = user.photoUrl;
+    });
+    this._currentUser = user;
   }
+
 }

@@ -40,7 +40,7 @@ class _MarketplaceState extends State<Marketplace> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
+    if (isLoading && widget.userData != null) {
       return Scaffold(
         body: Center(
             child: CircularProgressIndicator(
