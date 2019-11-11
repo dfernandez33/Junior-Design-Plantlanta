@@ -22,7 +22,7 @@ abstract class Datetime implements Built<Datetime, DatetimeBuilder> {
     return json.encode(serializers.serializeWith(Datetime.serializer, this));
   }
 
-  static Datetime fromJson(String jsonString) {
+  static Datetime fromJson(dynamic jsonString) {
     return serializers.deserializeWith(
         Datetime.serializer, json.decode(jsonString));
   }

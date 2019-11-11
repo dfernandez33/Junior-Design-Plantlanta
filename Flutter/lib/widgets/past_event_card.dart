@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:junior_design_plantlanta/serializers/StatusResponse.dart';
 import 'package:junior_design_plantlanta/model/event_model.dart';
+import 'package:junior_design_plantlanta/widgets/progress_button.dart';
 
 //TODO: Refactor UI
 class PastEventCard extends StatefulWidget {
@@ -160,44 +161,5 @@ class _PastEventCardState extends State<PastEventCard> {
     return date.month.toString()
         + "/" + date.day.toString()
         + "/" + date.year.toString();
-  }
-
-
-  void _removeUserFromEvent() async {
-    // Are we fine by rebuilding the model in the component?
-    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
-      functionName: 'removeUserFromEvents',
-    );
-    try {
-      final HttpsCallableResult result = await callable.call(
-        <String, dynamic>{
-          'EventID': widget._model.eventId,
-        },
-      );
-      isSignUp = false;
-      StatusResponse resp = new StatusResponse.fromJson(result.data);
-      print(resp.message);
-
-    } catch (e) {
-      print(e.message);
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          // return object of type Dialog
-          return AlertDialog(
-            title: new Text("${e.message}"),
-            actions: <Widget>[
-              // usually buttons at the bottom of the dialog
-              new FlatButton(
-                child: new Text("Close"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
   }
 }

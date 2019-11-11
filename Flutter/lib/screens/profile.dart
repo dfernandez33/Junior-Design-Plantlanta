@@ -1,10 +1,9 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:junior_design_plantlanta/model/event_model.dart';
 import 'package:junior_design_plantlanta/model/user.dart';
+import 'package:junior_design_plantlanta/widgets/event_card.dart';
 import 'package:junior_design_plantlanta/widgets/past_event_card.dart';
 
 enum ProfileTab { UPCOMING_EVENTS, PAST_EVENTS, TRANSACTIONS }
@@ -20,8 +19,14 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   ProfileTab _tabSelected = ProfileTab.UPCOMING_EVENTS;
+  List<EventCard> _currentEvents = List();
+  List<EventCard> _pastEvents = List();
 
-  List<PastEventCard> pastEvents = List();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +52,8 @@ class _ProfileState extends State<Profile> {
                     CircleAvatar(
                       radius: 40.0,
                       backgroundColor: Colors.grey,
+                      backgroundImage: NetworkImage(
+                          "https://icon-library.net/icon/default-profile-icon-24.html"),
                     ),
                     Expanded(
                       flex: 1,
@@ -56,9 +63,9 @@ class _ProfileState extends State<Profile> {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
-                              Text("POST"),
+                              Text("POINS"),
                               Text("EVENTS"),
-                              Text("DUDES"),
+                              Text("FRIENDS"),
                             ],
                           ),
 //                        Row(
@@ -86,7 +93,7 @@ class _ProfileState extends State<Profile> {
           Stack(
             children: <Widget>[
               Container(
-                height: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
                 color: Theme.of(context).primaryColor,
               ),
               _buildTabContent(),
@@ -100,23 +107,38 @@ class _ProfileState extends State<Profile> {
 
   Widget _buildTabContent() {
     if (this._tabSelected == ProfileTab.UPCOMING_EVENTS) {
-      return Text("ProfileTab.UPCOMING_EVENTS");
-    } else if (this._tabSelected == ProfileTab.PAST_EVENTS) {
-
-      if (this.pastEvents.isEmpty) {
-        _buildPastEventCards();
-        return Center(
-          child: CircularProgressIndicator(
+      if (this._currentEvents.isEmpty) {
+        _buildCurrentEventCards();
+        return Container(
+          height: MediaQuery.of(context).size.height / 2.40,
+          child: Center(
+              child: CircularProgressIndicator(
             value: null,
             valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-          ),
+          )),
+        );
+      } else {
+        return Container(
+            margin: EdgeInsets.only(top: 12.0),
+            child: ListView(shrinkWrap: true, children: this._currentEvents));
+      }
+    } else if (this._tabSelected == ProfileTab.PAST_EVENTS) {
+      if (this._pastEvents.isEmpty) {
+        _buildPastEventCards();
+        return Container(
+          height: MediaQuery.of(context).size.height / 2.40,
+          child: Center(
+              child: CircularProgressIndicator(
+            value: null,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          )),
         );
       } else {
         Container(
             margin: EdgeInsets.only(top: 12.0),
             child: ListView(
-              children: pastEvents,
               shrinkWrap: true,
+              children: this._pastEvents,
             ));
       }
     } else if (this._tabSelected == ProfileTab.TRANSACTIONS) {
@@ -189,28 +211,34 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> _buildPastEventCards() async {
-    widget._user.confirmedEvents.forEach((event) async {
+//    widget._user.events.forEach((event) async {
+//      var eventInfo =
+//      await Firestore.instance.collection("Events").document(event).get();
+//      Timestamp timestamp = eventInfo.data['date'];
+//      var tempTime = <String, dynamic>{
+//        "_nanoseconds": timestamp.nanoseconds,
+//        "_seconds": timestamp.seconds
+//      };
+//      eventInfo.data['date'] = tempTime;
+//      setState(() {
+//        _pastEvents.add(EventCard(EventModel.fromJson(eventInfo.data)));
+//      });
+//    });
+  }
+
+  Future<void> _buildCurrentEventCards() async {
+    widget._user.events.forEach((event) async {
       var eventInfo =
           await Firestore.instance.collection("Events").document(event).get();
       Timestamp timestamp = eventInfo.data['date'];
-
       var tempTime = <String, dynamic>{
         "_nanoseconds": timestamp.nanoseconds,
         "_seconds": timestamp.seconds
       };
-
       eventInfo.data['date'] = tempTime;
       setState(() {
-        this.pastEvents.add(PastEventCard(EventModel.fromJson(eventInfo.data)));
+        _currentEvents.add(EventCard(EventModel.fromJson(eventInfo.data)));
       });
     });
-  }
-
-  Widget _getImage() {
-    return Image.asset(
-      'assets/add_profile_picture.png',
-      fit: BoxFit.fitHeight,
-      color: Colors.grey[400],
-    );
   }
 }
