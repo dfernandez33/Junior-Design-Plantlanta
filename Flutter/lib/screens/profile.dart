@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:junior_design_plantlanta/model/transaction_model.dart';
 import 'package:junior_design_plantlanta/model/event_model.dart';
 import 'package:junior_design_plantlanta/model/user.dart';
+import 'package:junior_design_plantlanta/serializers/date_time_serializer.dart';
+import 'package:junior_design_plantlanta/widgets/transaction_card.dart';
 import 'package:junior_design_plantlanta/widgets/event_card.dart';
 import 'package:junior_design_plantlanta/widgets/past_event_card.dart';
 
@@ -21,6 +26,7 @@ class _ProfileState extends State<Profile> {
   ProfileTab _tabSelected = ProfileTab.UPCOMING_EVENTS;
   List<EventCard> _currentEvents = List();
   List<EventCard> _pastEvents = List();
+  List<TransactionCard> transactions = List();
 
   @override
   void initState() {
@@ -42,66 +48,97 @@ class _ProfileState extends State<Profile> {
     } else {
       return Scaffold(
           body: ListView(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    CircleAvatar(
-                      radius: 40.0,
-                      backgroundColor: Colors.grey,
-                      backgroundImage: NetworkImage(
-                          "https://icon-library.net/icon/default-profile-icon-24.html"),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Text("POINS"),
-                              Text("EVENTS"),
-                              Text("FRIENDS"),
-                            ],
-                          ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      CircleAvatar(
+                        radius: 40.0,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: NetworkImage(
+                            "https://icon-library.net/icon/default-profile-icon-24.html"),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Column(
+                                  children: <Widget>[
+                                    Text(
+                                      widget._user.points.toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0),
+                                    ),
+                                    Text("Points"),
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Text(
+                                      widget._user.confirmedEvents.length
+                                          .toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0),
+                                    ),
+                                    Text("Events"),
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Text(
+                                      "10",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0),
+                                    ),
+                                    Text("Friends"),
+                                  ],
+                                ),
+                              ],
+                            ),
 //                        Row(
 //                            mainAxisAlignment:
 //                            MainAxisAlignment.spaceEvenly,
 //                            children: <Widget>[
 //                              buildProfileFollowButton(user)
 //                            ]),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                Container(
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.only(top: 15.0),
-                    child: Text(
-                      widget._user.name,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )),
-              ],
-            ),
-          ),
-          buildImageViewButtonBar(),
-          Stack(
-            children: <Widget>[
-              Container(
-                height: MediaQuery.of(context).size.height,
-                color: Theme.of(context).primaryColor,
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.only(top: 15.0),
+                      child: Text(
+                        widget._user.name,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )),
+                ],
               ),
-              _buildTabContent(),
-            ],
-          ),
-//        buildSelection(),
-        ],
-      ));
+            ),
+            buildImageViewButtonBar(),
+            Stack(
+              children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                  color: Theme.of(context).primaryColor,
+                ),
+                _buildTabContent(),
+              ],
+            )
+          ]));
     }
   }
 
@@ -142,7 +179,25 @@ class _ProfileState extends State<Profile> {
             ));
       }
     } else if (this._tabSelected == ProfileTab.TRANSACTIONS) {
-      return Text("ProfileTab.TRANSACTIONS");
+      if (this.transactions.isEmpty) {
+        _createTransactionCards();
+        return Container(
+          child: Center(
+              child: CircularProgressIndicator(
+            value: null,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          )),
+        );
+      } else {
+        return Container(
+          margin: EdgeInsets.only(top: 12.0),
+          height: MediaQuery.of(context).size.height,
+          child: ListView(
+            children: this.transactions,
+            scrollDirection: Axis.vertical,
+          ),
+        );
+      }
     } else {
       print("ERROR UNKNOWN TAB");
     }
@@ -224,6 +279,36 @@ class _ProfileState extends State<Profile> {
 //        _pastEvents.add(EventCard(EventModel.fromJson(eventInfo.data)));
 //      });
 //    });
+  }
+
+  Widget _getImage() {
+    return Image.asset(
+      'assets/add_profile_picture.png',
+      fit: BoxFit.fitHeight,
+      color: Colors.grey[400],
+    );
+  }
+
+  Future<void> _createTransactionCards() {
+    Firestore.instance
+        .collection("Transactions")
+        .where("uuid", isEqualTo: widget._user.uuid)
+        .orderBy("timestamp", descending: true)
+        .snapshots()
+        .listen((transactions) {
+      transactions.documents.forEach((transaction) {
+        Timestamp timestamp = transaction.data["timestamp"];
+        var tempTime = <String, dynamic>{
+          "_nanoseconds": timestamp.nanoseconds,
+          "_seconds": timestamp.seconds
+        };
+        transaction.data["timestamp"] = tempTime;
+        this
+            .transactions
+            .add(TransactionCard(TransactionModel.fromJson(transaction.data)));
+      });
+      setState(() {});
+    });
   }
 
   Future<void> _buildCurrentEventCards() async {

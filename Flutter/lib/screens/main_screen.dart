@@ -174,6 +174,7 @@ class _MainScreenState extends State<MainScreen> {
     return widget._userService.getUserAuth().listen((user) {
       if (user != null) {
         setState(() {
+          user.data.addEntries([MapEntry("uuid", user.reference.documentID)]);
           this.userData = UserModel.fromJson(user.data);
         });
       }
