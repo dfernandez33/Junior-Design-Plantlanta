@@ -1,4 +1,3 @@
-
 import 'package:algolia/algolia.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -19,12 +18,12 @@ class Marketplace extends StatefulWidget {
 
 // TODO: Improve Progress Dialog to respond to error/success.
 class _MarketplaceState extends State<Marketplace> {
-
   bool isLoading;
   Future<dynamic> itemStream;
   List<ItemModel> items;
   List rawItems;
-  AlgoliaIndexReference algolia = AlgoliaService.algolia.instance.index('Items');
+  AlgoliaIndexReference algolia =
+      AlgoliaService.algolia.instance.index('Items');
 
   _MarketplaceState() {
     items = List();
@@ -73,38 +72,35 @@ class _MarketplaceState extends State<Marketplace> {
         );
       }
       return Scaffold(
-          appBar: new AppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
-            elevation: 2.0,
-            title: Column(children: [
-              TextField(
-                cursorColor: Theme.of(context).primaryColor,
-                decoration: InputDecoration(hintText: 'Search items by name or brand'),
-                onChanged: (text) {
-                  _updateFilteredItems(text);
-                },
-              ),
-            ]),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(20),
-              ),
+        appBar: new AppBar(
+          backgroundColor: Theme.of(context).backgroundColor,
+          elevation: 2.0,
+          title: Column(children: [
+            TextField(
+              cursorColor: Theme.of(context).primaryColor,
+              decoration:
+                  InputDecoration(hintText: 'Search items by name or brand'),
+              onChanged: (text) {
+                _updateFilteredItems(text);
+              },
+            ),
+          ]),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20),
             ),
           ),
-          body: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/background.png"),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: content;
-
-                  },
-                  mainAxisSpacing: 4.0,
-                  crossAxisSpacing: 4.0,
-                ),
-              )));
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/background.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: content,
+        ),
+      );
     }
   }
 
@@ -130,9 +126,13 @@ class _MarketplaceState extends State<Marketplace> {
   _updateFilteredItems(String query) {
     this.algolia.search(query).getObjects().then((results) {
       List hitIDs = results.hits.map((hit) => hit.objectID).toList();
-      List updatedItems = this.rawItems.where((item) => hitIDs.contains(item['itemID'])).toList();
+      List updatedItems = this
+          .rawItems
+          .where((item) => hitIDs.contains(item['itemID']))
+          .toList();
       setState(() {
-        this.items = updatedItems.map((item) => ItemModel.fromJson(item)).toList();
+        this.items =
+            updatedItems.map((item) => ItemModel.fromJson(item)).toList();
       });
     });
   }
