@@ -250,20 +250,22 @@ class ProfilePicState extends State<ProfilePic> {
       } catch (e) {
         print(e.message);
       }
+      Navigator.pop(context, _info.photoUrl);
+    } else {
+      Navigator.pop(context, _currentUser.photoUrl);
     }
-    Navigator.pop(context, _info.photoUrl);
   }
 
   Widget _getImage() {
     if (_profilePictureURL == null) {
       return Image.asset(
         'assets/add_profile_picture.png',
-        fit: BoxFit.fitHeight,
+        fit: BoxFit.fitWidth,
         color: Colors.grey[400],
       );
     } else if (_profilePictureURL != null && _profilePicture == null){
-      return Image.network(_profilePictureURL, fit: BoxFit.fill);
+      return Image.network(_profilePictureURL, fit: BoxFit.fitWidth);
     }
-    return Image.file(_profilePicture, fit: BoxFit.fill);
+    return Image.file(_profilePicture, fit: BoxFit.fitWidth);
   }
 }
