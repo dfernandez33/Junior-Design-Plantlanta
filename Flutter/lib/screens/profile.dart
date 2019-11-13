@@ -6,7 +6,6 @@ import 'package:flutter/rendering.dart';
 import 'package:junior_design_plantlanta/model/transaction_model.dart';
 import 'package:junior_design_plantlanta/model/event_model.dart';
 import 'package:junior_design_plantlanta/model/user.dart';
-import 'package:junior_design_plantlanta/serializers/date_time_serializer.dart';
 import 'package:junior_design_plantlanta/widgets/transaction_card.dart';
 import 'package:junior_design_plantlanta/widgets/event_card.dart';
 import 'package:junior_design_plantlanta/widgets/past_event_card.dart';
