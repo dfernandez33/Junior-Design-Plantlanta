@@ -48,10 +48,12 @@ class _ProfileState extends State<Profile> {
       return Scaffold(
         body: Center(
             child: CircularProgressIndicator(
-          value: null,
-          valueColor:
-              AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-        )),
+              value: null,
+              valueColor:
+              AlwaysStoppedAnimation<Color>(Theme
+                  .of(context)
+                  .primaryColor),
+            )),
       );
     } else {
       return Scaffold(
@@ -59,105 +61,111 @@ class _ProfileState extends State<Profile> {
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: <Widget>[
-                  Row(
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
                     children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        CircularProfileAvatar(_imageURL,
-                          radius: 40,
-                          backgroundColor: Colors.green,
-                          borderWidth: 3,
-                          borderColor: Color(0xFF25A325),
-                          elevation: 5.0,
-                          onTap: () async {
-                            String newUrl = await Navigator.push(
-                                context, MaterialPageRoute(builder: (context) => ProfilePic(this._currentUser)));
-                            setState(() {
-                              this._imageURL = newUrl;
-                            });
-                          },
-                          showInitialTextAbovePicture: true,
-                        ),
-                      Expanded(
-                        flex: 1,
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      Row(
+                        children: <Widget>[
+                          CircularProfileAvatar(_imageURL,
+                            radius: 40,
+                            backgroundColor: Colors.green,
+                            borderWidth: 3,
+                            borderColor: Color(0xFF25A325),
+                            elevation: 5.0,
+                            onTap: () async {
+                              String newUrl = await Navigator.push(
+                                  context, MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProfilePic(this._currentUser)));
+                              setState(() {
+                                this._imageURL = newUrl;
+                              });
+                            },
+                            showInitialTextAbovePicture: true,
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Column(
                               children: <Widget>[
-                                Column(
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .spaceEvenly,
                                   children: <Widget>[
-                                    Text(
-                                      widget._user.points.toString(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20.0),
+                                    Column(
+                                      children: <Widget>[
+                                        Text(
+                                          widget._user.points.toString(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0),
+                                        ),
+                                        Text("Points"),
+                                      ],
                                     ),
-                                    Text("Points"),
+                                    Column(
+                                      children: <Widget>[
+                                        Text(
+                                          widget._user.confirmedEvents.length
+                                              .toString(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0),
+                                        ),
+                                        Text("Events"),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: <Widget>[
+                                        Text(
+                                          "10",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0),
+                                        ),
+                                        Text("Friends"),
+                                      ],
+                                    ),
                                   ],
                                 ),
-                                Column(
-                                  children: <Widget>[
-                                    Text(
-                                      widget._user.confirmedEvents.length
-                                          .toString(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20.0),
-                                    ),
-                                    Text("Events"),
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Text(
-                                      "10",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20.0),
-                                    ),
-                                    Text("Friends"),
-                                  ],
-                                ),
-                              ],
-                            ),
 //                        Row(
 //                            mainAxisAlignment:
 //                            MainAxisAlignment.spaceEvenly,
 //                            children: <Widget>[
 //                              buildProfileFollowButton(user)
 //                            ]),
-                          ],
-                        ),
-                      )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: Text(
+                            widget._user.name,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )),
                     ],
                   ),
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.only(top: 15.0),
-                      child: Text(
-                        widget._user.name,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )),
-                ],
-              ),
-            ),
-            buildImageViewButtonBar(),
-            Stack(
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height,
-                  color: Theme.of(context).primaryColor,
                 ),
-                _buildTabContent(),
-              ],
-            )
-          ]));
+                buildImageViewButtonBar(),
+                Stack(
+                  children: <Widget>[
+                    Container(
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height,
+                      color: Theme
+                          .of(context)
+                          .primaryColor,
+                    ),
+                    _buildTabContent(),
+                  ],
+                )
+              ]));
     }
   }
 
@@ -166,12 +174,15 @@ class _ProfileState extends State<Profile> {
       if (this._currentEvents.isEmpty) {
         _buildCurrentEventCards();
         return Container(
-          height: MediaQuery.of(context).size.height / 2.40,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height / 2.40,
           child: Center(
               child: CircularProgressIndicator(
-            value: null,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-          )),
+                value: null,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              )),
         );
       } else {
         return Container(
@@ -182,12 +193,15 @@ class _ProfileState extends State<Profile> {
       if (this._pastEvents.isEmpty) {
         _buildPastEventCards();
         return Container(
-          height: MediaQuery.of(context).size.height / 2.40,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height / 2.40,
           child: Center(
               child: CircularProgressIndicator(
-            value: null,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-          )),
+                value: null,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              )),
         );
       } else {
         Container(
@@ -203,14 +217,17 @@ class _ProfileState extends State<Profile> {
         return Container(
           child: Center(
               child: CircularProgressIndicator(
-            value: null,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-          )),
+                value: null,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              )),
         );
       } else {
         return Container(
           margin: EdgeInsets.only(top: 12.0),
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
           child: ListView(
             children: this.transactions,
             scrollDirection: Axis.vertical,
@@ -226,7 +243,9 @@ class _ProfileState extends State<Profile> {
     Container(
       width: double.infinity,
       height: double.infinity,
-      color: Theme.of(context).primaryColor,
+      color: Theme
+          .of(context)
+          .primaryColor,
     );
   }
 
@@ -257,7 +276,9 @@ class _ProfileState extends State<Profile> {
               borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(16.0),
                   topRight: const Radius.circular(16.0)),
-              color: Theme.of(context).primaryColor,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
             ),
             child: IconButton(
               icon: Icon(icon, size: size, color: Colors.white),
@@ -300,12 +321,12 @@ class _ProfileState extends State<Profile> {
 //    });
   }
 
-  Widget _getImage() {
-    return Image.asset(
-      'assets/add_profile_picture.png',
-      fit: BoxFit.fitHeight,
-      color: Colors.grey[400],
-    );
+  Future<void> _getImage() async {
+    var user = await FirebaseAuth.instance.currentUser();
+    setState(() {
+      this._imageURL = user.photoUrl;
+    });
+    this._currentUser = user;
   }
 
   Future<void> _createTransactionCards() {
@@ -333,7 +354,7 @@ class _ProfileState extends State<Profile> {
   Future<void> _buildCurrentEventCards() async {
     widget._user.events.forEach((event) async {
       var eventInfo =
-          await Firestore.instance.collection("Events").document(event).get();
+      await Firestore.instance.collection("Events").document(event).get();
       Timestamp timestamp = eventInfo.data['date'];
       var tempTime = <String, dynamic>{
         "_nanoseconds": timestamp.nanoseconds,
@@ -346,6 +367,7 @@ class _ProfileState extends State<Profile> {
     });
   }
 }
+
   Future<void> _getImage() async {
     var user = await FirebaseAuth.instance.currentUser();
     setState(() {
@@ -353,6 +375,6 @@ class _ProfileState extends State<Profile> {
     });
     this._currentUser = user;
   }
-
 }
+
 
