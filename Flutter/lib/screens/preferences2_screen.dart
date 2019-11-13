@@ -17,6 +17,7 @@ class Preferences2 extends StatefulWidget {
 class _Preferences2State extends State<Preferences2> {
   int _radioValue1 = -1;
   int _radioValue2 = -1;
+  UserUpdateInfo _info = UserUpdateInfo();
 
   void _handleRadioValueChange1(int value) {
     setState(() {
@@ -164,9 +165,14 @@ class _Preferences2State extends State<Preferences2> {
     widget._newUser.preference = widget._userPreferences;
     final user = widget._newUser.build();
     try {
-      // TODO: Fix this error 500
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+
+      var fireBaseUser = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: user.email, password: user.password);
+
+      _info.photoUrl = widget._newUser.profileUrl;
+
+      await fireBaseUser.updateProfile(_info);
+
       final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
         functionName: 'registerUser',
       );

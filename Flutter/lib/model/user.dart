@@ -41,6 +41,9 @@ abstract class UserModel implements Built<UserModel, UserModelBuilder> {
   @nullable
   @BuiltValueField(wireName: 'transaction_history')
   BuiltList<String> get transactionHistory;
+  @nullable
+  @BuiltValueField(wireName: 'uuid')
+  String get uuid;
 
   String toJson() {
     return json.encode(serializers.serializeWith(UserModel.serializer, this));

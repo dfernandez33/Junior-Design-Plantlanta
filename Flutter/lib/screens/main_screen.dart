@@ -7,6 +7,7 @@ import 'package:junior_design_plantlanta/model/user.dart';
 import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:junior_design_plantlanta/screens/marketplace.dart';
+import 'package:junior_design_plantlanta/screens/profile.dart';
 import 'package:junior_design_plantlanta/serializers/StatusResponse.dart';
 import 'package:junior_design_plantlanta/services/user_service.dart';
 import 'package:junior_design_plantlanta/widgets/progress_dialog.dart';
@@ -32,8 +33,6 @@ class _MainScreenState extends State<MainScreen> {
   UserModel userData;
   Future<dynamic> userStream;
 
-
-
   @override
   void initState() {
     super.initState();
@@ -42,12 +41,9 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget points = Padding(
-        padding: EdgeInsets.all(10.0)
-    );
+    Widget points = Padding(padding: EdgeInsets.all(10.0));
 
-      _getUserData();
-
+    _getUserData();
 
     if (_page == 1 && this.userData != null) {
       points = Padding(
@@ -80,9 +76,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(getPageName(_page)),
-        actions: <Widget>[
-          points
-        ],
+        actions: <Widget>[points],
       ),
       body: PageView(
         physics: NeverScrollableScrollPhysics(),
@@ -93,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
           Marketplace(this.userData),
           Home(3),
           Home(4),
-          Home(5),
+          Profile(this.userData),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
@@ -180,6 +174,7 @@ class _MainScreenState extends State<MainScreen> {
     return widget._userService.getUserAuth().listen((user) {
       if (user != null) {
         setState(() {
+          user.data.addEntries([MapEntry("uuid", user.reference.documentID)]);
           this.userData = UserModel.fromJson(user.data);
         });
       }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/User/user.service';
@@ -28,6 +28,11 @@ export class MenuComponent implements OnInit {
       }
     });
 
+  }
+
+  toggleNavbar() {
+    document.querySelector('.navbar-menu').classList.toggle('is-active');
+    document.querySelector('.navbar-burger').classList.toggle('is-active');
   }
 
   async logout() {

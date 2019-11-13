@@ -44,15 +44,28 @@
               </div>
             </div>
           </div>
-          <div class="field">
-            <label class="label">Item image upload</label>
-            <div class="control has-icons-left">
-              <input class="input" type="file" required (change)="onFileChange($event, this)"/>
-              <span class="icon is-small is-left">
-                <i class="fa fa-file"></i>
-              </span>
+          <div *ngIf="!isEdit" class="field">
+            <div class="field">
+              <label class="label">Item image upload</label>
+              <div class="control has-icons-left">
+                <input class="input" type="file" required (change)="onFileChange($event, this)"/>
+                <span class="icon is-small is-left">
+                  <i class="fa fa-file"></i>
+                </span>
+              </div>
             </div>
           </div>
+          <div *ngIf="isEdit" class="field">
+              <div class="field">
+                <label class="label">Image upload - no need to upload a new image if the item didn't change!</label>
+                <div class="control has-icons-left">
+                  <input class="input" type="file" id="fileInput" required (change)="onFileChange($event, this)"/>
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-file"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
           <div class="field">
             <label class="label">Item codes</label>
             <div class="control">
@@ -71,7 +84,7 @@
           </div>
           <div *ngIf="isEdit" class="field is-grouped">
             <p class="control">
-                <a class="button is-primary" (click)="editItem()">
+                <a class="button is-primary" (click)="checkEdit()">
                   <span>Edit Item</span>
                   <span class="icon is-small">
                       <i class="fa fa-edit"></i>

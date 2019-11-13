@@ -69,6 +69,12 @@ class _$UserModelSerializer implements StructuredSerializer<UserModel> {
             specifiedType:
                 const FullType(BuiltList, const [const FullType(String)])));
     }
+    if (object.uuid != null) {
+      result
+        ..add('uuid')
+        ..add(serializers.serialize(object.uuid,
+            specifiedType: const FullType(String)));
+    }
     return result;
   }
 
@@ -122,6 +128,10 @@ class _$UserModelSerializer implements StructuredSerializer<UserModel> {
                       const FullType(BuiltList, const [const FullType(String)]))
               as BuiltList<dynamic>);
           break;
+        case 'uuid':
+          result.uuid = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
       }
     }
 
@@ -146,6 +156,8 @@ class _$UserModel extends UserModel {
   final BuiltList<String> events;
   @override
   final BuiltList<String> transactionHistory;
+  @override
+  final String uuid;
 
   factory _$UserModel([void Function(UserModelBuilder) updates]) =>
       (new UserModelBuilder()..update(updates)).build();
@@ -158,7 +170,8 @@ class _$UserModel extends UserModel {
       this.points,
       this.confirmedEvents,
       this.events,
-      this.transactionHistory})
+      this.transactionHistory,
+      this.uuid})
       : super._();
 
   @override
@@ -179,7 +192,8 @@ class _$UserModel extends UserModel {
         points == other.points &&
         confirmedEvents == other.confirmedEvents &&
         events == other.events &&
-        transactionHistory == other.transactionHistory;
+        transactionHistory == other.transactionHistory &&
+        uuid == other.uuid;
   }
 
   @override
@@ -189,13 +203,15 @@ class _$UserModel extends UserModel {
             $jc(
                 $jc(
                     $jc(
-                        $jc($jc($jc(0, name.hashCode), phone.hashCode),
-                            address.hashCode),
-                        preferences.hashCode),
-                    points.hashCode),
-                confirmedEvents.hashCode),
-            events.hashCode),
-        transactionHistory.hashCode));
+                        $jc(
+                            $jc($jc($jc(0, name.hashCode), phone.hashCode),
+                                address.hashCode),
+                            preferences.hashCode),
+                        points.hashCode),
+                    confirmedEvents.hashCode),
+                events.hashCode),
+            transactionHistory.hashCode),
+        uuid.hashCode));
   }
 
   @override
@@ -208,7 +224,8 @@ class _$UserModel extends UserModel {
           ..add('points', points)
           ..add('confirmedEvents', confirmedEvents)
           ..add('events', events)
-          ..add('transactionHistory', transactionHistory))
+          ..add('transactionHistory', transactionHistory)
+          ..add('uuid', uuid))
         .toString();
   }
 }
@@ -255,6 +272,10 @@ class UserModelBuilder implements Builder<UserModel, UserModelBuilder> {
   set transactionHistory(ListBuilder<String> transactionHistory) =>
       _$this._transactionHistory = transactionHistory;
 
+  String _uuid;
+  String get uuid => _$this._uuid;
+  set uuid(String uuid) => _$this._uuid = uuid;
+
   UserModelBuilder();
 
   UserModelBuilder get _$this {
@@ -267,6 +288,7 @@ class UserModelBuilder implements Builder<UserModel, UserModelBuilder> {
       _confirmedEvents = _$v.confirmedEvents?.toBuilder();
       _events = _$v.events?.toBuilder();
       _transactionHistory = _$v.transactionHistory?.toBuilder();
+      _uuid = _$v.uuid;
       _$v = null;
     }
     return this;
@@ -298,7 +320,8 @@ class UserModelBuilder implements Builder<UserModel, UserModelBuilder> {
               points: points,
               confirmedEvents: _confirmedEvents?.build(),
               events: _events?.build(),
-              transactionHistory: _transactionHistory?.build());
+              transactionHistory: _transactionHistory?.build(),
+              uuid: uuid);
     } catch (_) {
       String _$failedField;
       try {

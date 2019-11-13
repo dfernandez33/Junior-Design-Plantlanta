@@ -60,6 +60,12 @@ class _$UserRegistrationModelSerializer
         ..add(serializers.serialize(object.address,
             specifiedType: const FullType(String)));
     }
+    if (object.profileUrl != null) {
+      result
+        ..add('profileUrl')
+        ..add(serializers.serialize(object.profileUrl,
+            specifiedType: const FullType(String)));
+    }
     if (object.preference != null) {
       result
         ..add('preference')
@@ -105,6 +111,10 @@ class _$UserRegistrationModelSerializer
           result.address = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
+        case 'profileUrl':
+          result.profileUrl = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
         case 'preference':
           result.preference.replace(serializers.deserialize(value,
                   specifiedType: const FullType(UserPreferenceModel))
@@ -131,6 +141,8 @@ class _$UserRegistrationModel extends UserRegistrationModel {
   @override
   final String address;
   @override
+  final String profileUrl;
+  @override
   final UserPreferenceModel preference;
 
   factory _$UserRegistrationModel(
@@ -144,6 +156,7 @@ class _$UserRegistrationModel extends UserRegistrationModel {
       this.dob,
       this.phone,
       this.address,
+      this.profileUrl,
       this.preference})
       : super._();
 
@@ -166,6 +179,7 @@ class _$UserRegistrationModel extends UserRegistrationModel {
         dob == other.dob &&
         phone == other.phone &&
         address == other.address &&
+        profileUrl == other.profileUrl &&
         preference == other.preference;
   }
 
@@ -175,11 +189,13 @@ class _$UserRegistrationModel extends UserRegistrationModel {
         $jc(
             $jc(
                 $jc(
-                    $jc($jc($jc(0, name.hashCode), email.hashCode),
-                        password.hashCode),
-                    dob.hashCode),
-                phone.hashCode),
-            address.hashCode),
+                    $jc(
+                        $jc($jc($jc(0, name.hashCode), email.hashCode),
+                            password.hashCode),
+                        dob.hashCode),
+                    phone.hashCode),
+                address.hashCode),
+            profileUrl.hashCode),
         preference.hashCode));
   }
 
@@ -192,6 +208,7 @@ class _$UserRegistrationModel extends UserRegistrationModel {
           ..add('dob', dob)
           ..add('phone', phone)
           ..add('address', address)
+          ..add('profileUrl', profileUrl)
           ..add('preference', preference))
         .toString();
   }
@@ -225,6 +242,10 @@ class UserRegistrationModelBuilder
   String get address => _$this._address;
   set address(String address) => _$this._address = address;
 
+  String _profileUrl;
+  String get profileUrl => _$this._profileUrl;
+  set profileUrl(String profileUrl) => _$this._profileUrl = profileUrl;
+
   UserPreferenceModelBuilder _preference;
   UserPreferenceModelBuilder get preference =>
       _$this._preference ??= new UserPreferenceModelBuilder();
@@ -241,6 +262,7 @@ class UserRegistrationModelBuilder
       _dob = _$v.dob;
       _phone = _$v.phone;
       _address = _$v.address;
+      _profileUrl = _$v.profileUrl;
       _preference = _$v.preference?.toBuilder();
       _$v = null;
     }
@@ -272,6 +294,7 @@ class UserRegistrationModelBuilder
               dob: dob,
               phone: phone,
               address: address,
+              profileUrl: profileUrl,
               preference: _preference?.build());
     } catch (_) {
       String _$failedField;

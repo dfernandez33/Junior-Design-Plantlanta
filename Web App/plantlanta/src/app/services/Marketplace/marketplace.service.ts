@@ -11,6 +11,6 @@ export class MarketplaceService {
   constructor(private firestore: AngularFirestore) { }
 
   public getItems() {
-    return this.firestore.collection<MarketplaceItem>("Items").valueChanges();
+    return this.firestore.collection("Items").get();
   }
 }
