@@ -29,10 +29,7 @@ class _ProfileState extends State<Profile> {
   List<EventCard> _pastEvents = List();
   List<TransactionCard> transactions = List();
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
+
   String _imageURL;
   FirebaseUser _currentUser;
 
@@ -365,15 +362,6 @@ class _ProfileState extends State<Profile> {
         _currentEvents.add(EventCard(EventModel.fromJson(eventInfo.data)));
       });
     });
-  }
-}
-
-  Future<void> _getImage() async {
-    var user = await FirebaseAuth.instance.currentUser();
-    setState(() {
-      this._imageURL = user.photoUrl;
-    });
-    this._currentUser = user;
   }
 }
 
