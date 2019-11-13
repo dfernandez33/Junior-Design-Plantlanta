@@ -212,6 +212,10 @@ class _ProfileState extends State<Profile> {
       if (this.transactions.isEmpty) {
         _createTransactionCards();
         return Container(
+          height: MediaQuery
+              .of(context)
+              .size
+              .height / 2.40,
           child: Center(
               child: CircularProgressIndicator(
                 value: null,
@@ -279,6 +283,7 @@ class _ProfileState extends State<Profile> {
             ),
             child: IconButton(
               icon: Icon(icon, size: size, color: Colors.white),
+              onPressed: () {},
             ),
           ),
         ),
@@ -295,6 +300,7 @@ class _ProfileState extends State<Profile> {
             ),
             child: IconButton(
               icon: Icon(icon, size: size),
+              onPressed: () {},
             ),
           ),
         ),
