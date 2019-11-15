@@ -15,7 +15,7 @@ these become tedious to update as we scale.
         - https://pub.dev/packages/built_value
         - https://medium.com/dartlang/darts-built-value-for-immutable-object-models-83e2497922d4
         - Check the model for EventCard for an example.
-        - Run: "flutter packages pub run build_runner build" to regenerate .g.dart files!
+        - Run: "flutter packages pub run build_runner build --delete-conflicting-outputs" to regenerate .g.dart files!
 
 - Our green color can be accessed through Theme.of(context).primaryColor don't use random green
     - Kike is working towards to make all our color a global object to not use Colors.xxx in any class

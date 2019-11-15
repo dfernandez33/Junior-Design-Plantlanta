@@ -201,6 +201,26 @@ class _MainScreenState extends State<MainScreen> {
         functionName: 'getEvent',
       );
 
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
+              content: Container(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    Container(
+                        child: Center(
+                            child: CircularProgressIndicator(
+                              value: null,
+                              valueColor:
+                              AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                            )))
+                  ])));
+        },
+      );
+
       try {
         final HttpsCallableResult result =
             await callable.call(<String, dynamic>{"EventID": this.barcode});
@@ -213,6 +233,8 @@ class _MainScreenState extends State<MainScreen> {
         }
 
         var user = await FirebaseAuth.instance.currentUser();
+
+        Navigator.of(context).pop();
 
         if (event.participants.contains(user.uid)) {
           showDialog(
@@ -300,7 +322,7 @@ class _MainScreenState extends State<MainScreen> {
     ]));
   }
 
-  Future<void> confirmAttendance() async {
+  Future<StatusResponse> confirmAttendance() async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
       functionName: 'confirmEvent',
     );
@@ -309,13 +331,8 @@ class _MainScreenState extends State<MainScreen> {
           await callable.call(<String, dynamic>{"EventID": this.barcode});
 
       StatusResponse resp = new StatusResponse.fromJson(result.data);
-      Navigator.of(context).pop();
-
-      if (resp.status == 1) {
-        print('success');
-      } else {
-        print('error');
-      }
+      //Navigator.of(context).pop();
+      return resp;
     } catch (e) {
       print(e.message);
     }
