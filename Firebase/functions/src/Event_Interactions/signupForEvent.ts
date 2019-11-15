@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from "firebase-admin";
 import {ResponseCode} from "../Enums/responseCode";
 
-export const handler = function(data: signupRequest, context: functions.https.CallableContext, firestore: FirebaseFirestore.Firestore) {
+export const handler = async function(data: signupRequest, context: functions.https.CallableContext, firestore: FirebaseFirestore.Firestore) {
     const eventID = data.EventID;
     let UUID;
     if (context.auth !== undefined) {
@@ -13,20 +13,44 @@ export const handler = function(data: signupRequest, context: functions.https.Ca
             message: "No UUID received from context."
         };
     }
-    const eventRef = firestore.doc("Events/" + eventID);
-    const userRef = firestore.doc("Users/" + UUID);
 
-    let eventUpdatePromise = eventRef.update({
-        participants: admin.firestore.FieldValue.arrayUnion(UUID)
-    });
-    let userUpdatePromise = userRef.update({
-        events: admin.firestore.FieldValue.arrayUnion(eventID)
-    });
+    var batch = firestore.batch();
 
-    return Promise.all([eventUpdatePromise, userUpdatePromise]).then(() => {
+    const eventRef = firestore.collection("Events").doc(eventID);
+    const event = await eventRef.get();
+    const eventData = event.data();
+    const userRef = firestore.collection("Users").doc(UUID);
+    const activityRef = firestore.collection("Activities").doc();
+
+    const user = await userRef.get();
+    const userData = user.data();
+
+    batch.create(activityRef, 
+        {
+            activitytype: "Signed up for Event",
+            timestamp: new Date(),
+            description: "Signed up for " + eventData.name,
+            username: userData.name,
+            uuid: UUID
+        }
+    );
+
+    batch.update(eventRef, 
+        {
+            participants: admin.firestore.FieldValue.arrayUnion(UUID),
+        }
+    );
+
+    batch.update(userRef,
+        {
+            events: admin.firestore.FieldValue.arrayUnion(eventID),
+        }
+    );
+
+    return batch.commit().then(() => {
         return {
             status: ResponseCode.SUCCESS,
-            message: "User was signed up successfully"
+            message: "Success updating user and event info"
         };
     }).catch(() => {
         return {
