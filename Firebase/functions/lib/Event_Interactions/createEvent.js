@@ -29,7 +29,8 @@ exports.handler = async function (data, context, firestore) {
             createdOn: new Date(),
             participants: [],
             confirmed_participants: [],
-            organizationId: adminData.data().organizationId
+            organizationId: adminData.data().organizationId,
+            passed: false
         });
         return {
             status: responseCode_1.ResponseCode.SUCCESS,

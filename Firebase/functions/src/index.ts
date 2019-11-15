@@ -25,7 +25,8 @@ import createItem = require("./Marketplace_Interactions/createItem");
 import editItem = require("./Marketplace_Interactions/editItem");
 import getItem = require("./Marketplace_Interactions/getItem");
 import deleteItem = require("./Marketplace_Interactions/deleteItem");
-
+import cleanUpItems = require("./Marketplace_Interactions/cleanUpItems");
+import purchaseItem = require("./Item_Interactions/purchaseItem");
 
 // Event Interactions
 import createEvent = require("./Event_Interactions/createEvent");
@@ -36,6 +37,7 @@ import getEvent = require("./Event_Interactions/getEvent")
 import confirmEvent = require("./Event_Interactions/confirmEvent");
 import editEvent = require("./Event_Interactions/editEvent");
 import deleteEvent = require("./Event_Interactions/deleteEvent");
+import cleanUpEvents = require("./Event_Interactions//cleanUpEvents");
 
 // Organization Interactions
 import requestOrganization = require("./Organization_Interactions/requestOrganization");
@@ -64,10 +66,6 @@ exports.getOrganizationRequest = functions.https.onCall((data, context) => {
 exports.reviewOrganizationRequest = functions.https.onRequest((req, res) => {
     return reviewOrganizationRequest.handler(req, res, firestore);
 })
-
-// Marketplace Interactions
-import purchaseItem = require("./Item_Interactions/purchaseItem");
-
 
 /*========================================================================
 Event Interactions
@@ -104,6 +102,10 @@ exports.deleteEvent = functions.firestore.document("Events/{eventId}").onDelete(
     return deleteEvent.handler(data, context, firestore);
 });
 
+exports.cleanUpEvents = functions.pubsub.schedule("every day 23:30").timeZone("America/New_York").onRun((context) => {
+    return cleanUpEvents.handler(context, firestore);
+})
+
 /*========================================================================
 Marketplace Interactions
 ==========================================================================*/
@@ -123,6 +125,14 @@ exports.getItem = functions.https.onCall((data, context) => {
 exports.deleteItem = functions.firestore.document("Items/{itemId}").onDelete((data, context) => {
     return deleteItem.handler(data, context, firestore);
 });
+
+exports.purchaseItem = functions.https.onCall((data, context) => {
+    return purchaseItem.handler(data, context, firestore);
+});
+
+exports.cleanUpItems = functions.firestore.document("Items/{itemId}").onUpdate((snapshot) => {
+    return cleanUpItems.hanlder(snapshot);
+})
 
 /*========================================================================
 User/Admin Interactions
@@ -153,13 +163,6 @@ exports.reviewAdminRequest = functions.https.onRequest((req, res) => {
 
 exports.deleteUser = functions.auth.user().onDelete((user) => {
     return deleteUser.handler(user, firestore);
-});
-
-/*========================================================================
-Marketplace Interactions
-==========================================================================*/
-exports.purchaseItem = functions.https.onCall((data, context) => {
-    return purchaseItem.handler(data, context, firestore);
 });
 
 /*========================================================================
