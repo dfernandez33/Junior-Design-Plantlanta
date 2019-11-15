@@ -114,7 +114,6 @@ export class CreateItemComponent implements OnInit {
       }
     }
 
-
   createItem() {
     this.message = "Creating item..."
     this.loading = true;
