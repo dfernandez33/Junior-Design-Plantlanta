@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:junior_design_plantlanta/model/event_model.dart';
 import 'package:junior_design_plantlanta/model/user.dart';
+import 'package:junior_design_plantlanta/screens/activity_feed.dart';
 import 'package:junior_design_plantlanta/screens/home.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:junior_design_plantlanta/screens/marketplace.dart';
@@ -86,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
           Home(1),
           Marketplace(this.userData),
           Home(3),
-          Home(4),
+          ActivityFeed(this.userData),
           Profile(this.userData),
         ],
       ),
