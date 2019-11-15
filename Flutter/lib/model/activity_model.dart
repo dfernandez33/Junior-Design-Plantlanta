@@ -16,16 +16,17 @@ abstract class ActivityModel implements Built<ActivityModel, ActivityModelBuilde
 
   static Serializer<ActivityModel> get serializer => _$activityModelSerializer;
 
-  @BuiltValueField(wireName: 'date')
+  @BuiltValueField(wireName: 'timestamp')
   Datetime get date;
+  @BuiltValueField(wireName: 'activitytype')
+  String get activityType;
   @BuiltValueField(wireName: 'description')
   String get description;
-  @BuiltValueField(wireName: 'activityType')
-  String get activityType;
-  @BuiltValueField(wireName: 'userName')
+  @BuiltValueField(wireName: 'username')
   String get userName;
-  @BuiltValueField(wireName: 'userId')
-  String get userId;
+  @BuiltValueField(wireName: 'uuid')
+  String get uuid;
+
 
   String toJson() {
     return json.encode(serializers.serializeWith(ActivityModel.serializer, this));
