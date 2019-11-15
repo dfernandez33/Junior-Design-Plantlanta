@@ -30,7 +30,8 @@ export const handler = async function(data: Event, context: functions.https.Call
             createdOn: new Date(),
             participants: [],
             confirmed_participants: [],
-            organizationId: adminData.data().organizationId
+            organizationId: adminData.data().organizationId,
+            passed: false
         });
         return {
             status: ResponseCode.SUCCESS,
