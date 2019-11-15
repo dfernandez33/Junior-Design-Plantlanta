@@ -25,6 +25,7 @@ enum DialogState {
 
 class _ProgressDialogState extends State<ProgressDialog> {
   DialogState dialogState;
+  String error_msg = "";
 
   @override
   void initState() {
@@ -61,7 +62,7 @@ class _ProgressDialogState extends State<ProgressDialog> {
               child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Container(
                     child: Center(
-                        child: Text("SUCESS")))
+                        child: Text("SUCCESS", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),))),
               ])));
     } else if (dialogState == DialogState.ERROR_ON_RESPONSE) {
       return AlertDialog(
@@ -71,7 +72,12 @@ class _ProgressDialogState extends State<ProgressDialog> {
               child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Container(
                     child: Center(
-                        child: Text("ERROR")))
+                        child: Text("OOPS!", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),))),
+                Container(
+                  child: Center(
+                    child: Text(error_msg),
+                  ),
+                )
               ])));
     } else {
       return _buildInformationView();
@@ -109,16 +115,17 @@ class _ProgressDialogState extends State<ProgressDialog> {
       setState(() {
         this.dialogState = DialogState.WAITING_FOR_RESPONSE;
       });
-      Future<int> status = widget.callback();
-      status.asStream().listen(
-          (status) {
-            if (status == 1) {
+      Future<StatusResponse> streamResponse = widget.callback();
+      streamResponse.asStream().listen(
+          (response) {
+            if (response.status == 1) {
               setState(() {
                 this.dialogState = DialogState.SUCCESS_ON_RESPONSE;
               });
-            } else if (status == 0) {
+            } else if (response.status == 0) {
               setState(() {
                 this.dialogState = DialogState.ERROR_ON_RESPONSE;
+                error_msg = response.message;
               });
             }
           }
