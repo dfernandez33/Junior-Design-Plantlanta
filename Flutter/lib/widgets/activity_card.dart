@@ -20,7 +20,6 @@ class ActivityCard extends StatefulWidget {
 }
 
 class _ActivityCardState extends State<ActivityCard> {
-  bool isExpanded = false;
 
   _ActivityCardState();
 
@@ -34,16 +33,10 @@ class _ActivityCardState extends State<ActivityCard> {
       margin: EdgeInsets.only(left: 12.0, right: 12.0, bottom: 12.0),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ExpansionTile(
-            onExpansionChanged: (bool expanding) =>
-                setState(() => this.isExpanded = expanding),
-            backgroundColor: Colors.white,
-            title: _buildTitle(),
-            children: <Widget>[
-              _buildContent(),
-            ]),
-      ),
-    );
+        child: Column (
+          children: <Widget>[_buildTitle()],
+        ),
+    ));
   }
 
   Widget _buildTitle() {
@@ -58,9 +51,6 @@ class _ActivityCardState extends State<ActivityCard> {
                   widget._model.userName + " " + widget._model.activityType,
                   textAlign: TextAlign.start,
                   style: TextStyle(
-                      color: isExpanded
-                          ? Theme.of(context).primaryColor
-                          : Colors.black54,
                       fontSize: 20.0),
                 ))
           ],
@@ -76,27 +66,18 @@ class _ActivityCardState extends State<ActivityCard> {
             ])
           ],
         ),
-      ],
-    ));
-  }
-
-  Widget _buildContent() {
-    return Container(
-        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-        child: Column(
+        Row(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Expanded(
-                    child: Container(
+            Expanded(
+                child: Container(
                   padding: const EdgeInsets.only(top: 4.0),
                   child: Text(widget._model.description,
                       style: TextStyle(color: Colors.black54, fontSize: 14.0)),
                 )),
-              ],
-            ),
           ],
-        ));
+        ),
+      ],
+    ));
   }
 
   String _getDate(DateTime date) {
