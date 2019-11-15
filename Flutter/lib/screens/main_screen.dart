@@ -87,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
           Home(1),
           Marketplace(this.userData),
           Home(3),
-          ActivityFeed(this.userData),
+          ActivityFeed(),
           Profile(this.userData),
         ],
       ),

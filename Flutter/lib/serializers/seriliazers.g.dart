@@ -7,6 +7,7 @@ part of serializers;
 // **************************************************************************
 
 Serializers _$serializers = (new Serializers().toBuilder()
+      ..add(ActivityModel.serializer)
       ..add(Datetime.serializer)
       ..add(EventModel.serializer)
       ..add(ItemModel.serializer)

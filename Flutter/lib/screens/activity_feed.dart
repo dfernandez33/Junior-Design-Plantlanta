@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:junior_design_plantlanta/model/activity_model.dart';
-import 'package:junior_design_plantlanta/model/user.dart';
 import 'package:junior_design_plantlanta/widgets/activity_card.dart';
 import 'package:algolia/algolia.dart';
 import 'package:junior_design_plantlanta/services/algolia_service.dart';
@@ -9,36 +9,32 @@ import 'package:junior_design_plantlanta/services/algolia_service.dart';
 
 class ActivityFeed extends StatefulWidget {
   // TODO: Remove param after final implementation.
-  UserModel _user;
 
-  ActivityFeed(this._user);
+  ActivityFeed();
 
   @override
   _ActivityFeedState createState() => _ActivityFeedState();
 }
 
 class _ActivityFeedState extends State<ActivityFeed> {
-  List<ActivityCard> availableActivities;
-  List rawActivities;
+  List<ActivityCard> availableActivities = List();
+  List rawActivities = List();
   AlgoliaIndexReference algolia = AlgoliaService.algolia.instance.index('Events');
   bool isLoading;
-
-  _ActivityFeedState() {
-    availableActivities = List();
-    rawActivities = List();
-    _buildActivityCards();
-  }
+  FirebaseUser _currentUser;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _getCurrentUser();
     isLoading = true;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
+    if (isLoading || _currentUser == null) {
+      _buildActivityCards();
       return Scaffold(
         body: Center(
             child: CircularProgressIndicator(
@@ -89,11 +85,16 @@ class _ActivityFeedState extends State<ActivityFeed> {
     }
   }
 
+  Future<void> _getCurrentUser() async {
+    var user = await FirebaseAuth.instance.currentUser();
+    this._currentUser = user;
+  }
+
   void _buildActivityCards() {
     List<ActivityCard> activityList = List();
     Firestore.instance
         .collection("Activities")
-        .where("uuid", isEqualTo: widget._user.uuid)
+        .where("uuid", isEqualTo: _currentUser.uid)
         .orderBy("timestamp", descending: true)
         .snapshots()
         .listen((activities) {
@@ -104,7 +105,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
           "_seconds": timestamp.seconds
         };
         activity.data["timestamp"] = tempTime;
-        activityList.add(ActivityCard(ActivityModel.fromJson(activity)));
+        activityList.add(ActivityCard(ActivityModel.fromJson(activity.data)));
       });
       setState(() {
         this.availableActivities = activityList;
