@@ -11,6 +11,8 @@ class EventCard extends StatefulWidget {
   EventModel _model;
   String userId;
 
+  bool operator == (o) => o is EventCard && o._model == this._model;
+
   EventCard(this._model) {
     // TODO: Provide a context in global scope
     FirebaseAuth.instance.currentUser().then((userId) =>

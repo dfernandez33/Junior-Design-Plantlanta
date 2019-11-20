@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +33,6 @@ class _MainScreenState extends State<MainScreen> {
   String barcode = "";
   bool isConfirmedClicked = false;
   UserModel userData;
-  Future<dynamic> userStream;
 
   @override
   void initState() {
@@ -87,7 +88,7 @@ class _MainScreenState extends State<MainScreen> {
           Marketplace(this.userData),
           Home(3),
           Home(4),
-          Profile(this.userData),
+          Profile(this.userData, widget._userService),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
@@ -176,6 +177,7 @@ class _MainScreenState extends State<MainScreen> {
         setState(() {
           user.data.addEntries([MapEntry("uuid", user.reference.documentID)]);
           this.userData = UserModel.fromJson(user.data);
+          widget._userService.userModelStream.sink.add(this.userData);
         });
       }
     });
