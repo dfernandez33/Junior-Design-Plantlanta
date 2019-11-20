@@ -30,6 +30,15 @@ class _EventCardState extends State<EventCard> {
   bool isExpanded = false;
   bool isSignUp;
 
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAuth.instance.currentUser().then((userId) =>
+    setState(() {
+      this.isSignUp = widget._model.participants.contains(userId.uid);
+    }));
+  }
+
   _EventCardState(this.isSignUp);
 
   @override
