@@ -49,6 +49,8 @@ class _ProfileState extends State<Profile> {
     this.isLoading[ProfileTab.TRANSACTIONS] = true;
 
     _getImage();
+
+    // TODO: Find a way to mantain updated the user.
     if (widget._user == null) {
       widget._userService.userModelStream.stream.asBroadcastStream().listen((user) {
         this.dataService = ProfileDataService(user);
@@ -238,8 +240,8 @@ class _ProfileState extends State<Profile> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         _buildProperTab(Icons.schedule, 26, ProfileTab.UPCOMING_EVENTS),
-        _buildProperTab(Icons.timeline, 28, ProfileTab.TRANSACTIONS),
         _buildProperTab(Icons.restore, 28, ProfileTab.PREVIOUS_EVENTS),
+        _buildProperTab(Icons.timeline, 28, ProfileTab.TRANSACTIONS),
       ],
     );
   }
