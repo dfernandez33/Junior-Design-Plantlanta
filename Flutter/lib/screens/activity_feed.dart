@@ -27,14 +27,14 @@ class _ActivityFeedState extends State<ActivityFeed> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getCurrentUser();
+    _getCurrentUser().then((_) {_buildActivityCards();});
     isLoading = true;
   }
 
   @override
   Widget build(BuildContext context) {
     if (isLoading || _currentUser == null) {
-      _buildActivityCards();
+
       return Scaffold(
         body: Center(
             child: CircularProgressIndicator(
