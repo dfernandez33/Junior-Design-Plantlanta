@@ -36,6 +36,7 @@ import { VerifyOrganizationComponent } from './components/verify-organization/ve
 import { CreateItemComponent } from './components/create-item/create-item.component';
 import { MarketplaceItemComponent } from './widgets/marketplace-item/marketplace-item.component';
 import { environment } from '../environments/environment';
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { environment } from '../environments/environment';
     VerifyOrganizationComponent,
     CreateItemComponent,
     MarketplaceItemComponent,
+    LandingPageComponent,
   ],
   imports: [
     BrowserModule,
