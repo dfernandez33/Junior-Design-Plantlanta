@@ -17,6 +17,7 @@ export const handler = function(data: userRegistrationInterface, context:functio
         name: data.name,
         dob: new Date(Date.parse(data.dob)),
         phone: data.phone,
+        picture: data.profile_picture,
         address: data.address,
         preferences: data.preferences,
         events: [],

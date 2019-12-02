@@ -16,12 +16,11 @@ import 'package:junior_design_plantlanta/widgets/event_card.dart';
 import 'package:junior_design_plantlanta/widgets/past_event_card.dart';
 import 'package:junior_design_plantlanta/screens/add_profile_picture.dart';
 
-enum ProfileTab { UPCOMING_EVENTS, PREVIOUS_EVENTS, TRANSACTIONS}
+enum ProfileTab { UPCOMING_EVENTS, PREVIOUS_EVENTS, TRANSACTIONS }
 
 class Profile extends StatefulWidget {
   UserService _userService;
   UserModel _user = UserModel();
-
 
   Profile(this._user, this._userService);
 
@@ -37,7 +36,6 @@ class _ProfileState extends State<Profile> {
   Set<EventModel> _currentEvents = LinkedHashSet();
   Set<EventModel> _pastEvents = LinkedHashSet();
 
-
   String _imageURL;
   FirebaseUser _currentUser;
 
@@ -49,10 +47,13 @@ class _ProfileState extends State<Profile> {
     this.isLoading[ProfileTab.TRANSACTIONS] = true;
 
     _getImage();
+    _getCurrentUser();
 
     // TODO: Find a way to mantain updated the user.
     if (widget._user == null) {
-      widget._userService.userModelStream.stream.asBroadcastStream().listen((user) {
+      widget._userService.userModelStream.stream
+          .asBroadcastStream()
+          .listen((user) {
         this.dataService = ProfileDataService(user);
         this.dataService.transactionStream().stream.listen((data) {
           if (data.length != _transactions.length) {
@@ -114,12 +115,10 @@ class _ProfileState extends State<Profile> {
       return Scaffold(
         body: Center(
             child: CircularProgressIndicator(
-              value: null,
-              valueColor:
-              AlwaysStoppedAnimation<Color>(Theme
-                  .of(context)
-                  .primaryColor),
-            )),
+          value: null,
+          valueColor:
+              AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+        )),
       );
     } else {
       return Scaffold(
@@ -127,111 +126,102 @@ class _ProfileState extends State<Profile> {
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: <Widget>[
+                  Row(
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          CircularProfileAvatar(_imageURL,
-                            radius: 40,
-                            backgroundColor: Colors.green,
-                            borderWidth: 3,
-                            borderColor: Color(0xFF25A325),
-                            elevation: 5.0,
-                            onTap: () async {
-                              String newUrl = await Navigator.push(
-                                  context, MaterialPageRoute(
+                      CircularProfileAvatar(
+                        _imageURL,
+                        radius: 40,
+                        backgroundColor: Colors.green,
+                        borderWidth: 3,
+                        borderColor: Color(0xFF25A325),
+                        elevation: 5.0,
+                        onTap: () async {
+                          String newUrl = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
                                   builder: (context) =>
                                       ProfilePic(this._currentUser)));
-                              setState(() {
-                                this._imageURL = newUrl;
-                              });
-                            },
-                            showInitialTextAbovePicture: true,
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Column(
+                          setState(() {
+                            this._imageURL = newUrl;
+                          });
+                        },
+                        showInitialTextAbovePicture: true,
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceEvenly,
+                                Column(
                                   children: <Widget>[
-                                    Column(
-                                      children: <Widget>[
-                                        Text(
-                                          widget._user.points.toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.0),
-                                        ),
-                                        Text("Points"),
-                                      ],
+                                    Text(
+                                      widget._user.points.toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0),
                                     ),
-                                    Column(
-                                      children: <Widget>[
-                                        Text(
-                                          widget._user.confirmedEvents.length
-                                              .toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.0),
-                                        ),
-                                        Text("Events"),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: <Widget>[
-                                        Text(
-                                          "10",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.0),
-                                        ),
-                                        Text("Friends"),
-                                      ],
-                                    ),
+                                    Text("Points"),
                                   ],
                                 ),
-//                        Row(
-//                            mainAxisAlignment:
-//                            MainAxisAlignment.spaceEvenly,
-//                            children: <Widget>[
-//                              buildProfileFollowButton(user)
-//                            ]),
+                                Column(
+                                  children: <Widget>[
+                                    Text(
+                                      widget._user.confirmedEvents.length
+                                          .toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0),
+                                    ),
+                                    Text("Events"),
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Text(
+                                      "10",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0),
+                                    ),
+                                    Text("Friends"),
+                                  ],
+                                ),
                               ],
                             ),
-                          )
-                        ],
-                      ),
-                      Container(
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.only(top: 15.0),
-                          child: Text(
-                            widget._user.name,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          )),
+                            buildFriendRequestButton()
+                          ],
+                        ),
+                      )
                     ],
                   ),
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.only(top: 15.0),
+                      child: Text(
+                        widget._user.name,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )),
+                ],
+              ),
+            ),
+            buildImageViewButtonBar(),
+            Stack(
+              children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                  color: Theme.of(context).primaryColor,
                 ),
-                buildImageViewButtonBar(),
-                Stack(
-                  children: <Widget>[
-                    Container(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height,
-                      color: Theme
-                          .of(context)
-                          .primaryColor,
-                    ),
-                    _buildTabContent(),
-                  ],
-                )
-              ]));
+                _buildTabContent(),
+              ],
+            )
+          ]));
     }
   }
 
@@ -244,6 +234,159 @@ class _ProfileState extends State<Profile> {
         _buildProperTab(Icons.timeline, 28, ProfileTab.TRANSACTIONS),
       ],
     );
+  }
+
+  Row buildFriendRequestButton() {
+    if (_currentUser.uid != widget._user.uuid) {
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Expanded(
+                child: Padding(
+                    padding:
+                        const EdgeInsets.only(right: 0.0, left: 0.0, top: 10.0),
+                    child: buildFriendRequestButtonContents())),
+          ]);
+    } else {
+      return Row();
+    }
+  }
+
+  FlatButton buildFriendRequestButtonContents() {
+    Map<String, String> friendRequestMap = getFriendRequestDetails();
+
+    if (friendRequestMap["sender"] == null) {
+      return FlatButton(
+        onPressed: createFriendRequest,
+        child: Container(
+            alignment: Alignment.center,
+            height: 30.0,
+            decoration: new BoxDecoration(
+              color: Color(0xFF25A325),
+              borderRadius: new BorderRadius.circular(10.0),
+            ),
+            child: Text(
+              "Send Friend Request",
+              style: new TextStyle(fontSize: 20.0, color: Colors.white),
+            )),
+      );
+    } else if (friendRequestMap["sender"] == _currentUser.uid) {
+      return FlatButton(
+        onPressed: () {},
+        child: Container(
+            alignment: Alignment.center,
+            height: 30.0,
+            decoration: new BoxDecoration(
+              color: Color(0xFF25A325),
+              borderRadius: new BorderRadius.circular(10.0),
+            ),
+            child: Text(
+              "Request Pending",
+              style: new TextStyle(fontSize: 20.0, color: Colors.white),
+            )),
+      );
+    } else {
+      return FlatButton(
+        onPressed: acceptFriendRequest,
+        child: Container(
+            alignment: Alignment.center,
+            height: 30.0,
+            decoration: new BoxDecoration(
+              color: Color(0xFF25A325),
+              borderRadius: new BorderRadius.circular(10.0),
+            ),
+            child: Text(
+              "Accept Request",
+              style: new TextStyle(fontSize: 20.0, color: Colors.white),
+            )),
+      );
+    }
+  }
+
+  Map<String, String> getFriendRequestDetails() {
+    String sender;
+    String receiver;
+
+    Firestore.instance
+        .collection("FriendRequests")
+        .where('users', arrayContains: widget._user.uuid)
+        .where('users', arrayContains: _currentUser.uid)
+        .snapshots()
+        .listen((friendRequest) {
+      friendRequest.documents.forEach((request) {
+        sender = request.data['sender'];
+        receiver = request.data['receiver'];
+      });
+    });
+
+    Map<String, String> friendRequestMap = {
+      "sender": sender,
+      "receiver": receiver
+    };
+
+    return friendRequestMap;
+  }
+
+  void createFriendRequest() {
+    Firestore.instance.collection('FriendRequests').add({
+      "users": [_currentUser.uid, widget._user.uuid],
+      "sender": _currentUser.uid,
+      "receiver": widget._user.uuid
+    }).then((value) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: new Text("Friend Request Sent"),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text(
+                  "close",
+                  style: new TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                      color: Color(0xFF25A325)),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    });
+  }
+
+  void acceptFriendRequest() {
+    Firestore.instance
+        .collection("Users")
+        .document(_currentUser.uid)
+        .updateData({
+      "friends": FieldValue.arrayUnion([widget._user.uuid])
+    });
+
+    Firestore.instance
+        .collection("Users")
+        .document(widget._user.uuid)
+        .updateData({
+      "friends": FieldValue.arrayUnion([_currentUser.uid])
+    });
+
+    Firestore.instance
+        .collection("FriendRequests")
+        .where('users', arrayContains: widget._user.uuid)
+        .where('users', arrayContains: _currentUser.uid)
+        .snapshots()
+        .listen((friendRequest) {
+      friendRequest.documents.forEach((request) {
+        request.reference.delete();
+      });
+    });
   }
 
   void _tabSelector(ProfileTab newState) {
@@ -261,9 +404,7 @@ class _ProfileState extends State<Profile> {
               borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(16.0),
                   topRight: const Radius.circular(16.0)),
-              color: Theme
-                  .of(context)
-                  .primaryColor,
+              color: Theme.of(context).primaryColor,
             ),
             child: IconButton(
               icon: Icon(icon, size: size, color: Colors.white),
@@ -298,116 +439,104 @@ class _ProfileState extends State<Profile> {
         {
           if (isLoading[ProfileTab.UPCOMING_EVENTS]) {
             return Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2.40,
+              height: MediaQuery.of(context).size.height / 2.40,
               child: Center(
                   child: CircularProgressIndicator(
-                    value: null,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  )),
+                value: null,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              )),
             );
           } else if (this._currentEvents.isEmpty) {
             return Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2.40,
+              height: MediaQuery.of(context).size.height / 2.40,
               child: Center(
-                  child: Text("NO EVENTS FOUND",
-                    style: TextStyle(color: Colors.white),)),
+                  child: Text(
+                "NO EVENTS FOUND",
+                style: TextStyle(color: Colors.white),
+              )),
             );
           } else {
             return Container(
               margin: EdgeInsets.only(top: 12.0),
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height,
+              height: MediaQuery.of(context).size.height,
               child: ListView(
                 padding: const EdgeInsets.only(bottom: 30.0),
-                children: this._currentEvents.map((model) => EventCard(model)).toList(),
+                children: this
+                    ._currentEvents
+                    .map((model) => EventCard(model))
+                    .toList(),
                 scrollDirection: Axis.vertical,
               ),
             );
           }
         }
-      break;
+        break;
       case ProfileTab.PREVIOUS_EVENTS:
         {
           if (isLoading[ProfileTab.PREVIOUS_EVENTS]) {
             return Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2.40,
+              height: MediaQuery.of(context).size.height / 2.40,
               child: Center(
                   child: CircularProgressIndicator(
-                    value: null,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  )),
+                value: null,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              )),
             );
           } else if (this._pastEvents.isEmpty) {
             return Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2.40,
+              height: MediaQuery.of(context).size.height / 2.40,
               child: Center(
-                  child: Text("NO EVENTS FOUND",
-                    style: TextStyle(color: Colors.white),)),
+                  child: Text(
+                "NO EVENTS FOUND",
+                style: TextStyle(color: Colors.white),
+              )),
             );
           } else {
             return Container(
               margin: EdgeInsets.only(top: 12.0),
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height,
+              height: MediaQuery.of(context).size.height,
               child: ListView(
                 padding: const EdgeInsets.only(bottom: 30.0),
-                children: this._pastEvents.map((model) => PastEventCard(model)).toList(),
+                children: this
+                    ._pastEvents
+                    .map((model) => PastEventCard(model))
+                    .toList(),
                 scrollDirection: Axis.vertical,
               ),
             );
           }
         }
-      break;
+        break;
       case ProfileTab.TRANSACTIONS:
         {
           if (isLoading[ProfileTab.TRANSACTIONS]) {
             return Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2.40,
+              height: MediaQuery.of(context).size.height / 2.40,
               child: Center(
                   child: CircularProgressIndicator(
-                    value: null,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  )),
+                value: null,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              )),
             );
           } else if (this._transactions.isEmpty) {
             return Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2.40,
+              height: MediaQuery.of(context).size.height / 2.40,
               child: Center(
-                  child: Text("NO TRANSACTIONS FOUND",
-                    style: TextStyle(color: Colors.white),)),
+                  child: Text(
+                "NO TRANSACTIONS FOUND",
+                style: TextStyle(color: Colors.white),
+              )),
             );
           } else {
             return Container(
               margin: EdgeInsets.only(top: 12.0),
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height,
+              height: MediaQuery.of(context).size.height,
               child: ListView(
                 padding: const EdgeInsets.only(bottom: 30.0),
-                children: this._transactions.map((model) => TransactionCard(model)).toList(),
+                children: this
+                    ._transactions
+                    .map((model) => TransactionCard(model))
+                    .toList(),
                 scrollDirection: Axis.vertical,
               ),
             );
@@ -417,69 +546,12 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-
-
-//  Future<void> _buildPastEventCards() async {
-////    widget._user.events.forEach((event) async {
-////      var eventInfo =
-////      await Firestore.instance.collection("Events").document(event).get();
-////      Timestamp timestamp = eventInfo.data['date'];
-////      var tempTime = <String, dynamic>{
-////        "_nanoseconds": timestamp.nanoseconds,
-////        "_seconds": timestamp.seconds
-////      };
-////      eventInfo.data['date'] = tempTime;
-////      setState(() {
-////        _pastEvents.add(EventCard(EventModel.fromJson(eventInfo.data)));
-////      });
-////    });
-//  }
-
   Future<void> _getImage() async {
-    var user = await FirebaseAuth.instance.currentUser();
-    setState(() {
-      this._imageURL = user.photoUrl;
-    });
-    this._currentUser = user;
+    this._imageURL = widget._user.picture;
   }
 
-//  Future<void> _createTransactionCards() {
-//    Firestore.instance
-//        .collection("Transactions")
-//        .where("uuid", isEqualTo: widget._user.uuid)
-//        .orderBy("timestamp", descending: true)
-//        .snapshots()
-//        .listen((transactions) {
-//      transactions.documents.forEach((transaction) {
-//        Timestamp timestamp = transaction.data["timestamp"];
-//        var tempTime = <String, dynamic>{
-//          "_nanoseconds": timestamp.nanoseconds,
-//          "_seconds": timestamp.seconds
-//        };
-//        transaction.data["timestamp"] = tempTime;
-//        this
-//            .transactions
-//            .add(TransactionCard(TransactionModel.fromJson(transaction.data)));
-//      });
-//      setState(() {});
-//    });
-//  }
-//
-//  Future<void> _buildCurrentEventCards() async {
-//    widget._user.events.forEach((event) async {
-//      var eventInfo =
-//      await Firestore.instance.collection("Events").document(event).get();
-//      Timestamp timestamp = eventInfo.data['date'];
-//      var tempTime = <String, dynamic>{
-//        "_nanoseconds": timestamp.nanoseconds,
-//        "_seconds": timestamp.seconds
-//      };
-//      eventInfo.data['date'] = tempTime;
-//      if (!_currentEvents.contains(EventCard(EventModel.fromJson(eventInfo.data)))) {
-//        _currentEvents.add(EventCard(EventModel.fromJson(eventInfo.data)));
-//      }
-//    });
-//  }
+  Future<void> _getCurrentUser() async {
+    var user = await FirebaseAuth.instance.currentUser();
+    this._currentUser = user;
+  }
 }
-
-

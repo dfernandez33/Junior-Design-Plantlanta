@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:junior_design_plantlanta/model/registration_model.dart';
 import 'package:junior_design_plantlanta/model/user_preference.dart';
@@ -182,6 +183,7 @@ class _Preferences2State extends State<Preferences2> {
         "dob" : user.dob,
         "phone" : user.phone,
         "address" : user.address,
+        "picture" : user.profileUrl,
         "preferences" : {
           "event_type" : user.preference.eventType.toList(),
           "sporadic" : user.preference.sporadic,
