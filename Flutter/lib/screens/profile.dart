@@ -35,8 +35,8 @@ class _ProfileState extends State<Profile> {
   Set<TransactionModel> _transactions = LinkedHashSet();
   Set<EventModel> _currentEvents = LinkedHashSet();
   Set<EventModel> _pastEvents = LinkedHashSet();
+  FlatButton _friendRequestButton;
 
-  String _imageURL;
   FirebaseUser _currentUser;
 
   @override
@@ -46,7 +46,6 @@ class _ProfileState extends State<Profile> {
     this.isLoading[ProfileTab.PREVIOUS_EVENTS] = true;
     this.isLoading[ProfileTab.TRANSACTIONS] = true;
 
-    _getImage();
     _getCurrentUser();
 
     // TODO: Find a way to mantain updated the user.
@@ -103,15 +102,15 @@ class _ProfileState extends State<Profile> {
 
   @override
   void dispose() {
-    super.dispose();
     this.dataService.streamPastEvents.close();
     this.dataService.streamTrans.close();
     this.dataService.streamCurrentEvents.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget._user == null || this._imageURL == null) {
+    if (widget._user == null || widget._user.picture == null || _currentUser == null) {
       return Scaffold(
         body: Center(
             child: CircularProgressIndicator(
@@ -133,20 +132,20 @@ class _ProfileState extends State<Profile> {
                   Row(
                     children: <Widget>[
                       CircularProfileAvatar(
-                        _imageURL,
+                        widget._user.picture,
                         radius: 40,
-                        backgroundColor: Colors.green,
+                        backgroundColor: Colors.white,
                         borderWidth: 3,
                         borderColor: Color(0xFF25A325),
                         elevation: 5.0,
-                        onTap: () async {
+                        onTap: _currentUser.uid != widget._user.uuid ? null : () async {
                           String newUrl = await Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
                                       ProfilePic(this._currentUser)));
                           setState(() {
-                            this._imageURL = newUrl;
+                            widget._user.rebuild(((b) => b..picture = newUrl));
                           });
                         },
                         showInitialTextAbovePicture: true,
@@ -185,7 +184,7 @@ class _ProfileState extends State<Profile> {
                                 Column(
                                   children: <Widget>[
                                     Text(
-                                      "10",
+                                      widget._user.friends.length.toString(),
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20.0),
@@ -238,6 +237,48 @@ class _ProfileState extends State<Profile> {
 
   Row buildFriendRequestButton() {
     if (_currentUser.uid != widget._user.uuid) {
+      if (widget._user.friends.contains(_currentUser.uid)) {
+        _friendRequestButton = FlatButton(
+            onPressed: null,
+            child: Container(
+                alignment: Alignment.center,
+                height: 30.0,
+                decoration: new BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: new BorderRadius.circular(10.0),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      "Friends",
+                      style: new TextStyle(fontSize: 20.0, color: Colors.white),
+                    ),
+                    Icon(Icons.check)
+                  ],
+                )));
+      } else {
+        if (_friendRequestButton == null) {
+          buildFriendRequestButtonContents();
+          _friendRequestButton = FlatButton(
+              onPressed: null,
+              child: Container(
+                  alignment: Alignment.center,
+                  height: 30.0,
+                  decoration: new BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: new BorderRadius.circular(10.0),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        "Loading...",
+                        style:
+                            new TextStyle(fontSize: 20.0, color: Colors.white),
+                      ),
+                    ],
+                  )));
+        }
+      }
       return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -245,18 +286,18 @@ class _ProfileState extends State<Profile> {
                 child: Padding(
                     padding:
                         const EdgeInsets.only(right: 0.0, left: 0.0, top: 10.0),
-                    child: buildFriendRequestButtonContents())),
+                    child: _friendRequestButton)),
           ]);
     } else {
       return Row();
     }
   }
 
-  FlatButton buildFriendRequestButtonContents() {
-    Map<String, String> friendRequestMap = getFriendRequestDetails();
-
+  Future<FlatButton> buildFriendRequestButtonContents() async {
+    Map<String, String> friendRequestMap = await getFriendRequestDetails();
+    var newFlatButton;
     if (friendRequestMap["sender"] == null) {
-      return FlatButton(
+      newFlatButton = FlatButton(
         onPressed: createFriendRequest,
         child: Container(
             alignment: Alignment.center,
@@ -271,7 +312,7 @@ class _ProfileState extends State<Profile> {
             )),
       );
     } else if (friendRequestMap["sender"] == _currentUser.uid) {
-      return FlatButton(
+      newFlatButton = FlatButton(
         onPressed: () {},
         child: Container(
             alignment: Alignment.center,
@@ -286,7 +327,7 @@ class _ProfileState extends State<Profile> {
             )),
       );
     } else {
-      return FlatButton(
+      newFlatButton = FlatButton(
         onPressed: acceptFriendRequest,
         child: Container(
             alignment: Alignment.center,
@@ -301,30 +342,22 @@ class _ProfileState extends State<Profile> {
             )),
       );
     }
+
+    setState(() {
+      _friendRequestButton = newFlatButton;
+    });
   }
 
-  Map<String, String> getFriendRequestDetails() {
-    String sender;
-    String receiver;
-
-    Firestore.instance
+  Future<Map<String, String>> getFriendRequestDetails() {
+    return Firestore.instance
         .collection("FriendRequests")
         .where('users', arrayContains: widget._user.uuid)
-        .where('users', arrayContains: _currentUser.uid)
         .snapshots()
-        .listen((friendRequest) {
-      friendRequest.documents.forEach((request) {
-        sender = request.data['sender'];
-        receiver = request.data['receiver'];
-      });
+        .first
+        .then((friendRequest) {
+          var request = friendRequest.documents.where((request) {return request.data["users"].contains(_currentUser.uid);}).toList();
+          return {"sender": request.elementAt(0).data["sender"], "receiver": request.elementAt(0).data["receiver"]};
     });
-
-    Map<String, String> friendRequestMap = {
-      "sender": sender,
-      "receiver": receiver
-    };
-
-    return friendRequestMap;
   }
 
   void createFriendRequest() {
@@ -544,10 +577,6 @@ class _ProfileState extends State<Profile> {
         }
         break;
     }
-  }
-
-  Future<void> _getImage() async {
-    this._imageURL = widget._user.picture;
   }
 
   Future<void> _getCurrentUser() async {

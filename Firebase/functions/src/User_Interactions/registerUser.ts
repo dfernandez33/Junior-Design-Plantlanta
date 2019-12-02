@@ -21,6 +21,7 @@ export const handler = function(data: userRegistrationInterface, context:functio
         address: data.address,
         preferences: data.preferences,
         events: [],
+        friends: [],
         confirmed_events: [],
         points: 0,
         transaction_history: []

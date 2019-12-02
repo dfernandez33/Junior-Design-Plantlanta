@@ -17,9 +17,11 @@ exports.handler = function (data, context, firestore) {
         name: data.name,
         dob: new Date(Date.parse(data.dob)),
         phone: data.phone,
+        picture: data.profile_picture,
         address: data.address,
         preferences: data.preferences,
         events: [],
+        friends: [],
         confirmed_events: [],
         points: 0,
         transaction_history: []

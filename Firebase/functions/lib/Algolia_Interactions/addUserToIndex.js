@@ -6,6 +6,8 @@ exports.handler = function (snapshot, algoliaClient) {
     const objectID = snapshot.id;
     return index.addObject({
         name: data.name,
+        phone: data.phone,
+        picture: data.picture,
         objectID: objectID
     });
 };

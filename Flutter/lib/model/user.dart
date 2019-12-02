@@ -47,6 +47,9 @@ abstract class UserModel implements Built<UserModel, UserModelBuilder> {
   @nullable
   @BuiltValueField(wireName: 'uuid')
   String get uuid;
+  @nullable
+  @BuiltValueField(wireName: 'friends')
+  BuiltList<String> get friends;
 
   String toJson() {
     return json.encode(serializers.serializeWith(UserModel.serializer, this));
