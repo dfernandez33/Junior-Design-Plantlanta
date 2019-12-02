@@ -1,10 +1,8 @@
 import 'dart:convert';
 
-import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
-import 'package:junior_design_plantlanta/serializers/date_time_serializer.dart';
 import 'package:junior_design_plantlanta/serializers/seriliazers.dart';
 
 part 'friend_request_model.g.dart';
