@@ -1,6 +1,9 @@
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:junior_design_plantlanta/model/activity_model.dart';
+import 'package:junior_design_plantlanta/model/user.dart';
 
 //TODO: Refactor UI
 class ActivityCard extends StatefulWidget {
@@ -20,8 +23,21 @@ class ActivityCard extends StatefulWidget {
 }
 
 class _ActivityCardState extends State<ActivityCard> {
-
+  String imgUrl;
   _ActivityCardState();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Firestore.instance.collection("Users")
+        .document(widget._model.uuid)
+        .get().then((data) {
+          setState(() {
+            this.imgUrl = data.data["picture"];
+          });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +49,30 @@ class _ActivityCardState extends State<ActivityCard> {
       margin: EdgeInsets.only(left: 12.0, right: 12.0, bottom: 12.0),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column (
-          children: <Widget>[_buildTitle()],
+        child: Row (
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[getPhoto(), _buildTitle()],
         ),
     ));
   }
 
+  Widget getPhoto() {
+    return Padding(
+      padding: EdgeInsets.only(right: 10.0),
+      child: CircularProfileAvatar(this.imgUrl ?? "",
+        radius: 20,
+        backgroundColor: Colors.white,
+        borderWidth: 3,
+        borderColor: Color(0xFF25A325),
+        elevation: 5.0,
+        onTap: () {},
+        showInitialTextAbovePicture: true,
+      )
+    );
+  }
+
   Widget _buildTitle() {
-    return Container(
+    return Flexible(
         child: Column(
       children: <Widget>[
         Row(
@@ -48,7 +80,7 @@ class _ActivityCardState extends State<ActivityCard> {
             Container(
                 padding: EdgeInsets.only(bottom: 5.0),
                 child: Text(
-                  widget._model.userName + " " + widget._model.activityType,
+                  widget._model.userName,
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       fontSize: 20.0),
