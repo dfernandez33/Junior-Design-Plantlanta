@@ -6,8 +6,6 @@ import 'package:junior_design_plantlanta/model/event_model.dart';
 import 'package:algolia/algolia.dart';
 import 'package:junior_design_plantlanta/services/algolia_service.dart';
 
-
-
 class Home extends StatefulWidget {
   // TODO: Remove param after final implementation.
   int _number;
@@ -22,8 +20,19 @@ class _HomeState extends State<Home> {
   int _number;
   List<EventCard> availableEvents;
   List rawEvents;
-  AlgoliaIndexReference algolia = AlgoliaService.algolia.instance.index('Events');
+  AlgoliaIndexReference algolia =
+      AlgoliaService.algolia.instance.index('Events');
   bool isLoading;
+
+  var filterValues = ["",
+    "Education",
+    "Environmental Sustainability",
+    "Community Improvement",
+    "Event Organizing",
+    "Elderly",
+    "Orphanages"
+  ];
+  String activeFilter;
 
   _HomeState(this._number) {
     availableEvents = List();
@@ -61,25 +70,46 @@ class _HomeState extends State<Home> {
             child: ListView(children: availableEvents));
       }
       return Scaffold(
-        appBar: new AppBar(
-          backgroundColor: Theme.of(context).backgroundColor,
-          elevation: 2.0,
-          title: Column(children: [
-            TextField(
-              cursorColor: Theme.of(context).primaryColor,
-              decoration: InputDecoration(hintText: 'Search events by name or location'),
-              onChanged: (text) {
-                 _updateFilteredEvents(text);
-              },
-            ),
-          ]),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(20),
+          appBar: new AppBar(
+            backgroundColor: Theme.of(context).backgroundColor,
+            elevation: 2.0,
+            title: Column(children: [
+              TextField(
+                cursorColor: Theme.of(context).primaryColor,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.search),
+                  hintText: "Search events by name or location",
+                ),
+                onChanged: (text) {
+                  _updateFilteredEvents(text);
+                },
+              ),
+            ]),
+            bottom: PreferredSize(
+                child: DropdownButton<String>(
+                  hint: Text("Filter by event type"),
+                  value: activeFilter,
+                  icon: Icon(Icons.filter_list),
+                  onChanged: updateFilter,
+                  items: filterValues
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem(
+                      value: value,
+                      child: Container(
+                        child: Text(value),
+                        width: MediaQuery.of(context).size.width - 60,
+                      ),
+                    );
+                  }).toList(),
+                ),
+                preferredSize: const Size.fromHeight(40.0)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(20),
+              ),
             ),
           ),
-        ),
-        body: Container(
+          body: Container(
             margin: EdgeInsets.only(top: 12.0),
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -88,7 +118,7 @@ class _HomeState extends State<Home> {
               ),
             ),
             child: content,
-      ));
+          ));
     }
   }
 
@@ -140,12 +170,48 @@ class _HomeState extends State<Home> {
   }
 
   void _updateFilteredEvents(String query) {
-    this.algolia.search(query).getObjects().then((results) {
+    var algoliaQuery = this.algolia.search(query);
+    if(this.activeFilter.isNotEmpty) {
+      algoliaQuery = algoliaQuery.setFilters("type:" +  "\"" + this.activeFilter + "\"");
+    }
+    algoliaQuery.getObjects().then((results) {
       List hitIDs = results.hits.map((hit) => hit.objectID).toList();
-      List updatedEvents = this.rawEvents.where((event) => hitIDs.contains(event['eventId'])).toList();
+      List updatedEvents = this
+          .rawEvents
+          .where((event) => hitIDs.contains(event['eventId']))
+          .toList();
       setState(() {
-        this.availableEvents = updatedEvents.map((event) => EventCard(EventModel.fromJson(event))).toList();
+        this.availableEvents = updatedEvents
+            .map((event) => EventCard(EventModel.fromJson(event)))
+            .toList();
       });
     });
+  }
+
+  updateFilter(String updatedFilter) {
+    if (updatedFilter.isEmpty) {
+      setState(() {
+        activeFilter = updatedFilter;
+        this.availableEvents = this.rawEvents
+            .map((event) => EventCard(EventModel.fromJson(event)))
+            .toList();
+      });
+    } else {
+      var algoliaQuery = this.algolia.search("");
+      algoliaQuery = algoliaQuery.setFilters('type:' +  '\"' + updatedFilter + '\"');
+      algoliaQuery.getObjects().then((results) {
+        List hitIDs = results.hits.map((hit) => hit.objectID).toList();
+        List updatedEvents = this
+            .rawEvents
+            .where((event) => hitIDs.contains(event['eventId']))
+            .toList();
+        setState(() {
+          this.availableEvents = updatedEvents
+              .map((event) => EventCard(EventModel.fromJson(event)))
+              .toList();
+          this.activeFilter = updatedFilter;
+        });
+      });
+    }
   }
 }

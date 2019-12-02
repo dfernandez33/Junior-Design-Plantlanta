@@ -11,7 +11,8 @@ exports.handler = function (data, context, firestore) {
         startTime: data.startTime,
         endTime: data.endTime,
         description: data.description,
-        reward: data.reward
+        reward: data.reward,
+        type: data.type,
     }).then(() => {
         return {
             status: responseCode_1.ResponseCode.SUCCESS,

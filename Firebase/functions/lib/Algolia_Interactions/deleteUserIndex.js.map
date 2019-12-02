@@ -1,0 +1,1 @@
+{"version":3,"file":"deleteUserIndex.js","sourceRoot":"","sources":["../../src/Algolia_Interactions/deleteUserIndex.ts"],"names":[],"mappings":";;AAAa,QAAA,OAAO,GAAG,UAAS,QAAQ,EAAE,aAAa;IACnD,MAAM,KAAK,GAAG,aAAa,CAAC,SAAS,CAAC,OAAO,CAAC,CAAC;IAE/C,MAAM,QAAQ,GAAG,QAAQ,CAAC,EAAE,CAAC;IAE7B,OAAO,KAAK,CAAC,YAAY,CAAC,QAAQ,CAAC,CAAC;AACxC,CAAC,CAAA"}
