@@ -1,12 +1,13 @@
 export const handler = async function(context, firestore: FirebaseFirestore.Firestore) {
-    const passedEvents = await firestore.collection("Events").where("date", "<=", new Date()).where("passed", "==", "false").get();
-    console.log(passedEvents);
+    const passedEvents = await firestore.collection("Events").where("passed", "==", "false").get();
     let batch = firestore.batch();
     passedEvents.forEach((event) => {
-        console.log(event);
-        batch.update(event.ref, {
-            passed: true
-        });
+        const eventData = event.data();
+        if (new Date(eventData.date._seconds * 1000) <= new Date()) {
+            batch.update(event.ref, {
+                passed: true
+            });
+        }
     });
     return batch.commit();
 }

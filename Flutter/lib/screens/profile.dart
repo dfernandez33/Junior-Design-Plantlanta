@@ -413,12 +413,11 @@ class _ProfileState extends State<Profile> {
     Firestore.instance
         .collection("FriendRequests")
         .where('users', arrayContains: widget._user.uuid)
-        .where('users', arrayContains: _currentUser.uid)
         .snapshots()
         .listen((friendRequest) {
-      friendRequest.documents.forEach((request) {
-        request.reference.delete();
-      });
+      var request = friendRequest.documents.where((request) {return request.data["users"].contains(_currentUser.uid);}).toList();
+      request.elementAt(0).reference.delete();
+
     });
   }
 
