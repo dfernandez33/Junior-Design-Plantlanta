@@ -11,9 +11,10 @@ import { CreateEventComponent } from './components/create-event/create-event.com
 import { MarketplaceDashboardComponent } from './components/marketplace-dashboard/marketplace-dashboard.component';
 import { VerifyOrganizationComponent } from './components/verify-organization/verify-organization.component';
 import { CreateItemComponent } from './components/create-item/create-item.component';
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
 
 const routes: Routes = [
-  { path:'', redirectTo: '/event_dashboard', pathMatch:'full' },
+  { path:'', redirectTo: '/landing-page', pathMatch:'full' },
   { path: 'login', component: LoginComponent},
   { path: 'register/:requestId', component: RegisterComponent },
   { path: 'event_dashboard', component: EventDashboardComponent, canActivate:[AuthGuard] },
@@ -26,7 +27,7 @@ const routes: Routes = [
   { path: 'verify_organization/:requestId', component: VerifyOrganizationComponent},
   { path: 'create_item', component: CreateItemComponent },
   { path: 'create_item/:itemId', component: CreateItemComponent },
-
+  { path: 'landing-page', component: LandingPageComponent }
 ];
 
 @NgModule({

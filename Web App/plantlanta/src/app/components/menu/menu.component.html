@@ -1,55 +1,56 @@
-<nav class="navbar is-secondary is-fixed-top pop-up" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-        <a class="navbar-item" routerLink="/">
-            <img src="assets/logo.png" width="100px" height="100px">
-        </a>
-    
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navMenu" (click)="toggleNavbar()">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        </a>
-    </div>
-    
-    <div *ngIf="isMobileLayout">
-        <div class="navbar-end">
-            <div class="navbar-item">
-                <div class="buttons">
-                    <a *ngIf="showLogout" class="button is-light" (click)="logout()">
-                        <span class="icon">
-                            <i class="fa fa-sign-out"></i>
-                        </span>
-                        <span>Log out</span>
-                    </a>
+<div *ngIf="router.url !== '/landing-page'">
+    <nav class="navbar is-secondary is-fixed-top pop-up" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" routerLink="/">
+                <img src="assets/logo.png" width="100px" height="100px">
+            </a>
+        
+            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navMenu" (click)="toggleNavbar()">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            </a>
+        </div>
+        
+        <div *ngIf="isMobileLayout">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a *ngIf="showLogout" class="button is-light" (click)="logout()">
+                            <span class="icon">
+                                <i class="fa fa-sign-out"></i>
+                            </span>
+                            <span>Log out</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-
-    <div class="navbar-menu" id="navMenu">
-        <div class="navbar-start">
-            <a class="navbar-item" routerLink="/event_dashboard">
-                Event Dashboard
-            </a>
-            <a class="navbar-item" routerLink="/marketplace_dashboard">
-                Market Place Dashboard
-            </a>
-        </div>
-        <div class="navbar-end">
-                <div *ngIf="user" class="navbar-item">
-                    Hello, {{user?.name}}
-                </div>
-            <div class="navbar-item">
-                <div class="buttons">
-                    <a *ngIf="showLogout" class="button is-light" (click)="logout()">
-                        <span class="icon">
-                            <i class="fa fa-sign-out"></i>
-                        </span>
-                        <span>Log out</span>
-                    </a>
+    
+        <div class="navbar-menu" id="navMenu">
+            <div class="navbar-start">
+                <a class="navbar-item" routerLink="/event_dashboard">
+                    Event Dashboard
+                </a>
+                <a class="navbar-item" routerLink="/marketplace_dashboard">
+                    Market Place Dashboard
+                </a>
+            </div>
+            <div class="navbar-end">
+                    <div *ngIf="user" class="navbar-item">
+                        Hello, {{user?.name}}
+                    </div>
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a *ngIf="showLogout" class="button is-light" (click)="logout()">
+                            <span class="icon">
+                                <i class="fa fa-sign-out"></i>
+                            </span>
+                            <span>Log out</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</nav>
+    </nav>
+</div>
