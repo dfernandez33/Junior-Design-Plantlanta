@@ -144,7 +144,7 @@ class _ProfileState extends State<Profile> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      ProfilePic(this._currentUser)));
+                                      ProfilePic(widget._user)));
                           setState(() {
                             this._imageURL = newUrl;
                           });

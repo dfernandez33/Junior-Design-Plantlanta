@@ -5,11 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:junior_design_plantlanta/model/user.dart';
 import 'package:path/path.dart' as Path;
 import 'package:image_cropper/image_cropper.dart';
 
 class ProfilePic extends StatefulWidget {
-  FirebaseUser _currentUser;
+  UserModel _currentUser;
 
   ProfilePic(this._currentUser);
 
@@ -23,11 +24,11 @@ class ProfilePicState extends State<ProfilePic> {
 
     setState(() {
       this._currentUser = widget._currentUser;
-      this._profilePictureURL = widget._currentUser.photoUrl;
+      this._profilePictureURL = widget._currentUser.picture;
     });
   }
 
-  FirebaseUser _currentUser;
+  UserModel _currentUser;
   File _profilePicture;
   String _profilePictureURL;
   String _stateString = "Cancel";
@@ -240,11 +241,9 @@ class ProfilePicState extends State<ProfilePic> {
 
       await Firestore.instance
           .collection("Users")
-          .document(_currentUser.uid)
+          .document(_currentUser.uuid)
           .updateData({'picture': fileURL});
-
-      _info.photoUrl = _profilePictureURL;
-      await _currentUser.updateProfile(_info);
+      
     });
   }
 
@@ -257,7 +256,7 @@ class ProfilePicState extends State<ProfilePic> {
       }
       Navigator.pop(context, _info.photoUrl);
     } else {
-      Navigator.pop(context, _currentUser.photoUrl);
+      Navigator.pop(context, _currentUser.picture);
     }
   }
 
