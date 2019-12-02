@@ -1,6 +1,7 @@
 interface userRegistrationInterface {
     name:string;
     dob: string;
+    profile_picture: string;
     phone: string;
     address: string;
     preferences: Preferences;

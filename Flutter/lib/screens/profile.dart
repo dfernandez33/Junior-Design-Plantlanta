@@ -37,7 +37,6 @@ class _ProfileState extends State<Profile> {
   Set<EventModel> _pastEvents = LinkedHashSet();
 
   String _imageURL;
-  String _friendRequestID;
   FirebaseUser _currentUser;
 
   @override
@@ -48,6 +47,7 @@ class _ProfileState extends State<Profile> {
     this.isLoading[ProfileTab.TRANSACTIONS] = true;
 
     _getImage();
+    _getCurrentUser();
 
     // TODO: Find a way to mantain updated the user.
     if (widget._user == null) {
@@ -237,15 +237,15 @@ class _ProfileState extends State<Profile> {
   }
 
   Row buildFriendRequestButton() {
-    if (_friendRequestID != null) {
+    if (_currentUser.uid != widget._user.uuid) {
       return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Expanded(
                 child: Padding(
-              padding: const EdgeInsets.only(right: 0.0, left: 0.0, top: 10.0),
-              child: buildFriendRequestButtonContents()
-            )),
+                    padding:
+                        const EdgeInsets.only(right: 0.0, left: 0.0, top: 10.0),
+                    child: buildFriendRequestButtonContents())),
           ]);
     } else {
       return Row();
@@ -253,22 +253,140 @@ class _ProfileState extends State<Profile> {
   }
 
   FlatButton buildFriendRequestButtonContents() {
+    Map<String, String> friendRequestMap = getFriendRequestDetails();
 
-    return FlatButton(
-      onPressed: () {},
-      child: Container(
-          alignment: Alignment.center,
-          height: 30.0,
-          decoration: new BoxDecoration(
-            color: Color(0xFF25A325),
-            borderRadius: new BorderRadius.circular(10.0),
-          ),
-          child: Text(
-            "Friends",
-            style: new TextStyle(fontSize: 20.0, color: Colors.white),
-          )),
-    );
+    if (friendRequestMap["sender"] == null) {
+      return FlatButton(
+        onPressed: createFriendRequest,
+        child: Container(
+            alignment: Alignment.center,
+            height: 30.0,
+            decoration: new BoxDecoration(
+              color: Color(0xFF25A325),
+              borderRadius: new BorderRadius.circular(10.0),
+            ),
+            child: Text(
+              "Send Friend Request",
+              style: new TextStyle(fontSize: 20.0, color: Colors.white),
+            )),
+      );
+    } else if (friendRequestMap["sender"] == _currentUser.uid) {
+      return FlatButton(
+        onPressed: () {},
+        child: Container(
+            alignment: Alignment.center,
+            height: 30.0,
+            decoration: new BoxDecoration(
+              color: Color(0xFF25A325),
+              borderRadius: new BorderRadius.circular(10.0),
+            ),
+            child: Text(
+              "Request Pending",
+              style: new TextStyle(fontSize: 20.0, color: Colors.white),
+            )),
+      );
+    } else {
+      return FlatButton(
+        onPressed: acceptFriendRequest,
+        child: Container(
+            alignment: Alignment.center,
+            height: 30.0,
+            decoration: new BoxDecoration(
+              color: Color(0xFF25A325),
+              borderRadius: new BorderRadius.circular(10.0),
+            ),
+            child: Text(
+              "Accept Request",
+              style: new TextStyle(fontSize: 20.0, color: Colors.white),
+            )),
+      );
+    }
+  }
 
+  Map<String, String> getFriendRequestDetails() {
+    String sender;
+    String receiver;
+
+    Firestore.instance
+        .collection("FriendRequests")
+        .where('users', arrayContains: widget._user.uuid)
+        .where('users', arrayContains: _currentUser.uid)
+        .snapshots()
+        .listen((friendRequest) {
+      friendRequest.documents.forEach((request) {
+        sender = request.data['sender'];
+        receiver = request.data['receiver'];
+      });
+    });
+
+    Map<String, String> friendRequestMap = {
+      "sender": sender,
+      "receiver": receiver
+    };
+
+    return friendRequestMap;
+  }
+
+  void createFriendRequest() {
+    Firestore.instance.collection('FriendRequests').add({
+      "users": [_currentUser.uid, widget._user.uuid],
+      "sender": _currentUser.uid,
+      "receiver": widget._user.uuid
+    }).then((value) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: new Text("Friend Request Sent"),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text(
+                  "close",
+                  style: new TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                      color: Color(0xFF25A325)),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    });
+  }
+
+  void acceptFriendRequest() {
+    Firestore.instance
+        .collection("Users")
+        .document(_currentUser.uid)
+        .updateData({
+      "friends": FieldValue.arrayUnion([widget._user.uuid])
+    });
+
+    Firestore.instance
+        .collection("Users")
+        .document(widget._user.uuid)
+        .updateData({
+      "friends": FieldValue.arrayUnion([_currentUser.uid])
+    });
+
+    Firestore.instance
+        .collection("FriendRequests")
+        .where('users', arrayContains: widget._user.uuid)
+        .where('users', arrayContains: _currentUser.uid)
+        .snapshots()
+        .listen((friendRequest) {
+      friendRequest.documents.forEach((request) {
+        request.reference.delete();
+      });
+    });
   }
 
   void _tabSelector(ProfileTab newState) {
@@ -428,65 +546,12 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-//  Future<void> _buildPastEventCards() async {
-////    widget._user.events.forEach((event) async {
-////      var eventInfo =
-////      await Firestore.instance.collection("Events").document(event).get();
-////      Timestamp timestamp = eventInfo.data['date'];
-////      var tempTime = <String, dynamic>{
-////        "_nanoseconds": timestamp.nanoseconds,
-////        "_seconds": timestamp.seconds
-////      };
-////      eventInfo.data['date'] = tempTime;
-////      setState(() {
-////        _pastEvents.add(EventCard(EventModel.fromJson(eventInfo.data)));
-////      });
-////    });
-//  }
-
   Future<void> _getImage() async {
-    var user = await FirebaseAuth.instance.currentUser();
-    setState(() {
-      this._imageURL = user.photoUrl;
-    });
-    this._currentUser = user;
+    this._imageURL = widget._user.picture;
   }
 
-//  Future<void> _createTransactionCards() {
-//    Firestore.instance
-//        .collection("Transactions")
-//        .where("uuid", isEqualTo: widget._user.uuid)
-//        .orderBy("timestamp", descending: true)
-//        .snapshots()
-//        .listen((transactions) {
-//      transactions.documents.forEach((transaction) {
-//        Timestamp timestamp = transaction.data["timestamp"];
-//        var tempTime = <String, dynamic>{
-//          "_nanoseconds": timestamp.nanoseconds,
-//          "_seconds": timestamp.seconds
-//        };
-//        transaction.data["timestamp"] = tempTime;
-//        this
-//            .transactions
-//            .add(TransactionCard(TransactionModel.fromJson(transaction.data)));
-//      });
-//      setState(() {});
-//    });
-//  }
-//
-//  Future<void> _buildCurrentEventCards() async {
-//    widget._user.events.forEach((event) async {
-//      var eventInfo =
-//      await Firestore.instance.collection("Events").document(event).get();
-//      Timestamp timestamp = eventInfo.data['date'];
-//      var tempTime = <String, dynamic>{
-//        "_nanoseconds": timestamp.nanoseconds,
-//        "_seconds": timestamp.seconds
-//      };
-//      eventInfo.data['date'] = tempTime;
-//      if (!_currentEvents.contains(EventCard(EventModel.fromJson(eventInfo.data)))) {
-//        _currentEvents.add(EventCard(EventModel.fromJson(eventInfo.data)));
-//      }
-//    });
-//  }
+  Future<void> _getCurrentUser() async {
+    var user = await FirebaseAuth.instance.currentUser();
+    this._currentUser = user;
+  }
 }
