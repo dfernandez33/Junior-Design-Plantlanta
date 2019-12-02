@@ -12,7 +12,8 @@ export const handler = function(data: any, context: functions.https.CallableCont
         startTime: data.startTime,
         endTime: data.endTime,
         description: data.description,
-        reward: data.reward
+        reward: data.reward,
+        type: data.type,
     }).then(() => {
         return {
             status: ResponseCode.SUCCESS,

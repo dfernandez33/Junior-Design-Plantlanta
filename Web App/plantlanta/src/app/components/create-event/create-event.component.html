@@ -48,10 +48,29 @@
               </div>
           </div>
         </div>
-        <div class="field">
-            <label class="label">Reward</label>
-            <div class="control">
-                <input class="input" type="number" placeholder=0 formControlName="eventReward" required/>
+        <div class="columns row-one">
+            <div class="column">
+                <div class="field">
+                    <label class="label">Reward</label>
+                    <div class="control">
+                        <input class="input" type="number" placeholder=0 formControlName="eventReward" required/>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="label">Type</label>
+                    <div class="select">
+                        <select id="country" formControlName="eventType">
+                            <option>Education</option>
+                            <option>Environmental Sustainability</option>
+                            <option>Community Improvement</option>
+                            <option>Event Organizing</option>
+                            <option>Elderly</option>
+                            <option>Orphanages</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="field">

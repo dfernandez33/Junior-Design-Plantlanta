@@ -1,14 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = function (snapshot, algoliaClient) {
-    const index = algoliaClient.initIndex("Events");
+    const index = algoliaClient.initIndex("Users");
     const data = snapshot.after.data();
     const objectId = snapshot.after.id;
     return index.saveObject({
         name: data.name,
-        location: data.location,
-        type: data.type,
         objectID: objectId
     });
 };
-//# sourceMappingURL=updateEventIndex.js.map
+//# sourceMappingURL=updateUserIndex.js.map

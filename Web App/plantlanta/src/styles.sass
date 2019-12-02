@@ -1,14 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
+
 // General color overrides
 $primary: #25A325
 $success: #3ABC3A
 $secondary: #FFDB2B
 $title-color: #000000
+
 // Menu variable overrides
 $navbar-item-img-max-height: 75px
 $navbar-background-color: $secondary
 $navbar-item-hover-background-color: #FFE35B
 $navbar-item-hover-color: #000000
+
+// Overriding variables of dropdown menu
+$dropdown-content-z: 150
+$dropdown-item-active-background-color: $secondary
+$dropdown-item-active-color: #000000
+
 @import "../node_modules/bulma/bulma"
 @import "../node_modules/bulma-extensions//bulma-pageloader/dist/css/bulma-pageloader"
 
@@ -55,6 +63,7 @@ $navbar-item-hover-color: #000000
     overflow-y: scroll
     overflow-x: hidden
 
+// Overriding the color of the time picker
 .timepicker
   .timepicker__header
     background-color: $primary !important
@@ -69,4 +78,3 @@ $navbar-item-hover-color: #000000
       background-color: $primary !important
   button:not(.timepicker-dial__item)
     color: $title-color !important
-  
