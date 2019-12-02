@@ -9,6 +9,7 @@ export const handler = function(snapshot, algoliaClient) {
     return index.saveObject({
         name: data.name,
         location: data.location,
+        type: data.type,
         objectID: objectId
     });
 }

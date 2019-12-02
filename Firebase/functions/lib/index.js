@@ -45,6 +45,9 @@ const deleteEventIndex = require("./Algolia_Interactions/deleteEventIndex");
 const addItemToIndex = require("./Algolia_Interactions/addItemToIndex");
 const updateItemIndex = require("./Algolia_Interactions/updateItemIndex");
 const deleteItemIndex = require("./Algolia_Interactions/deleteItemIndex");
+const addUserToIndex = require("./Algolia_Interactions/addUserToIndex");
+const updateUserIndex = require("./Algolia_Interactions/updateUserIndex");
+const deleteUserIndex = require("./Algolia_Interactions/deleteUserIndex");
 /*========================================================================
 Organization Interactions
 ==========================================================================*/
@@ -152,5 +155,14 @@ exports.updateItemIndex = functions.firestore.document("Items/{ItemId}").onUpdat
 });
 exports.deleteItemIndex = functions.firestore.document("Items/{ItemId}").onDelete((snapshot) => {
     return deleteItemIndex.handler(snapshot, algoliaClient);
+});
+exports.addUserToIndex = functions.firestore.document("Users/{userId}").onCreate((snapshot) => {
+    return addUserToIndex.handler(snapshot, algoliaClient);
+});
+exports.updateUserIndex = functions.firestore.document("Users/{userId}").onUpdate((snapshot) => {
+    return updateUserIndex.handler(snapshot, algoliaClient);
+});
+exports.deleteUserIndex = functions.firestore.document("Users/{userId}").onDelete((snapshot) => {
+    return deleteUserIndex.handler(snapshot, algoliaClient);
 });
 //# sourceMappingURL=index.js.map

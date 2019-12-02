@@ -6,4 +6,5 @@ export interface Event {
     startTime: string;
     endTime: string;
     reward: number;
+    type: string;
 }

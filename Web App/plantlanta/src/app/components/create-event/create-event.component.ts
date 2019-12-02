@@ -40,7 +40,8 @@ export class CreateEventComponent implements OnInit {
     eventStart: new FormControl(''),
     eventEnd: new FormControl(''),
     eventDescription: new FormControl(''),
-    eventReward: new FormControl(0)
+    eventReward: new FormControl(0),
+    eventType: new FormControl(null),
   });
 
   constructor(private cloud: AngularFireFunctions, private route: ActivatedRoute, private firestore: AngularFirestore, private router: Router) {}
@@ -63,7 +64,8 @@ export class CreateEventComponent implements OnInit {
           eventStart: event.message.startTime,
           eventEnd: event.message.endTime,
           eventDescription: event.message.description,
-          eventReward: event.message.reward
+          eventReward: event.message.reward,
+          eventType: event.message.type
         });
         this.loading = false;
       });
@@ -85,7 +87,8 @@ export class CreateEventComponent implements OnInit {
           date: formValues["eventDate"].toString(),
           startTime: formValues["eventStart"],
           endTime: formValues["eventEnd"],
-          reward: formValues["eventReward"]
+          reward: formValues["eventReward"],
+          type: formValues["eventType"],
         }).toPromise();
         if (!resp.status) {
           this.loading = false;
@@ -154,7 +157,8 @@ export class CreateEventComponent implements OnInit {
       date: formValues["eventDate"].toString(),
       startTime: formValues["eventStart"],
       endTime: formValues["eventEnd"],
-      reward: formValues["eventReward"]
+      reward: formValues["eventReward"],
+      type: formValues["eventType"],
     }).toPromise().then(resp => {
       if (resp.status) {
         this.editModal = true;

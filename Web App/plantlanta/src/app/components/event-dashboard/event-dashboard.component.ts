@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AngularFireFunctions } from '@angular/fire/functions';
 import { Event } from '../../interfaces/event';
 import * as algoliasearch from 'algoliasearch';
 import { environment } from '../../../environments/environment';
@@ -21,10 +19,17 @@ export class EventDashboardComponent implements OnInit {
 
   events: Event[];
   filteredEvents: Event[] = [];
-  getEventsFunctions;
+  activeFilterElement = null;
 
   loaded = false;
-  message = ""
+  message = "";
+
+  filterValues = ["Education",
+  "Environmental Sustainability",
+  "Community Improvement",
+  "Event Organizing",
+  "Elderly",
+  "Orphanages"];
 
   constructor(private eventService: EventService, private afAuth: AngularFireAuth, private userService: UserService) { }
 
@@ -47,10 +52,38 @@ export class EventDashboardComponent implements OnInit {
   }
 
   updateQuery(query) {
-    this.index.search({ query: query.srcElement.value }).then(result => {
+    this.index.search({ query: query.srcElement.value,
+      //you must surround the variable containing the filter value with escaped " in order for multiple word filters to work
+      filters: this.activeFilterElement != null ? "type:" +  "\"" + this.activeFilterElement.innerText + "\"" : ''}).then(result => {
       const hitIDs = result.hits.map(hit => hit.objectID);
       this.filteredEvents = this.events.filter(event => hitIDs.includes(event.eventId));
     });
+  }
+
+  updateFilter(query, value) {
+    if (this.activeFilterElement != null) {
+      this.activeFilterElement.classList.toggle("is-active");
+    }
+
+    if (this.activeFilterElement != null && this.activeFilterElement.innerText == query.srcElement.innerText) {
+      this.filteredEvents = this.events;
+      this.activeFilterElement = null;
+    } else {
+      query.srcElement.classList.toggle("is-active");
+      this.activeFilterElement = query.srcElement;
+      //you must surround the variable containing the filter value with escaped " in order for multiple word filters to work
+      this.index.search({ query: "",  filters: "type:" + "\"" + value + "\""}).then(result => {
+        const hitIDs = result.hits.map(hit => hit.objectID);
+        this.filteredEvents = this.events.filter(event => hitIDs.includes(event.eventId));
+      });
+    }
+
+    // logic used to change background color of dropdown button
+    if (this.activeFilterElement == null) {
+      document.getElementById("dropdown-button").classList.remove("active-filter");
+    } else if (this.activeFilterElement != null && !document.getElementById("dropdown-button").classList.contains("active-filter")) {
+      document.getElementById("dropdown-button").classList.add("active-filter");
+    }
   }
 
 }
