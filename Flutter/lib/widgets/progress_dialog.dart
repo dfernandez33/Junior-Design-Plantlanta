@@ -118,14 +118,20 @@ class _ProgressDialogState extends State<ProgressDialog> {
       Future<StatusResponse> streamResponse = widget.callback();
       streamResponse.asStream().listen(
           (response) {
-            if (response.status == 1) {
-              setState(() {
-                this.dialogState = DialogState.SUCCESS_ON_RESPONSE;
-              });
-            } else if (response.status == 0) {
+            if (response != null) {
+              if (response.status == 1) {
+                setState(() {
+                  this.dialogState = DialogState.SUCCESS_ON_RESPONSE;
+                });
+              } else if (response.status == 0) {
+                setState(() {
+                  this.dialogState = DialogState.ERROR_ON_RESPONSE;
+                  error_msg = response.message;
+                });
+              }
+            } else {
               setState(() {
                 this.dialogState = DialogState.ERROR_ON_RESPONSE;
-                error_msg = response.message;
               });
             }
           }

@@ -1,9 +1,17 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:junior_design_plantlanta/model/user.dart';
 
 
 class UserService {
   String uid;
+  StreamController<UserModel> userModelStream = StreamController();
+
+  void dispose() {
+    userModelStream.close();
+  }
 
   UserService() {
     _getUid();
@@ -27,5 +35,9 @@ class UserService {
       return Stream.empty();
     }
     return Firestore.instance.collection("Users").document(uid).get().asStream();
+  }
+
+  StreamController<UserModel> getUserModelStream() {
+    return userModelStream;
   }
 }
