@@ -10,6 +10,8 @@ import 'package:junior_design_plantlanta/widgets/activity_card.dart';
 import 'package:algolia/algolia.dart';
 import 'package:junior_design_plantlanta/services/algolia_service.dart';
 
+import 'friend_requests.dart';
+
 class ActivityFeed extends StatefulWidget {
   ActivityFeed();
 
@@ -67,12 +69,24 @@ class _ActivityFeedState extends State<ActivityFeed> {
       } else {
         if (this.availableActivities.isEmpty) {
           content = Center(
-            child: Text("No activities found"),
+            child: Column(
+              children: <Widget>[
+                _buildFriendRequestCard(),
+                Text("No activities found")
+              ],
+            ),
           );
         } else {
           content = Container(
               margin: EdgeInsets.only(top: 12.0),
-              child: ListView(children: availableActivities));
+              child: Column(
+                children: <Widget>[
+                  _buildFriendRequestCard(),
+                  Expanded(
+                    child: ListView(children: availableActivities),
+                  )
+                ],
+              ));
         }
       }
       return Scaffold(
@@ -211,5 +225,26 @@ class _ActivityFeedState extends State<ActivityFeed> {
         });
       });
     }
+  }
+
+  Widget _buildFriendRequestCard() {
+    return Card(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15.0))),
+      elevation: 2,
+      clipBehavior: Clip.antiAlias,
+      margin:
+      EdgeInsets.only(left: 12.0, right: 12.0, bottom: 12.0),
+      child: FlatButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      FriendRequests()));
+        },
+        child: Text("Pending friend requests"),
+      ),
+    );
   }
 }
