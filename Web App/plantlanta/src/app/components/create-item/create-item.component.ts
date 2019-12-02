@@ -114,7 +114,6 @@ export class CreateItemComponent implements OnInit {
       }
     }
 
-
   createItem() {
     this.message = "Creating item..."
     this.loading = true;
@@ -194,7 +193,8 @@ export class CreateItemComponent implements OnInit {
         image: "",
         codes: formValues["itemCodes"].split(/\r|\n/)
     }
-    if (document.getElementById("fileInput").files.length == 0) {
+    let input: any = document.getElementById("fileInput");
+    if (input.files.length == 0) {
       updateInfo.image = this.item.image;
       this.callEditItem(updateInfo);
     } else {

@@ -26,6 +26,14 @@ export const handler = async function(data: signupRequest, context: functions.ht
     const user = await userRef.get();
     const userData = user.data();
         
+
+    if (eventData.confirmed_participants.includes(UUID)) {
+        return {
+            status: ResponseCode.FAILURE,
+            message: "You have already confirmed your attendance to this event"
+        }
+    }
+
     batch.create(transactionRef, 
         {
             amount: eventData.reward,

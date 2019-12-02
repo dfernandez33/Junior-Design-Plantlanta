@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
@@ -6,18 +9,21 @@ import 'package:flutter/rendering.dart';
 import 'package:junior_design_plantlanta/model/transaction_model.dart';
 import 'package:junior_design_plantlanta/model/event_model.dart';
 import 'package:junior_design_plantlanta/model/user.dart';
-import 'package:junior_design_plantlanta/serializers/date_time_serializer.dart';
+import 'package:junior_design_plantlanta/services/profile_data_service.dart';
+import 'package:junior_design_plantlanta/services/user_service.dart';
 import 'package:junior_design_plantlanta/widgets/transaction_card.dart';
 import 'package:junior_design_plantlanta/widgets/event_card.dart';
 import 'package:junior_design_plantlanta/widgets/past_event_card.dart';
 import 'package:junior_design_plantlanta/screens/add_profile_picture.dart';
 
-enum ProfileTab { UPCOMING_EVENTS, PAST_EVENTS, TRANSACTIONS }
+enum ProfileTab { UPCOMING_EVENTS, PREVIOUS_EVENTS, TRANSACTIONS}
 
 class Profile extends StatefulWidget {
-  UserModel _user;
+  UserService _userService;
+  UserModel _user = UserModel();
 
-  Profile(this._user);
+
+  Profile(this._user, this._userService);
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -25,9 +31,11 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   ProfileTab _tabSelected = ProfileTab.UPCOMING_EVENTS;
-  List<EventCard> _currentEvents = List();
-  List<EventCard> _pastEvents = List();
-  List<TransactionCard> transactions = List();
+  Map<ProfileTab, bool> isLoading = HashMap();
+  ProfileDataService dataService;
+  Set<TransactionModel> _transactions = LinkedHashSet();
+  Set<EventModel> _currentEvents = LinkedHashSet();
+  Set<EventModel> _pastEvents = LinkedHashSet();
 
 
   String _imageURL;
@@ -36,12 +44,73 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
+    this.isLoading[ProfileTab.UPCOMING_EVENTS] = true;
+    this.isLoading[ProfileTab.PREVIOUS_EVENTS] = true;
+    this.isLoading[ProfileTab.TRANSACTIONS] = true;
+
     _getImage();
+
+    // TODO: Find a way to mantain updated the user.
+    if (widget._user == null) {
+      widget._userService.userModelStream.stream.asBroadcastStream().listen((user) {
+        this.dataService = ProfileDataService(user);
+        this.dataService.transactionStream().stream.listen((data) {
+          if (data.length != _transactions.length) {
+            setState(() {
+              this._transactions.addAll(data);
+              this.isLoading[ProfileTab.TRANSACTIONS] = false;
+            });
+          }
+        });
+        this.dataService.currentEventStream().stream.listen((data) {
+          setState(() {
+            this._currentEvents.addAll(data);
+            this.isLoading[ProfileTab.UPCOMING_EVENTS] = false;
+          });
+        });
+        this.dataService.pastEventStream().stream.listen((data) {
+          setState(() {
+            this._pastEvents.addAll(data);
+            this.isLoading[ProfileTab.PREVIOUS_EVENTS] = false;
+          });
+        });
+      });
+    } else {
+      this.dataService = ProfileDataService(widget._user);
+      this.dataService.transactionStream().stream.listen((data) {
+        if (data.length != _transactions.length) {
+          setState(() {
+            this._transactions.addAll(data);
+            this.isLoading[ProfileTab.TRANSACTIONS] = false;
+          });
+        }
+      });
+      this.dataService.currentEventStream().stream.listen((data) {
+        setState(() {
+          this._currentEvents.addAll(data);
+          this.isLoading[ProfileTab.UPCOMING_EVENTS] = false;
+        });
+      });
+      this.dataService.pastEventStream().stream.listen((data) {
+        setState(() {
+          this._pastEvents.addAll(data);
+          this.isLoading[ProfileTab.PREVIOUS_EVENTS] = false;
+        });
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    this.dataService.streamPastEvents.close();
+    this.dataService.streamTrans.close();
+    this.dataService.streamCurrentEvents.close();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget._user == null || _imageURL == null) {
+    if (widget._user == null || this._imageURL == null) {
       return Scaffold(
         body: Center(
             child: CircularProgressIndicator(
@@ -166,96 +235,12 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  Widget _buildTabContent() {
-    if (this._tabSelected == ProfileTab.UPCOMING_EVENTS) {
-      if (this._currentEvents.isEmpty) {
-        _buildCurrentEventCards();
-        return Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height / 2.40,
-          child: Center(
-              child: CircularProgressIndicator(
-                value: null,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              )),
-        );
-      } else {
-        return Container(
-            margin: EdgeInsets.only(top: 12.0),
-            child: ListView(shrinkWrap: true, children: this._currentEvents));
-      }
-    } else if (this._tabSelected == ProfileTab.PAST_EVENTS) {
-      if (this._pastEvents.isEmpty) {
-        _buildPastEventCards();
-        return Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height / 2.40,
-          child: Center(
-              child: CircularProgressIndicator(
-                value: null,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              )),
-        );
-      } else {
-        Container(
-            margin: EdgeInsets.only(top: 12.0),
-            child: ListView(
-              shrinkWrap: true,
-              children: this._pastEvents,
-            ));
-      }
-    } else if (this._tabSelected == ProfileTab.TRANSACTIONS) {
-      if (this.transactions.isEmpty) {
-        _createTransactionCards();
-        return Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height / 2.40,
-          child: Center(
-              child: CircularProgressIndicator(
-                value: null,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              )),
-        );
-      } else {
-        return Container(
-          margin: EdgeInsets.only(top: 12.0),
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
-          child: ListView(
-            children: this.transactions,
-            scrollDirection: Axis.vertical,
-          ),
-        );
-      }
-    } else {
-      print("ERROR UNKNOWN TAB");
-    }
-  }
-
-  Widget backgroundLayer() {
-    Container(
-      width: double.infinity,
-      height: double.infinity,
-      color: Theme
-          .of(context)
-          .primaryColor,
-    );
-  }
-
   Row buildImageViewButtonBar() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         _buildProperTab(Icons.schedule, 26, ProfileTab.UPCOMING_EVENTS),
-        _buildProperTab(Icons.restore, 28, ProfileTab.PAST_EVENTS),
+        _buildProperTab(Icons.restore, 28, ProfileTab.PREVIOUS_EVENTS),
         _buildProperTab(Icons.timeline, 28, ProfileTab.TRANSACTIONS),
       ],
     );
@@ -271,7 +256,6 @@ class _ProfileState extends State<Profile> {
     if (state == this._tabSelected) {
       return Expanded(
         child: GestureDetector(
-          onTap: () => _tabSelector(state),
           child: Container(
             decoration: new BoxDecoration(
               borderRadius: BorderRadius.only(
@@ -283,7 +267,7 @@ class _ProfileState extends State<Profile> {
             ),
             child: IconButton(
               icon: Icon(icon, size: size, color: Colors.white),
-              onPressed: () {},
+              onPressed: () => _tabSelector(state),
             ),
           ),
         ),
@@ -300,7 +284,7 @@ class _ProfileState extends State<Profile> {
             ),
             child: IconButton(
               icon: Icon(icon, size: size),
-              onPressed: () {},
+              onPressed: () => _tabSelector(state),
             ),
           ),
         ),
@@ -308,21 +292,148 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  Future<void> _buildPastEventCards() async {
-//    widget._user.events.forEach((event) async {
-//      var eventInfo =
-//      await Firestore.instance.collection("Events").document(event).get();
-//      Timestamp timestamp = eventInfo.data['date'];
-//      var tempTime = <String, dynamic>{
-//        "_nanoseconds": timestamp.nanoseconds,
-//        "_seconds": timestamp.seconds
-//      };
-//      eventInfo.data['date'] = tempTime;
-//      setState(() {
-//        _pastEvents.add(EventCard(EventModel.fromJson(eventInfo.data)));
-//      });
-//    });
+  Widget _buildTabContent() {
+    switch (this._tabSelected) {
+      case ProfileTab.UPCOMING_EVENTS:
+        {
+          if (isLoading[ProfileTab.UPCOMING_EVENTS]) {
+            return Container(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height / 2.40,
+              child: Center(
+                  child: CircularProgressIndicator(
+                    value: null,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  )),
+            );
+          } else if (this._currentEvents.isEmpty) {
+            return Container(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height / 2.40,
+              child: Center(
+                  child: Text("NO EVENTS FOUND",
+                    style: TextStyle(color: Colors.white),)),
+            );
+          } else {
+            return Container(
+              margin: EdgeInsets.only(top: 12.0),
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height,
+              child: ListView(
+                padding: const EdgeInsets.only(bottom: 30.0),
+                children: this._currentEvents.map((model) => EventCard(model)).toList(),
+                scrollDirection: Axis.vertical,
+              ),
+            );
+          }
+        }
+      break;
+      case ProfileTab.PREVIOUS_EVENTS:
+        {
+          if (isLoading[ProfileTab.PREVIOUS_EVENTS]) {
+            return Container(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height / 2.40,
+              child: Center(
+                  child: CircularProgressIndicator(
+                    value: null,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  )),
+            );
+          } else if (this._pastEvents.isEmpty) {
+            return Container(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height / 2.40,
+              child: Center(
+                  child: Text("NO EVENTS FOUND",
+                    style: TextStyle(color: Colors.white),)),
+            );
+          } else {
+            return Container(
+              margin: EdgeInsets.only(top: 12.0),
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height,
+              child: ListView(
+                padding: const EdgeInsets.only(bottom: 30.0),
+                children: this._pastEvents.map((model) => PastEventCard(model)).toList(),
+                scrollDirection: Axis.vertical,
+              ),
+            );
+          }
+        }
+      break;
+      case ProfileTab.TRANSACTIONS:
+        {
+          if (isLoading[ProfileTab.TRANSACTIONS]) {
+            return Container(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height / 2.40,
+              child: Center(
+                  child: CircularProgressIndicator(
+                    value: null,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  )),
+            );
+          } else if (this._transactions.isEmpty) {
+            return Container(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height / 2.40,
+              child: Center(
+                  child: Text("NO TRANSACTIONS FOUND",
+                    style: TextStyle(color: Colors.white),)),
+            );
+          } else {
+            return Container(
+              margin: EdgeInsets.only(top: 12.0),
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height,
+              child: ListView(
+                padding: const EdgeInsets.only(bottom: 30.0),
+                children: this._transactions.map((model) => TransactionCard(model)).toList(),
+                scrollDirection: Axis.vertical,
+              ),
+            );
+          }
+        }
+        break;
+    }
   }
+
+
+
+//  Future<void> _buildPastEventCards() async {
+////    widget._user.events.forEach((event) async {
+////      var eventInfo =
+////      await Firestore.instance.collection("Events").document(event).get();
+////      Timestamp timestamp = eventInfo.data['date'];
+////      var tempTime = <String, dynamic>{
+////        "_nanoseconds": timestamp.nanoseconds,
+////        "_seconds": timestamp.seconds
+////      };
+////      eventInfo.data['date'] = tempTime;
+////      setState(() {
+////        _pastEvents.add(EventCard(EventModel.fromJson(eventInfo.data)));
+////      });
+////    });
+//  }
 
   Future<void> _getImage() async {
     var user = await FirebaseAuth.instance.currentUser();
@@ -332,43 +443,43 @@ class _ProfileState extends State<Profile> {
     this._currentUser = user;
   }
 
-  Future<void> _createTransactionCards() {
-    Firestore.instance
-        .collection("Transactions")
-        .where("uuid", isEqualTo: widget._user.uuid)
-        .orderBy("timestamp", descending: true)
-        .snapshots()
-        .listen((transactions) {
-      transactions.documents.forEach((transaction) {
-        Timestamp timestamp = transaction.data["timestamp"];
-        var tempTime = <String, dynamic>{
-          "_nanoseconds": timestamp.nanoseconds,
-          "_seconds": timestamp.seconds
-        };
-        transaction.data["timestamp"] = tempTime;
-        this
-            .transactions
-            .add(TransactionCard(TransactionModel.fromJson(transaction.data)));
-      });
-      setState(() {});
-    });
-  }
-
-  Future<void> _buildCurrentEventCards() async {
-    widget._user.events.forEach((event) async {
-      var eventInfo =
-      await Firestore.instance.collection("Events").document(event).get();
-      Timestamp timestamp = eventInfo.data['date'];
-      var tempTime = <String, dynamic>{
-        "_nanoseconds": timestamp.nanoseconds,
-        "_seconds": timestamp.seconds
-      };
-      eventInfo.data['date'] = tempTime;
-      setState(() {
-        _currentEvents.add(EventCard(EventModel.fromJson(eventInfo.data)));
-      });
-    });
-  }
+//  Future<void> _createTransactionCards() {
+//    Firestore.instance
+//        .collection("Transactions")
+//        .where("uuid", isEqualTo: widget._user.uuid)
+//        .orderBy("timestamp", descending: true)
+//        .snapshots()
+//        .listen((transactions) {
+//      transactions.documents.forEach((transaction) {
+//        Timestamp timestamp = transaction.data["timestamp"];
+//        var tempTime = <String, dynamic>{
+//          "_nanoseconds": timestamp.nanoseconds,
+//          "_seconds": timestamp.seconds
+//        };
+//        transaction.data["timestamp"] = tempTime;
+//        this
+//            .transactions
+//            .add(TransactionCard(TransactionModel.fromJson(transaction.data)));
+//      });
+//      setState(() {});
+//    });
+//  }
+//
+//  Future<void> _buildCurrentEventCards() async {
+//    widget._user.events.forEach((event) async {
+//      var eventInfo =
+//      await Firestore.instance.collection("Events").document(event).get();
+//      Timestamp timestamp = eventInfo.data['date'];
+//      var tempTime = <String, dynamic>{
+//        "_nanoseconds": timestamp.nanoseconds,
+//        "_seconds": timestamp.seconds
+//      };
+//      eventInfo.data['date'] = tempTime;
+//      if (!_currentEvents.contains(EventCard(EventModel.fromJson(eventInfo.data)))) {
+//        _currentEvents.add(EventCard(EventModel.fromJson(eventInfo.data)));
+//      }
+//    });
+//  }
 }
 
 

@@ -153,52 +153,17 @@ class _ItemCardState extends State<ItemCard> {
     );
   }
 
-  Future<int> confirmPurchase() async {
+  Future<StatusResponse> confirmPurchase() async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
       functionName: 'purchaseItem',
     );
     try {
       final HttpsCallableResult result = await callable
           .call(<String, dynamic>{"ItemID": widget._model.itemId});
-
       StatusResponse resp = new StatusResponse.fromJson(result.data);
-
-      if (resp.status == 1) {
-        return 1;
-      } else {
-        return 0;
-        Navigator.of(context).pop();
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            // return object of type Dialog
-            return AlertDialog(
-              title: new Text("${resp.message}"),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
-              actions: <Widget>[
-                // usually buttons at the bottom of the dialog
-                new FlatButton(
-                  child: new Text(
-                    "close",
-                    style: new TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
-                        color: Color(0xFF25A325)),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-
-      }
+      return(resp);
     } catch (e) {
       print(e.message);
     }
-    return -1;
   }
 }
