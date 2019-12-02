@@ -16,12 +16,11 @@ import 'package:junior_design_plantlanta/widgets/event_card.dart';
 import 'package:junior_design_plantlanta/widgets/past_event_card.dart';
 import 'package:junior_design_plantlanta/screens/add_profile_picture.dart';
 
-enum ProfileTab { UPCOMING_EVENTS, PREVIOUS_EVENTS, TRANSACTIONS}
+enum ProfileTab { UPCOMING_EVENTS, PREVIOUS_EVENTS, TRANSACTIONS }
 
 class Profile extends StatefulWidget {
   UserService _userService;
   UserModel _user = UserModel();
-
 
   Profile(this._user, this._userService);
 
@@ -37,8 +36,8 @@ class _ProfileState extends State<Profile> {
   Set<EventModel> _currentEvents = LinkedHashSet();
   Set<EventModel> _pastEvents = LinkedHashSet();
 
-
   String _imageURL;
+  String _friendRequestID;
   FirebaseUser _currentUser;
 
   @override
@@ -52,7 +51,9 @@ class _ProfileState extends State<Profile> {
 
     // TODO: Find a way to mantain updated the user.
     if (widget._user == null) {
-      widget._userService.userModelStream.stream.asBroadcastStream().listen((user) {
+      widget._userService.userModelStream.stream
+          .asBroadcastStream()
+          .listen((user) {
         this.dataService = ProfileDataService(user);
         this.dataService.transactionStream().stream.listen((data) {
           if (data.length != _transactions.length) {
@@ -114,12 +115,10 @@ class _ProfileState extends State<Profile> {
       return Scaffold(
         body: Center(
             child: CircularProgressIndicator(
-              value: null,
-              valueColor:
-              AlwaysStoppedAnimation<Color>(Theme
-                  .of(context)
-                  .primaryColor),
-            )),
+          value: null,
+          valueColor:
+              AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+        )),
       );
     } else {
       return Scaffold(
@@ -127,111 +126,102 @@ class _ProfileState extends State<Profile> {
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: <Widget>[
+                  Row(
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          CircularProfileAvatar(_imageURL,
-                            radius: 40,
-                            backgroundColor: Colors.green,
-                            borderWidth: 3,
-                            borderColor: Color(0xFF25A325),
-                            elevation: 5.0,
-                            onTap: () async {
-                              String newUrl = await Navigator.push(
-                                  context, MaterialPageRoute(
+                      CircularProfileAvatar(
+                        _imageURL,
+                        radius: 40,
+                        backgroundColor: Colors.green,
+                        borderWidth: 3,
+                        borderColor: Color(0xFF25A325),
+                        elevation: 5.0,
+                        onTap: () async {
+                          String newUrl = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
                                   builder: (context) =>
                                       ProfilePic(this._currentUser)));
-                              setState(() {
-                                this._imageURL = newUrl;
-                              });
-                            },
-                            showInitialTextAbovePicture: true,
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Column(
+                          setState(() {
+                            this._imageURL = newUrl;
+                          });
+                        },
+                        showInitialTextAbovePicture: true,
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceEvenly,
+                                Column(
                                   children: <Widget>[
-                                    Column(
-                                      children: <Widget>[
-                                        Text(
-                                          widget._user.points.toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.0),
-                                        ),
-                                        Text("Points"),
-                                      ],
+                                    Text(
+                                      widget._user.points.toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0),
                                     ),
-                                    Column(
-                                      children: <Widget>[
-                                        Text(
-                                          widget._user.confirmedEvents.length
-                                              .toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.0),
-                                        ),
-                                        Text("Events"),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: <Widget>[
-                                        Text(
-                                          "10",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.0),
-                                        ),
-                                        Text("Friends"),
-                                      ],
-                                    ),
+                                    Text("Points"),
                                   ],
                                 ),
-//                        Row(
-//                            mainAxisAlignment:
-//                            MainAxisAlignment.spaceEvenly,
-//                            children: <Widget>[
-//                              buildProfileFollowButton(user)
-//                            ]),
+                                Column(
+                                  children: <Widget>[
+                                    Text(
+                                      widget._user.confirmedEvents.length
+                                          .toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0),
+                                    ),
+                                    Text("Events"),
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Text(
+                                      "10",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0),
+                                    ),
+                                    Text("Friends"),
+                                  ],
+                                ),
                               ],
                             ),
-                          )
-                        ],
-                      ),
-                      Container(
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.only(top: 15.0),
-                          child: Text(
-                            widget._user.name,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          )),
+                            buildFriendRequestButton()
+                          ],
+                        ),
+                      )
                     ],
                   ),
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.only(top: 15.0),
+                      child: Text(
+                        widget._user.name,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )),
+                ],
+              ),
+            ),
+            buildImageViewButtonBar(),
+            Stack(
+              children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                  color: Theme.of(context).primaryColor,
                 ),
-                buildImageViewButtonBar(),
-                Stack(
-                  children: <Widget>[
-                    Container(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height,
-                      color: Theme
-                          .of(context)
-                          .primaryColor,
-                    ),
-                    _buildTabContent(),
-                  ],
-                )
-              ]));
+                _buildTabContent(),
+              ],
+            )
+          ]));
     }
   }
 
@@ -244,6 +234,41 @@ class _ProfileState extends State<Profile> {
         _buildProperTab(Icons.timeline, 28, ProfileTab.TRANSACTIONS),
       ],
     );
+  }
+
+  Row buildFriendRequestButton() {
+    if (_friendRequestID != null) {
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.only(right: 0.0, left: 0.0, top: 10.0),
+              child: buildFriendRequestButtonContents()
+            )),
+          ]);
+    } else {
+      return Row();
+    }
+  }
+
+  FlatButton buildFriendRequestButtonContents() {
+
+    return FlatButton(
+      onPressed: () {},
+      child: Container(
+          alignment: Alignment.center,
+          height: 30.0,
+          decoration: new BoxDecoration(
+            color: Color(0xFF25A325),
+            borderRadius: new BorderRadius.circular(10.0),
+          ),
+          child: Text(
+            "Friends",
+            style: new TextStyle(fontSize: 20.0, color: Colors.white),
+          )),
+    );
+
   }
 
   void _tabSelector(ProfileTab newState) {
@@ -261,9 +286,7 @@ class _ProfileState extends State<Profile> {
               borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(16.0),
                   topRight: const Radius.circular(16.0)),
-              color: Theme
-                  .of(context)
-                  .primaryColor,
+              color: Theme.of(context).primaryColor,
             ),
             child: IconButton(
               icon: Icon(icon, size: size, color: Colors.white),
@@ -298,116 +321,104 @@ class _ProfileState extends State<Profile> {
         {
           if (isLoading[ProfileTab.UPCOMING_EVENTS]) {
             return Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2.40,
+              height: MediaQuery.of(context).size.height / 2.40,
               child: Center(
                   child: CircularProgressIndicator(
-                    value: null,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  )),
+                value: null,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              )),
             );
           } else if (this._currentEvents.isEmpty) {
             return Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2.40,
+              height: MediaQuery.of(context).size.height / 2.40,
               child: Center(
-                  child: Text("NO EVENTS FOUND",
-                    style: TextStyle(color: Colors.white),)),
+                  child: Text(
+                "NO EVENTS FOUND",
+                style: TextStyle(color: Colors.white),
+              )),
             );
           } else {
             return Container(
               margin: EdgeInsets.only(top: 12.0),
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height,
+              height: MediaQuery.of(context).size.height,
               child: ListView(
                 padding: const EdgeInsets.only(bottom: 30.0),
-                children: this._currentEvents.map((model) => EventCard(model)).toList(),
+                children: this
+                    ._currentEvents
+                    .map((model) => EventCard(model))
+                    .toList(),
                 scrollDirection: Axis.vertical,
               ),
             );
           }
         }
-      break;
+        break;
       case ProfileTab.PREVIOUS_EVENTS:
         {
           if (isLoading[ProfileTab.PREVIOUS_EVENTS]) {
             return Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2.40,
+              height: MediaQuery.of(context).size.height / 2.40,
               child: Center(
                   child: CircularProgressIndicator(
-                    value: null,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  )),
+                value: null,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              )),
             );
           } else if (this._pastEvents.isEmpty) {
             return Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2.40,
+              height: MediaQuery.of(context).size.height / 2.40,
               child: Center(
-                  child: Text("NO EVENTS FOUND",
-                    style: TextStyle(color: Colors.white),)),
+                  child: Text(
+                "NO EVENTS FOUND",
+                style: TextStyle(color: Colors.white),
+              )),
             );
           } else {
             return Container(
               margin: EdgeInsets.only(top: 12.0),
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height,
+              height: MediaQuery.of(context).size.height,
               child: ListView(
                 padding: const EdgeInsets.only(bottom: 30.0),
-                children: this._pastEvents.map((model) => PastEventCard(model)).toList(),
+                children: this
+                    ._pastEvents
+                    .map((model) => PastEventCard(model))
+                    .toList(),
                 scrollDirection: Axis.vertical,
               ),
             );
           }
         }
-      break;
+        break;
       case ProfileTab.TRANSACTIONS:
         {
           if (isLoading[ProfileTab.TRANSACTIONS]) {
             return Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2.40,
+              height: MediaQuery.of(context).size.height / 2.40,
               child: Center(
                   child: CircularProgressIndicator(
-                    value: null,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  )),
+                value: null,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              )),
             );
           } else if (this._transactions.isEmpty) {
             return Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2.40,
+              height: MediaQuery.of(context).size.height / 2.40,
               child: Center(
-                  child: Text("NO TRANSACTIONS FOUND",
-                    style: TextStyle(color: Colors.white),)),
+                  child: Text(
+                "NO TRANSACTIONS FOUND",
+                style: TextStyle(color: Colors.white),
+              )),
             );
           } else {
             return Container(
               margin: EdgeInsets.only(top: 12.0),
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height,
+              height: MediaQuery.of(context).size.height,
               child: ListView(
                 padding: const EdgeInsets.only(bottom: 30.0),
-                children: this._transactions.map((model) => TransactionCard(model)).toList(),
+                children: this
+                    ._transactions
+                    .map((model) => TransactionCard(model))
+                    .toList(),
                 scrollDirection: Axis.vertical,
               ),
             );
@@ -416,8 +427,6 @@ class _ProfileState extends State<Profile> {
         break;
     }
   }
-
-
 
 //  Future<void> _buildPastEventCards() async {
 ////    widget._user.events.forEach((event) async {
@@ -481,5 +490,3 @@ class _ProfileState extends State<Profile> {
 //    });
 //  }
 }
-
-
