@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,7 +18,6 @@ class ProfilePic extends StatefulWidget {
 }
 
 class ProfilePicState extends State<ProfilePic> {
-
   void initState() {
     super.initState();
 
@@ -25,7 +25,6 @@ class ProfilePicState extends State<ProfilePic> {
       this._currentUser = widget._currentUser;
       this._profilePictureURL = widget._currentUser.photoUrl;
     });
-
   }
 
   FirebaseUser _currentUser;
@@ -238,6 +237,12 @@ class ProfilePicState extends State<ProfilePic> {
 
     await snapshot.ref.getDownloadURL().then((fileURL) async {
       _profilePictureURL = fileURL;
+
+      await Firestore.instance
+          .collection("Users")
+          .document(_currentUser.uid)
+          .updateData({'picture': fileURL});
+
       _info.photoUrl = _profilePictureURL;
       await _currentUser.updateProfile(_info);
     });
@@ -263,7 +268,7 @@ class ProfilePicState extends State<ProfilePic> {
         fit: BoxFit.fitWidth,
         color: Colors.grey[400],
       );
-    } else if (_profilePictureURL != null && _profilePicture == null){
+    } else if (_profilePictureURL != null && _profilePicture == null) {
       return Image.network(_profilePictureURL, fit: BoxFit.fitWidth);
     }
     return Image.file(_profilePicture, fit: BoxFit.fitWidth);

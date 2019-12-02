@@ -10,11 +10,15 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(ActivityModel.serializer)
       ..add(Datetime.serializer)
       ..add(EventModel.serializer)
+      ..add(FriendRequestModel.serializer)
       ..add(ItemModel.serializer)
       ..add(TransactionModel.serializer)
       ..add(UserModel.serializer)
       ..add(UserPreferenceModel.serializer)
       ..add(UserRegistrationModel.serializer)
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => new ListBuilder<String>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
           () => new ListBuilder<String>())

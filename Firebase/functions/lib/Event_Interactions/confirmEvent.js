@@ -20,18 +20,15 @@ exports.handler = async function (data, context, firestore) {
     const eventData = event.data();
     const userRef = firestore.collection("Users").doc(UUID);
     const transactionRef = firestore.collection("Transactions").doc();
-<<<<<<< HEAD
     const activityRef = firestore.collection("Activities").doc();
     const user = await userRef.get();
     const userData = user.data();
-=======
     if (eventData.confirmed_participants.includes(UUID)) {
         return {
             status: responseCode_1.ResponseCode.FAILURE,
             message: "You have already confirmed your attendance to this event"
         };
     }
->>>>>>> origin/master
     batch.create(transactionRef, {
         amount: eventData.reward,
         timestamp: new Date(),
