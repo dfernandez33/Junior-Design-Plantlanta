@@ -36,6 +36,12 @@ class _$UserModelSerializer implements StructuredSerializer<UserModel> {
         ..add(serializers.serialize(object.address,
             specifiedType: const FullType(String)));
     }
+    if (object.picture != null) {
+      result
+        ..add('picture')
+        ..add(serializers.serialize(object.picture,
+            specifiedType: const FullType(String)));
+    }
     if (object.preferences != null) {
       result
         ..add('preferences')
@@ -75,6 +81,13 @@ class _$UserModelSerializer implements StructuredSerializer<UserModel> {
         ..add(serializers.serialize(object.uuid,
             specifiedType: const FullType(String)));
     }
+    if (object.friends != null) {
+      result
+        ..add('friends')
+        ..add(serializers.serialize(object.friends,
+            specifiedType:
+                const FullType(BuiltList, const [const FullType(String)])));
+    }
     return result;
   }
 
@@ -99,6 +112,10 @@ class _$UserModelSerializer implements StructuredSerializer<UserModel> {
           break;
         case 'address':
           result.address = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'picture':
+          result.picture = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
         case 'preferences':
@@ -132,6 +149,12 @@ class _$UserModelSerializer implements StructuredSerializer<UserModel> {
           result.uuid = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
+        case 'friends':
+          result.friends.replace(serializers.deserialize(value,
+                  specifiedType:
+                      const FullType(BuiltList, const [const FullType(String)]))
+              as BuiltList<dynamic>);
+          break;
       }
     }
 
@@ -147,6 +170,8 @@ class _$UserModel extends UserModel {
   @override
   final String address;
   @override
+  final String picture;
+  @override
   final UserPreferenceModel preferences;
   @override
   final int points;
@@ -158,6 +183,8 @@ class _$UserModel extends UserModel {
   final BuiltList<String> transactionHistory;
   @override
   final String uuid;
+  @override
+  final BuiltList<String> friends;
 
   factory _$UserModel([void Function(UserModelBuilder) updates]) =>
       (new UserModelBuilder()..update(updates)).build();
@@ -166,12 +193,14 @@ class _$UserModel extends UserModel {
       {this.name,
       this.phone,
       this.address,
+      this.picture,
       this.preferences,
       this.points,
       this.confirmedEvents,
       this.events,
       this.transactionHistory,
-      this.uuid})
+      this.uuid,
+      this.friends})
       : super._();
 
   @override
@@ -188,12 +217,14 @@ class _$UserModel extends UserModel {
         name == other.name &&
         phone == other.phone &&
         address == other.address &&
+        picture == other.picture &&
         preferences == other.preferences &&
         points == other.points &&
         confirmedEvents == other.confirmedEvents &&
         events == other.events &&
         transactionHistory == other.transactionHistory &&
-        uuid == other.uuid;
+        uuid == other.uuid &&
+        friends == other.friends;
   }
 
   @override
@@ -204,14 +235,20 @@ class _$UserModel extends UserModel {
                 $jc(
                     $jc(
                         $jc(
-                            $jc($jc($jc(0, name.hashCode), phone.hashCode),
-                                address.hashCode),
-                            preferences.hashCode),
-                        points.hashCode),
-                    confirmedEvents.hashCode),
-                events.hashCode),
-            transactionHistory.hashCode),
-        uuid.hashCode));
+                            $jc(
+                                $jc(
+                                    $jc(
+                                        $jc($jc(0, name.hashCode),
+                                            phone.hashCode),
+                                        address.hashCode),
+                                    picture.hashCode),
+                                preferences.hashCode),
+                            points.hashCode),
+                        confirmedEvents.hashCode),
+                    events.hashCode),
+                transactionHistory.hashCode),
+            uuid.hashCode),
+        friends.hashCode));
   }
 
   @override
@@ -220,12 +257,14 @@ class _$UserModel extends UserModel {
           ..add('name', name)
           ..add('phone', phone)
           ..add('address', address)
+          ..add('picture', picture)
           ..add('preferences', preferences)
           ..add('points', points)
           ..add('confirmedEvents', confirmedEvents)
           ..add('events', events)
           ..add('transactionHistory', transactionHistory)
-          ..add('uuid', uuid))
+          ..add('uuid', uuid)
+          ..add('friends', friends))
         .toString();
   }
 }
@@ -244,6 +283,10 @@ class UserModelBuilder implements Builder<UserModel, UserModelBuilder> {
   String _address;
   String get address => _$this._address;
   set address(String address) => _$this._address = address;
+
+  String _picture;
+  String get picture => _$this._picture;
+  set picture(String picture) => _$this._picture = picture;
 
   UserPreferenceModelBuilder _preferences;
   UserPreferenceModelBuilder get preferences =>
@@ -276,6 +319,11 @@ class UserModelBuilder implements Builder<UserModel, UserModelBuilder> {
   String get uuid => _$this._uuid;
   set uuid(String uuid) => _$this._uuid = uuid;
 
+  ListBuilder<String> _friends;
+  ListBuilder<String> get friends =>
+      _$this._friends ??= new ListBuilder<String>();
+  set friends(ListBuilder<String> friends) => _$this._friends = friends;
+
   UserModelBuilder();
 
   UserModelBuilder get _$this {
@@ -283,12 +331,14 @@ class UserModelBuilder implements Builder<UserModel, UserModelBuilder> {
       _name = _$v.name;
       _phone = _$v.phone;
       _address = _$v.address;
+      _picture = _$v.picture;
       _preferences = _$v.preferences?.toBuilder();
       _points = _$v.points;
       _confirmedEvents = _$v.confirmedEvents?.toBuilder();
       _events = _$v.events?.toBuilder();
       _transactionHistory = _$v.transactionHistory?.toBuilder();
       _uuid = _$v.uuid;
+      _friends = _$v.friends?.toBuilder();
       _$v = null;
     }
     return this;
@@ -316,12 +366,14 @@ class UserModelBuilder implements Builder<UserModel, UserModelBuilder> {
               name: name,
               phone: phone,
               address: address,
+              picture: picture,
               preferences: _preferences?.build(),
               points: points,
               confirmedEvents: _confirmedEvents?.build(),
               events: _events?.build(),
               transactionHistory: _transactionHistory?.build(),
-              uuid: uuid);
+              uuid: uuid,
+              friends: _friends?.build());
     } catch (_) {
       String _$failedField;
       try {
@@ -334,6 +386,9 @@ class UserModelBuilder implements Builder<UserModel, UserModelBuilder> {
         _events?.build();
         _$failedField = 'transactionHistory';
         _transactionHistory?.build();
+
+        _$failedField = 'friends';
+        _friends?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'UserModel', _$failedField, e.toString());

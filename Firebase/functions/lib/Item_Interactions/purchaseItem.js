@@ -26,6 +26,7 @@ exports.handler = async function (data, context, firestore) {
     const itemData = item.data();
     const userRef = firestore.collection("Users").doc(UUID);
     const transactionRef = firestore.collection("Transactions").doc();
+    const activityRef = firestore.collection("Activities").doc();
     const user = await userRef.get();
     const userData = user.data();
     const code = itemData.codes.pop();
@@ -45,6 +46,13 @@ exports.handler = async function (data, context, firestore) {
             amount: -itemData.price,
             timestamp: new Date(),
             description: "Purchased " + itemData.name,
+            uuid: UUID
+        });
+        batch.create(activityRef, {
+            activitytype: "Purchased Item",
+            timestamp: new Date(),
+            description: "Purchased " + itemData.name,
+            username: userData.name,
             uuid: UUID
         });
         batch.update(itemRef, {

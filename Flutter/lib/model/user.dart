@@ -27,6 +27,9 @@ abstract class UserModel implements Built<UserModel, UserModelBuilder> {
   @BuiltValueField(wireName: 'address')
   String get address;
   @nullable
+  @BuiltValueField(wireName: 'picture')
+  String get picture;
+  @nullable
   @BuiltValueField(wireName: 'preferences')
   UserPreferenceModel get preferences;
   @nullable
@@ -44,6 +47,9 @@ abstract class UserModel implements Built<UserModel, UserModelBuilder> {
   @nullable
   @BuiltValueField(wireName: 'uuid')
   String get uuid;
+  @nullable
+  @BuiltValueField(wireName: 'friends')
+  BuiltList<String> get friends;
 
   String toJson() {
     return json.encode(serializers.serializeWith(UserModel.serializer, this));

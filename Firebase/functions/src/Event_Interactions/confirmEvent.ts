@@ -21,6 +21,11 @@ export const handler = async function(data: signupRequest, context: functions.ht
     const eventData = event.data();
     const userRef = firestore.collection("Users").doc(UUID);
     const transactionRef = firestore.collection("Transactions").doc();
+    const activityRef = firestore.collection("Activities").doc();
+
+    const user = await userRef.get();
+    const userData = user.data();
+        
 
     if (eventData.confirmed_participants.includes(UUID)) {
         return {
@@ -34,6 +39,16 @@ export const handler = async function(data: signupRequest, context: functions.ht
             amount: eventData.reward,
             timestamp: new Date(),
             description: "Participated in " + eventData.name,
+            uuid: UUID
+        }
+    );
+
+    batch.create(activityRef, 
+        {
+            activitytype: "Participated in Event",
+            timestamp: new Date(),
+            description: "Participated in " + eventData.name,
+            username: userData.name,
             uuid: UUID
         }
     );

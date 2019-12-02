@@ -20,6 +20,9 @@ exports.handler = async function (data, context, firestore) {
     const eventData = event.data();
     const userRef = firestore.collection("Users").doc(UUID);
     const transactionRef = firestore.collection("Transactions").doc();
+    const activityRef = firestore.collection("Activities").doc();
+    const user = await userRef.get();
+    const userData = user.data();
     if (eventData.confirmed_participants.includes(UUID)) {
         return {
             status: responseCode_1.ResponseCode.FAILURE,
@@ -30,6 +33,13 @@ exports.handler = async function (data, context, firestore) {
         amount: eventData.reward,
         timestamp: new Date(),
         description: "Participated in " + eventData.name,
+        uuid: UUID
+    });
+    batch.create(activityRef, {
+        activitytype: "Participated in Event",
+        timestamp: new Date(),
+        description: "Participated in " + eventData.name,
+        username: userData.name,
         uuid: UUID
     });
     batch.update(eventRef, {

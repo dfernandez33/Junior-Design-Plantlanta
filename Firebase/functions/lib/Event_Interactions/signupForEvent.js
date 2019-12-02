@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const admin = require("firebase-admin");
 const responseCode_1 = require("../Enums/responseCode");
-exports.handler = function (data, context, firestore) {
+exports.handler = async function (data, context, firestore) {
     const eventID = data.EventID;
     let UUID;
     if (context.auth !== undefined) {
@@ -14,18 +14,31 @@ exports.handler = function (data, context, firestore) {
             message: "No UUID received from context."
         };
     }
-    const eventRef = firestore.doc("Events/" + eventID);
-    const userRef = firestore.doc("Users/" + UUID);
-    let eventUpdatePromise = eventRef.update({
-        participants: admin.firestore.FieldValue.arrayUnion(UUID)
+    var batch = firestore.batch();
+    const eventRef = firestore.collection("Events").doc(eventID);
+    const event = await eventRef.get();
+    const eventData = event.data();
+    const userRef = firestore.collection("Users").doc(UUID);
+    const activityRef = firestore.collection("Activities").doc();
+    const user = await userRef.get();
+    const userData = user.data();
+    batch.create(activityRef, {
+        activitytype: "Signed up for Event",
+        timestamp: new Date(),
+        description: "Signed up for " + eventData.name,
+        username: userData.name,
+        uuid: UUID
     });
-    let userUpdatePromise = userRef.update({
-        events: admin.firestore.FieldValue.arrayUnion(eventID)
+    batch.update(eventRef, {
+        participants: admin.firestore.FieldValue.arrayUnion(UUID),
     });
-    return Promise.all([eventUpdatePromise, userUpdatePromise]).then(() => {
+    batch.update(userRef, {
+        events: admin.firestore.FieldValue.arrayUnion(eventID),
+    });
+    return batch.commit().then(() => {
         return {
             status: responseCode_1.ResponseCode.SUCCESS,
-            message: "User was signed up successfully"
+            message: "Success updating user and event info"
         };
     }).catch(() => {
         return {

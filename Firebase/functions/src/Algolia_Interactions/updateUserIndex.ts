@@ -6,6 +6,8 @@ export const handler = function(snapshot, algoliaClient) {
 
     return index.saveObject({
         name: data.name,
+        phone: data.phone,
+        picture: data.picture,
         objectID: objectId
     });
 }
